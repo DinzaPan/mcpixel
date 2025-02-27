@@ -1,0 +1,223 @@
+/* Estilos específicos para la página de servidores */
+.server-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.server-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+}
+
+.server-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.server-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.server-info {
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.server-info h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+}
+
+.server-info h3 i {
+    margin-right: 10px;
+}
+
+.tags {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.tag {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+
+.tag.bedrock {
+    background-color: rgba(0, 120, 215, 0.5);
+}
+
+.tag.java {
+    background-color: rgba(255, 69, 0, 0.5);
+}
+
+.tag.verified {
+    background-color: rgba(255, 215, 0, 0.5);
+    color: #000;
+    position: relative;
+    overflow: hidden;
+}
+
+.tag.verified::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+    transform: rotate(30deg);
+    animation: reflect 3s infinite;
+}
+
+.tag.verified i {
+    color: #ffd700; /* Color dorado para el ícono */
+    margin-right: 5px;
+}
+
+@keyframes reflect {
+    0% { transform: rotate(30deg) translateX(-100%); }
+    100% { transform: rotate(30deg) translateX(100%); }
+}
+
+/* Interfaz de detalles del servidor */
+.server-details {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.details-content {
+    background-color: rgba(30, 30, 47, 0.9);
+    padding: 20px;
+    border-radius: 15px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    animation: scaleUp 0.3s ease-out;
+}
+
+@keyframes scaleUp {
+    from { transform: scale(0.9); }
+    to { transform: scale(1); }
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 24px;
+    color: #e0e0e0;
+    transition: color 0.3s;
+}
+
+.close-btn:hover {
+    color: #ff6b6b;
+}
+
+.details-content img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.details-content h3 {
+    margin: 10px 0;
+    font-size: 24px;
+    color: #fff;
+}
+
+.details-content .tags {
+    margin: 10px 0;
+}
+
+.details-content .description {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.details-content .description i {
+    margin-right: 10px;
+}
+
+.details-content .description p {
+    margin: 0;
+    color: #e0e0e0;
+}
+
+.discord-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #7289DA;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+    text-decoration: none;
+}
+
+.discord-btn:hover {
+    background-color: #677BC4;
+}
+
+.details-content .ip-info,
+.details-content .port-info {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    color: #e0e0e0;
+}
+
+.details-content .ip-info i,
+.details-content .port-info i {
+    margin-right: 10px;
+}
+
+.details-content .ip-info p,
+.details-content .port-info p {
+    margin: 0;
+    color: #ccc;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 5px 10px;
+    border-radius: 5px;
+    width: 100%;
+}

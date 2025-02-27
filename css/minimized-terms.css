@@ -1,0 +1,94 @@
+/* Estilos específicos para la interfaz minimizada */
+.minimized-terms-overlay {
+    display: none; /* Inicialmente oculto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro semi-transparente */
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Asegurar que esté por encima de otros elementos */
+}
+
+.minimized-terms-content {
+    background-color: rgba(30, 30, 47, 0.9); /* Fondo oscuro con transparencia */
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    backdrop-filter: blur(10px); /* Efecto de desenfoque */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra suave */
+    max-width: 400px;
+    width: 90%;
+    position: absolute; /* Posición absoluta para centrar */
+    top: 50%; /* Centrar verticalmente */
+    left: 50%; /* Centrar horizontalmente */
+    transform: translate(-50%, -50%); /* Ajustar el centro */
+    animation: slideIn 0.5s ease-out; /* Nueva animación personalizada */
+}
+
+.minimized-terms-icon {
+    width: 80px; /* Tamaño del ícono */
+    margin-bottom: 15px;
+}
+
+.minimized-terms-description {
+    font-size: 14px;
+    color: #e0e0e0; /* Color de texto claro */
+    margin: 10px 0;
+    line-height: 1.5;
+}
+
+.minimized-terms-link-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px; /* Espacio entre el ícono y el texto */
+    margin: 15px 0;
+}
+
+.minimized-terms-link-container i {
+    color: #1e90ff; /* Color azul para el ícono */
+}
+
+.minimized-terms-link {
+    color: #1e90ff; /* Color azul para el enlace */
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s; /* Transición suave al pasar el mouse */
+}
+
+.minimized-terms-link:hover {
+    color: #00bfff; /* Color azul más claro al pasar el mouse */
+}
+
+.minimized-terms-ok-button {
+    background-color: #28a745; /* Color verde para el botón */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Espacio entre el ícono y el texto */
+    transition: background-color 0.3s; /* Transición suave al pasar el mouse */
+}
+
+.minimized-terms-ok-button:hover {
+    background-color: #218838; /* Color verde más oscuro al pasar el mouse */
+}
+
+/* Nueva animación personalizada */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%); /* Comienza un poco más arriba */
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%); /* Termina en el centro */
+    }
+}
