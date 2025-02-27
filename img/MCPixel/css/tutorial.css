@@ -1,0 +1,114 @@
+/* Estilos para las tarjetas de tutorial */
+.tutorial-section {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.tutorial-card {
+    background-color: rgba(30, 30, 47, 0.9);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.card-header {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.card-header h2 {
+    font-size: 24px;
+    color: #e0e0e0;
+    margin: 0;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.instruction-box {
+    background-color: #1e2a3a;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    color: #e0e0e0;
+    font-size: 16px;
+    text-align: left;
+}
+
+.tutorial-card img {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+/* Animación de código */
+.code-animation-card {
+    background-color: rgba(30, 30, 47, 0.9);
+    border-radius: 10px;
+    margin-top: 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.code-header h3 {
+    font-size: 20px;
+    color: #e0e0e0;
+    margin: 0;
+}
+
+.dots {
+    display: flex;
+    gap: 5px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.dot.red { background-color: #ff5f56; }
+.dot.yellow { background-color: #ffbd2e; }
+.dot.green { background-color: #27c93f; }
+
+.code-body {
+    padding: 20px;
+    background-color: #1e1e2f;
+    color: #e0e0e0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    text-align: left;
+    overflow-x: auto;
+}
+
+pre {
+    margin: 0;
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
