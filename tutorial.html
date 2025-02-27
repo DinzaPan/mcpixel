@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial - MCPixel</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/tutorial.css">
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="logo.png" type="image/png">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="./img/logo.png" alt="MCPixel Logo">
+            <span>MCPixel</span>
+        </div>
+        <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <nav class="nav-menu" id="navMenu">
+            <ul>
+                <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="textures.html"><i class="fas fa-image"></i> Texturas</a></li>
+                <li><a href="addon.html"><i class="fas fa-cubes"></i> Addons</a></li>
+                <li><a href="world.html"><i class="fas fa-globe"></i> Mapas</a></li>
+                <li><a href="server.html"><i class="fas fa-server"></i> Servidor</a></li>
+                <li><a href="tutorial.html"><i class="fas fa-book"></i> Tutorial</a></li>
+                <li><a href="https://discord.gg/HqvwZS3xZY" target="_blank"><i class="fab fa-discord"></i> Discord</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Sección de tutorial -->
+        <section class="tutorial-section">
+            <h1><i class="fas fa-book"></i> Tutorial: Cómo instalar Addons en Minecraft Bedrock</h1>
+
+            <!-- Paso 1 -->
+            <div class="tutorial-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-download"></i> Paso 1: Descargar el archivo .mcaddon</h2>
+                </div>
+                <div class="card-body">
+                    <div class="instruction-box">
+                        <p>Descarga el archivo .mcaddon desde la sección de Addons en nuestra página. Asegúrate de guardarlo en una ubicación fácil de encontrar, como la carpeta de Descargas.</p>
+                    </div>
+                    <img src="./img/paso1.gif" alt="Paso 1">
+                </div>
+            </div>
+
+            <!-- Paso 2 -->
+            <div class="tutorial-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-file-import"></i> Paso 2: Abrir el archivo .mcaddon</h2>
+                </div>
+                <div class="card-body">
+                    <div class="instruction-box">
+                        <p>Una vez descargado, abre el archivo .mcaddon. Esto debería abrir automáticamente Minecraft Bedrock y comenzar la importación del addon, Si no ocurre eso asegurate que el ".mcaddon" este en el nombre si tiene ".zip" debes darle click a editar nombre y eliminar el ".zip".</p>
+                    </div>
+                    <img src="./img/paso2.gif" alt="Paso 2">
+                </div>
+            </div>
+
+            <!-- Paso 3 -->
+            <div class="tutorial-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-check-circle"></i> Paso 3: Activar el Addon en Minecraft</h2>
+                </div>
+                <div class="card-body">
+                    <div class="instruction-box">
+                        <p>Dentro de Minecraft, ve a la sección de "Configuración" y luego a "Recursos". Aquí deberías ver el addon que acabas de importar. Actívalo y asegúrate de guardar los cambios.</p>
+                    </div>
+                    <img src="./img/paso3.gif" alt="Paso 3">
+                </div>
+            </div>
+
+            <!-- Paso 4 -->
+            <div class="tutorial-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-gamepad"></i> Paso 4: Disfrutar del Addon</h2>
+                </div>
+                <div class="card-body">
+                    <div class="instruction-box">
+                        <p>¡Listo! Ahora puedes disfrutar del addon en tu mundo de Minecraft. Asegúrate de que el addon esté activado en cada mundo donde quieras usarlo.</p>
+                    </div>
+                    <img src="./img/paso4.gif" alt="Paso 4">
+                </div>
+            </div>
+
+            <!-- Animación de código -->
+            <div class="code-animation-card">
+    <div class="code-header">
+        <div class="dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+        </div>
+        <h3>Animación de Código</h3>
+    </div>
+    <div class="code-body">
+        <pre id="code-animation"></pre> <!-- Aquí se muestra la animación -->
+    </div>
+</div>
+        </section>
+    </main>
+
+    <script src="./js/script.js"></script>
+    <script src="./js/tutorial.js"></script>
+</body>
+</html>
