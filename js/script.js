@@ -47,6 +47,12 @@ function searchAddons() {
     }
 }
 
+// Asegurar que el buscador esté por encima de la animación
+document.getElementById("searchInput").style.zIndex = "1000";
+document.getElementById("searchInput").style.position = "relative";
+document.querySelector(".search-bar").style.zIndex = "1000";
+document.querySelector(".search-bar").style.position = "relative";
+
 // Función para mostrar detalles del addon
 function showAddonDetails(card) {
     const image = card.querySelector("img").src;
