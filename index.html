@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCPixel</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="./img/logo.png">
+</head>
+<body>
+    <!-- Barra de navegación superior -->
+    <header class="main-header hidden">
+        <div class="header-container">
+            <img src="./img/logo.png" alt="MCPixel Logo" class="header-logo">
+            <h1 class="header-title">MCPixel</h1>
+            <nav class="header-nav">
+                <a href="addons.html" class="nav-btn addons-btn" title="Addons">
+                    <i class="fas fa-box-open"></i>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <!-- Formulario de registro -->
+        <section class="form-section" id="register-section">
+            <div class="form-card glass-card">
+                <div class="form-header">
+                    <i class="fas fa-user-plus form-icon"></i>
+                    <h2>Crear cuenta</h2>
+                </div>
+                
+                <form id="register-form" class="form-content">
+                    <div class="input-field">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="register-username" placeholder="Nombre de usuario" required minlength="3">
+                        <span class="input-border"></span>
+                    </div>
+                    
+                    <div class="input-field">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="register-password" placeholder="Contraseña" required minlength="6">
+                        <span class="input-border"></span>
+                    </div>
+                    
+                    <div class="input-field">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" id="register-email" placeholder="Correo electrónico (opcional)">
+                        <span class="input-border"></span>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-animate btn-register">
+                        <i class="fas fa-user-plus"></i> Registrar
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Credencial del usuario -->
+        <section class="badge-section hidden" id="badge-section">
+            <div class="badge-card glass-card">
+                <div class="avatar-container">
+                    <img src="https://i.imgur.com/J6l19aX.png" alt="Avatar" id="badge-avatar">
+                </div>
+                
+                <div class="member-status">
+                    <div class="divider"></div>
+                    <span>Miembro Verificado</span>
+                    <div class="divider"></div>
+                </div>
+                
+                <div class="badge-info">
+                    <div class="info-row">
+                        <div class="info-icon-container">
+                            <i class="fas fa-user-tag info-icon"></i>
+                        </div>
+                        <div class="info-content">
+                            <p class="info-label">USUARIO</p>
+                            <p class="info-value" id="badge-username">UsuarioEjemplo</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-icon-container">
+                            <i class="fas fa-id-card info-icon"></i>
+                        </div>
+                        <div class="info-content">
+                            <p class="info-label">ID MCPIXEL</p>
+                            <p class="info-value" id="badge-id">MP-0000</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-icon-container">
+                            <i class="fas fa-calendar-alt info-icon"></i>
+                        </div>
+                        <div class="info-content">
+                            <p class="info-label">FECHA DE REGISTRO</p>
+                            <p class="info-value" id="badge-joindate"><i class="fas fa-calendar-day icon-calendar"></i> 01/01/2025</p>
+                        </div>
+                    </div>
+
+                    <!-- Sistema de rachas -->
+                    <div class="info-row streak-row">
+                        <div class="info-icon-container">
+                            <i class="fas fa-fire info-icon"></i>
+                        </div>
+                        <div class="info-content">
+                            <p class="info-label">RACHA ACTUAL</p>
+                            <div class="streak-container">
+                                <div class="streak-value">
+                                    <span id="streak-count">0</span> días
+                                </div>
+                                <div class="progress-container">
+                                    <div class="progress-bar" id="streak-progress"></div>
+                                </div>
+                                <div class="time-remaining">
+                                    <i class="fas fa-clock"></i> <span id="time-remaining">24:00:00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="badge-actions">
+                    <button class="btn btn-edit" id="edit-profile-btn">
+                        <i class="fas fa-user-cog"></i> Ajustes
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Editor de perfil -->
+        <section class="form-section hidden" id="edit-section">
+            <div class="form-card glass-card">
+                <div class="form-header">
+                    <i class="fas fa-user-edit form-icon"></i>
+                    <h2>Ajustes de perfil</h2>
+                </div>
+                
+                <form id="edit-form" class="form-content">
+                    <div class="avatar-upload-container">
+                        <label for="avatar-upload" class="avatar-upload-label">
+                            <img src="https://i.imgur.com/J6l19aX.png" alt="Avatar" id="edit-avatar-preview">
+                            <span class="avatar-upload-text">
+                                <i class="fas fa-camera"></i> Cambiar foto
+                            </span>
+                        </label>
+                        <input type="file" id="avatar-upload" accept="image/*" class="hidden">
+                    </div>
+                    
+                    <div class="input-field">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="edit-username" placeholder="Nuevo nombre de usuario" minlength="3">
+                        <span class="input-border"></span>
+                    </div>
+                    
+                    <div class="input-field">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="edit-password" placeholder="Nueva contraseña" minlength="6">
+                        <span class="input-border"></span>
+                    </div>
+                    
+                    <div class="input-field">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" id="edit-email" placeholder="Nuevo correo electrónico">
+                        <span class="input-border"></span>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancel-edit">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-animate">
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>© MCPixel 2025 - Todos los derechos reservados</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
