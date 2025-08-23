@@ -178,7 +178,7 @@
     <!-- Overlay de carga -->
     <div id="loading-overlay">
         <div class="spinner"></div>
-        <p class="loading-text">Cargando contenido...</p>
+        <p class="loading-text">Cargando contenido desde Vercel...</p>
         <div class="progress-container">
             <div class="progress-bar"></div>
         </div>
@@ -196,6 +196,12 @@
             // Configuración con tu IP y Puerto
             const yourSiteUrl = 'http://87.106.36.114:6322';
             
+            // Función para obtener la URL del proxy
+            function getProxyUrl(url) {
+                // Usar un proxy CORS para evitar problemas de contenido mixto
+                return `https://corsproxy.io/?${encodeURIComponent(url)}`;
+            }
+            
             // Temporizador de respaldo para ocultar el loader
             let backupTimer = null;
             
@@ -211,8 +217,23 @@
                     hideLoader();
                 }, 25000); // 25 segundos
                 
-                // Cargar el sitio directamente
+                // Intentar cargar directamente primero
                 frame.src = yourSiteUrl;
+                
+                // Si después de 5 segundos no carga, intentar con proxy
+                setTimeout(() => {
+                    try {
+                        if (frame.contentDocument && frame.contentDocument.readyState === 'complete') {
+                            // Ya cargó, no hacer nada
+                        } else {
+                            // Intentar con proxy
+                            frame.src = getProxyUrl(yourSiteUrl);
+                        }
+                    } catch (e) {
+                        // Error de acceso, intentar con proxy
+                        frame.src = getProxyUrl(yourSiteUrl);
+                    }
+                }, 5000);
             }
             
             // Ocultar el loader con efecto de desvanecimiento
@@ -229,13 +250,12 @@
                     <div class="error-content">
                         <h2 class="error-title">Error al cargar el contenido</h2>
                         <p>No se pudo conectar con el servidor en:</p>
-                        <div class="error-url">${yourSiteUrl}</div>
+                        <div class="error-url">${yourSiteUrl}</p>
                         <p>Esto puede deberse a:</p>
                         <ul style="text-align: left; margin: 15px 0; padding-left: 20px;">
-                            <li>El servidor está tardando demasiado en responder</li>
+                            <li>El servidor no está respondiendo</li>
                             <li>Problemas de conectividad de red</li>
-                            <li>El puerto no está accesible desde este navegador</li>
-                            <li>Bloqueo de contenido mixto (HTTP en HTTPS)</li>
+                            <li>El puerto está bloqueado o no accesible</li>
                         </ul>
                         <button class="retry-btn" id="retry-btn">Reintentar conexión</button>
                     </div>
