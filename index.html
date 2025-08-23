@@ -3,173 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador de Contenido - Vercel</title>
+    <title>Visualizador de Contenido</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background: #1a1a2e;
-            color: #fff;
+            overflow: hidden;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            background: #000;
         }
         
-        .header {
-            background: linear-gradient(135deg, #162747 0%, #1a1a2e 100%);
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            z-index: 100;
-            border-bottom: 1px solid #2a2a4a;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        
-        .app-name {
-            font-size: 1.4rem;
-            font-weight: 700;
-            background: linear-gradient(to right, #8f94fb, #4e54c8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .controls {
-            display: flex;
-            gap: 12px;
-        }
-        
-        .btn {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #4347b3 0%, #7a80e6 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(78, 84, 200, 0.3);
-        }
-        
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            color: #ddd;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-2px);
-        }
-        
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            padding: 0;
-            background: #0f0f1e;
-        }
-        
-        .url-container {
-            padding: 15px 20px;
-            background: rgba(0, 0, 0, 0.25);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid #2a2a4a;
-        }
-        
-        .url-label {
-            font-weight: 600;
-            color: #8f94fb;
-            white-space: nowrap;
-        }
-        
-        .url-display {
-            flex: 1;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid #2a2a4a;
-            border-radius: 6px;
-            padding: 10px 15px;
-            font-family: monospace;
-            color: #ddd;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        .content-area {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        #browser-frame {
+        #content-frame {
             width: 100%;
             height: 100%;
             border: none;
             background: white;
         }
         
-        .loading-overlay {
-            position: absolute;
+        #loading-overlay {
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(10, 10, 20, 0.95);
+            background: #000;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            transition: opacity 0.5s;
+            color: #fff;
+            font-family: Arial, sans-serif;
         }
         
         .spinner {
-            width: 60px;
-            height: 60px;
-            border: 5px solid rgba(79, 84, 200, 0.2);
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.2);
             border-top: 5px solid #8f94fb;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         
         @keyframes spin {
@@ -177,234 +55,36 @@
             100% { transform: rotate(360deg); }
         }
         
-        .loading-text {
-            font-size: 1.2rem;
-            color: #8f94fb;
-            margin-bottom: 15px;
-        }
-        
-        .progress-bar {
-            width: 300px;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        
-        .progress {
-            height: 100%;
-            width: 30%;
-            background: linear-gradient(to right, #4e54c8, #8f94fb);
-            border-radius: 3px;
-            animation: progressAnimation 1.5s infinite;
-        }
-        
-        @keyframes progressAnimation {
-            0% { width: 30%; }
-            50% { width: 70%; }
-            100% { width: 30%; }
-        }
-        
-        .footer {
-            padding: 15px 20px;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.3);
-            color: #7a7a9a;
-            font-size: 0.9rem;
-            border-top: 1px solid #2a2a4a;
-        }
-        
-        .footer a {
-            color: #8f94fb;
-            text-decoration: none;
-        }
-        
-        .footer a:hover {
-            text-decoration: underline;
-        }
-        
         .hidden {
             display: none;
-        }
-        
-        .error-content {
-            text-align: center;
-            max-width: 500px;
-            padding: 20px;
-        }
-        
-        .error-title {
-            color: #ff6b6b;
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-        }
-        
-        .cors-warning {
-            background: rgba(255, 107, 107, 0.1);
-            border: 1px solid rgba(255, 107, 107, 0.3);
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px 0;
-            text-align: left;
-        }
-        
-        .solution-item {
-            margin: 10px 0;
-            padding-left: 20px;
-            position: relative;
-        }
-        
-        .solution-item:before {
-            content: "•";
-            color: #8f94fb;
-            font-weight: bold;
-            position: absolute;
-            left: 0;
-        }
-        
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .header {
-                padding: 12px 15px;
-            }
-            
-            .app-name {
-                font-size: 1.2rem;
-            }
-            
-            .btn {
-                padding: 8px 12px;
-                font-size: 0.9rem;
-            }
-            
-            .url-container {
-                padding: 12px 15px;
-            }
-            
-            .url-label {
-                font-size: 0.9rem;
-            }
-            
-            .url-display {
-                padding: 8px 12px;
-                font-size: 0.85rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .logo-icon {
-                width: 32px;
-                height: 32px;
-            }
-            
-            .app-name {
-                font-size: 1.1rem;
-            }
-            
-            .btn {
-                padding: 6px 10px;
-                font-size: 0.8rem;
-            }
-            
-            .btn-text {
-                display: none;
-            }
-            
-            .url-label {
-                display: none;
-            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">
-            <div class="logo-icon">WC</div>
-            <h1 class="app-name">Web Container - Vercel</h1>
-        </div>
-        <div class="controls">
-            <button class="btn btn-primary" id="btn-refresh">
-                <span class="btn-text">Recargar</span> ↻
-            </button>
-            <button class="btn btn-secondary" id="btn-fullscreen">
-                <span class="btn-text">Pantalla Completa</span> ⛶
-            </button>
-        </div>
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p>Cargando contenido...</p>
     </div>
     
-    <div class="main-content">
-        <div class="url-container">
-            <span class="url-label">URL:</span>
-            <div class="url-display" id="url-display">http://87.106.36.114:6322</div>
-        </div>
-        
-        <div class="content-area">
-            <div class="loading-overlay" id="loading-overlay">
-                <div class="spinner"></div>
-                <p class="loading-text">Cargando contenido desde Vercel...</p>
-                <div class="progress-bar">
-                    <div class="progress"></div>
-                </div>
-            </div>
-            
-            <iframe id="browser-frame" src="about:blank" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
-        </div>
-    </div>
-    
-    <div class="footer">
-        <p>Contenido proporcionado por <strong id="footer-url">http://87.106.36.114:6322</strong> | <a href="#" id="open-original">Abrir contenido original</a></p>
-    </div>
+    <iframe id="content-frame" src="about:blank"></iframe>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const frame = document.getElementById('browser-frame');
+            const frame = document.getElementById('content-frame');
             const loadingOverlay = document.getElementById('loading-overlay');
-            const urlDisplay = document.getElementById('url-display');
-            const footerUrl = document.getElementById('footer-url');
-            const btnRefresh = document.getElementById('btn-refresh');
-            const btnFullscreen = document.getElementById('btn-fullscreen');
-            const openOriginal = document.getElementById('open-original');
             
             // Configuración con tu IP y Puerto
             const yourSiteUrl = 'http://87.106.36.114:6322';
             
-            // Establecer la URL en los elementos de la UI
-            urlDisplay.textContent = yourSiteUrl;
-            footerUrl.textContent = yourSiteUrl;
-            
-            // Configurar el enlace para abrir la URL original
-            openOriginal.href = yourSiteUrl;
-            openOriginal.addEventListener('click', function(e) {
-                e.preventDefault();
-                window.open(yourSiteUrl, '_blank');
-            });
-            
             // Cargar la URL en el iframe
             function loadWebsite() {
                 loadingOverlay.classList.remove('hidden');
+                frame.src = yourSiteUrl;
                 
-                // Intentar cargar el sitio
-                try {
-                    // En Vercel, intentamos usar un proxy para evitar problemas de CORS
-                    const useProxy = true;
-                    
-                    if (useProxy) {
-                        // Intentamos cargar a través de un proxy CORS
-                        frame.src = `https://cors-anywhere.herokuapp.com/${yourSiteUrl}`;
-                    } else {
-                        // Carga directa
-                        frame.src = yourSiteUrl;
-                    }
-                } catch (error) {
-                    showError("Error al intentar cargar el sitio: " + error.message);
-                }
-                
-                // Temporizador de respaldo en caso de que la página no cargue
-                setTimeout(function() {
-                    if (!loadingOverlay.classList.contains('hidden')) {
-                        showCorsWarning();
-                    }
-                }, 10000); // 10 segundos
+                // Temporizador de respaldo para ocultar el loader después de 15 segundos
+                setTimeout(() => {
+                    loadingOverlay.classList.add('hidden');
+                }, 15000);
             }
             
             // Ocultar la pantalla de carga cuando el iframe esté listo
@@ -414,99 +94,36 @@
             
             // Manejar errores
             frame.addEventListener('error', function() {
-                // Si falla el proxy, intentar carga directa
-                if (frame.src.includes('cors-anywhere')) {
-                    frame.src = yourSiteUrl;
-                } else {
-                    showCorsWarning();
-                }
-            });
-            
-            // Mostrar advertencia de CORS
-            function showCorsWarning() {
                 loadingOverlay.innerHTML = `
-                    <div class="error-content">
-                        <h2 class="error-title">Problema de Carga en Vercel</h2>
-                        <p>No se pudo cargar el contenido desde:</p>
-                        <div class="url-display">${yourSiteUrl}</div>
-                        
-                        <div class="cors-warning">
-                            <h3>Soluciones para Vercel:</h3>
-                            <div class="solution-item">Configurar tu servidor para permitir solicitudes cross-origin (CORS)</div>
-                            <div class="solution-item">Usar un proxy CORS como cors-anywhere</div>
-                            <div class="solution-item">Configurar headers CORS en vercel.json</div>
-                            <div class="solution-item">Alojar este visualizador en el mismo dominio y puerto que tu servidor</div>
-                        </div>
-                        
-                        <button class="btn btn-primary" id="retry-btn">Reintentar</button>
-                        <button class="btn btn-secondary" id="try-proxy-btn" style="margin-left: 10px;">Usar Proxy</button>
-                    </div>
-                `;
-                
-                document.getElementById('retry-btn').addEventListener('click', function() {
-                    frame.src = yourSiteUrl;
-                    loadingOverlay.classList.add('hidden');
-                    setTimeout(loadWebsite, 500);
-                });
-                
-                document.getElementById('try-proxy-btn').addEventListener('click', function() {
-                    frame.src = `https://cors-anywhere.herokuapp.com/${yourSiteUrl}`;
-                    loadingOverlay.classList.add('hidden');
-                    setTimeout(function() {
-                        loadingOverlay.classList.remove('hidden');
-                    }, 1000);
-                });
-            }
-            
-            // Mostrar error personalizado
-            function showError(message) {
-                loadingOverlay.innerHTML = `
-                    <div class="error-content">
-                        <h2 class="error-title">Error</h2>
-                        <p>${message}</p>
-                        <button class="btn btn-primary" id="retry-btn">Reintentar</button>
+                    <div style="text-align: center; color: #ff6b6b;">
+                        <h2>Error al cargar el contenido</h2>
+                        <p>No se pudo conectar con el servidor en:</p>
+                        <p style="margin: 15px 0; font-family: monospace; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px;">${yourSiteUrl}</p>
+                        <p>Verifica que la dirección y el puerto sean correctos.</p>
+                        <button id="retry-btn" style="margin-top: 20px; padding: 12px 24px; background: #8f94fb; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Reintentar</button>
                     </div>
                 `;
                 
                 document.getElementById('retry-btn').addEventListener('click', function() {
                     loadWebsite();
                 });
-            }
-            
-            // Botón de recargar
-            btnRefresh.addEventListener('click', function() {
-                loadWebsite();
             });
-            
-            // Botón de pantalla completa
-            btnFullscreen.addEventListener('click', function() {
-                const elem = document.documentElement;
-                if (elem.requestFullscreen) {
-                    elem.requestFullscreen();
-                } else if (elem.mozRequestFullScreen) { /* Firefox */
-                    elem.mozRequestFullScreen();
-                } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-                    elem.webkitRequestfullscreen();
-                } else if (elem.msRequestFullscreen) { /* IE/Edge */
-                    elem.msRequestFullscreen();
-                }
-            });
-            
-            // Salir de pantalla completa con la tecla ESC
-            document.addEventListener('fullscreenchange', exitHandler);
-            document.addEventListener('webkitfullscreenchange', exitHandler);
-            document.addEventListener('mozfullscreenchange', exitHandler);
-            document.addEventListener('MSFullscreenChange', exitHandler);
-            
-            function exitHandler() {
-                if (!document.fullscreenElement && !document.webkitIsFullScreen && 
-                    !document.mozFullScreen && !document.msFullscreenElement) {
-                    // Puedes agregar lógica adicional al salir de pantalla completa si es necesario
-                }
-            }
             
             // Inicializar la carga del sitio web
             loadWebsite();
+            
+            // Forzar pantalla completa al cargar
+            function openFullscreen() {
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen().catch(err => {
+                        console.log("Error attempting to enable fullscreen:", err);
+                    });
+                }
+            }
+            
+            // Intentar pantalla completa después de un breve retraso
+            setTimeout(openFullscreen, 500);
         });
     </script>
 </body>
