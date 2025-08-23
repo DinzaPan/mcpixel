@@ -15,6 +15,7 @@
             overflow: hidden;
             height: 100vh;
             background: #000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
         
         #content-frame {
@@ -30,14 +31,14 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: #000;
+            background: #0f0f1e;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 1000;
             color: #fff;
-            font-family: Arial, sans-serif;
+            transition: opacity 0.5s;
         }
         
         .spinner {
@@ -55,63 +56,249 @@
             100% { transform: rotate(360deg); }
         }
         
+        .loading-text {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #8f94fb;
+        }
+        
+        .progress-container {
+            width: 280px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 30%;
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            border-radius: 3px;
+            animation: progressAnimation 1.5s infinite;
+        }
+        
+        @keyframes progressAnimation {
+            0% { width: 30%; }
+            50% { width: 70%; }
+            100% { width: 30%; }
+        }
+        
+        .retry-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(78, 84, 200, 0.4);
+        }
+        
         .hidden {
             display: none;
+        }
+        
+        .fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .error-content {
+            text-align: center;
+            max-width: 500px;
+            padding: 20px;
+        }
+        
+        .error-title {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        
+        .error-url {
+            margin: 15px 0;
+            font-family: monospace;
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 5px;
+            word-break: break-all;
+            font-size: 0.9rem;
+        }
+        
+        #mini-controls {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            gap: 8px;
+        }
+        
+        body:hover #mini-controls {
+            opacity: 1;
+        }
+        
+        .control-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            backdrop-filter: blur(4px);
+            transition: all 0.2s;
+        }
+        
+        .control-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(1.1);
         }
     </style>
 </head>
 <body>
-    <div id="loading-overlay">
-        <div class="spinner"></div>
-        <p>Cargando contenido...</p>
+    <!-- Mini controles para recargar -->
+    <div id="mini-controls">
+        <button class="control-btn" id="btn-reload" title="Recargar">↻</button>
     </div>
     
+    <!-- Overlay de carga -->
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p class="loading-text">Cargando contenido...</p>
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+    </div>
+    
+    <!-- Iframe que mostrará el contenido -->
     <iframe id="content-frame" src="about:blank"></iframe>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const frame = document.getElementById('content-frame');
             const loadingOverlay = document.getElementById('loading-overlay');
+            const btnReload = document.getElementById('btn-reload');
             
             // Configuración con tu IP y Puerto
             const yourSiteUrl = 'http://87.106.36.114:6322';
             
+            // Temporizador de respaldo para ocultar el loader
+            let backupTimer = null;
+            
             // Cargar la URL en el iframe
             function loadWebsite() {
+                // Reiniciar el estado de carga
+                loadingOverlay.classList.remove('fade-out');
                 loadingOverlay.classList.remove('hidden');
-                frame.src = yourSiteUrl;
                 
-                // Temporizador de respaldo para ocultar el loader después de 15 segundos
-                setTimeout(() => {
-                    loadingOverlay.classList.add('hidden');
-                }, 15000);
+                // Establecer un temporizador de respaldo para ocultar el loader después de 25 segundos
+                if (backupTimer) clearTimeout(backupTimer);
+                backupTimer = setTimeout(() => {
+                    hideLoader();
+                }, 25000); // 25 segundos
+                
+                // Cargar el sitio directamente
+                frame.src = yourSiteUrl;
             }
             
-            // Ocultar la pantalla de carga cuando el iframe esté listo
-            frame.addEventListener('load', function() {
-                loadingOverlay.classList.add('hidden');
-            });
+            // Ocultar el loader con efecto de desvanecimiento
+            function hideLoader() {
+                loadingOverlay.classList.add('fade-out');
+                setTimeout(() => {
+                    loadingOverlay.classList.add('hidden');
+                }, 500); // Esperar a que termine la transición
+            }
             
-            // Manejar errores
-            frame.addEventListener('error', function() {
+            // Mostrar error
+            function showError() {
                 loadingOverlay.innerHTML = `
-                    <div style="text-align: center; color: #ff6b6b;">
-                        <h2>Error al cargar el contenido</h2>
+                    <div class="error-content">
+                        <h2 class="error-title">Error al cargar el contenido</h2>
                         <p>No se pudo conectar con el servidor en:</p>
-                        <p style="margin: 15px 0; font-family: monospace; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px;">${yourSiteUrl}</p>
-                        <p>Verifica que la dirección y el puerto sean correctos.</p>
-                        <button id="retry-btn" style="margin-top: 20px; padding: 12px 24px; background: #8f94fb; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Reintentar</button>
+                        <div class="error-url">${yourSiteUrl}</div>
+                        <p>Esto puede deberse a:</p>
+                        <ul style="text-align: left; margin: 15px 0; padding-left: 20px;">
+                            <li>El servidor está tardando demasiado en responder</li>
+                            <li>Problemas de conectividad de red</li>
+                            <li>El puerto no está accesible desde este navegador</li>
+                            <li>Bloqueo de contenido mixto (HTTP en HTTPS)</li>
+                        </ul>
+                        <button class="retry-btn" id="retry-btn">Reintentar conexión</button>
                     </div>
                 `;
                 
                 document.getElementById('retry-btn').addEventListener('click', function() {
                     loadWebsite();
                 });
+            }
+            
+            // Evento cuando el iframe carga correctamente
+            frame.addEventListener('load', function() {
+                // Limpiar el temporizador de respaldo
+                if (backupTimer) clearTimeout(backupTimer);
+                // Ocultar el loader
+                hideLoader();
+            });
+            
+            // Manejar errores de carga
+            frame.addEventListener('error', function() {
+                if (backupTimer) clearTimeout(backupTimer);
+                showError();
+            });
+            
+            // Botón de recargar
+            btnReload.addEventListener('click', function() {
+                loadWebsite();
+            });
+            
+            // También verificar si el iframe tiene contenido después de un tiempo
+            frame.addEventListener('load', function() {
+                // Verificar después de un breve momento si el iframe tiene contenido
+                setTimeout(() => {
+                    try {
+                        // Intentar acceder al contenido del iframe
+                        if (frame.contentDocument && frame.contentDocument.readyState === 'complete') {
+                            hideLoader();
+                        }
+                    } catch (e) {
+                        // Error de política de mismo origen, no podemos ver el contenido
+                        // pero asumimos que se cargó correctamente
+                        hideLoader();
+                    }
+                }, 1000);
             });
             
             // Inicializar la carga del sitio web
             loadWebsite();
             
+            // Permitir forzar la recarga con F5
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'F5') {
+                    e.preventDefault();
+                    loadWebsite();
+                }
+                
+                // Mostrar/ocultar controles con la tecla C
+                if (e.key === 'c' || e.key === 'C') {
+                    const controls = document.getElementById('mini-controls');
+                    controls.style.opacity = controls.style.opacity === '1' ? '0' : '1';
+                }
+            });
+
             // Forzar pantalla completa al cargar
             function openFullscreen() {
                 const elem = document.documentElement;
@@ -123,7 +310,7 @@
             }
             
             // Intentar pantalla completa después de un breve retraso
-            setTimeout(openFullscreen, 500);
+            setTimeout(openFullscreen, 1000);
         });
     </script>
 </body>
