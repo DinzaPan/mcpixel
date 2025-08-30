@@ -27,11 +27,13 @@ export default async function handler(request, response) {
     // Decodificar la URL
     const decodedUrl = decodeURIComponent(targetUrl);
     
-    // Hacer la solicitud a la API externa
+    // Determinar el tipo de contenido basado en la URL
+    const isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(decodedUrl);
+    
+    // Hacer la solicitud a la API externa o recurso
     const apiResponse = await fetch(decodedUrl, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         'User-Agent': 'MCPixel-Vercel-Proxy/1.0'
       }
     });
@@ -41,11 +43,21 @@ export default async function handler(request, response) {
       throw new Error(`API responded with status ${apiResponse.status}`);
     }
 
-    // Obtener los datos de la respuesta
-    const data = await apiResponse.json();
-
-    // Devolver los datos al cliente
-    response.status(200).json(data);
+    // Manejar diferentes tipos de contenido
+    if (isImage) {
+      // Para imágenes, obtener el buffer y servir con el tipo de contenido correcto
+      const imageBuffer = await apiResponse.arrayBuffer();
+      const contentType = apiResponse.headers.get('content-type') || 'image/jpeg';
+      
+      response.setHeader('Content-Type', contentType);
+      response.setHeader('Cache-Control', 'public, max-age=86400'); // Cache de 1 día para imágenes
+      response.status(200).send(Buffer.from(imageBuffer));
+    } else {
+      // Para JSON y otros contenidos
+      const data = await apiResponse.json();
+      response.setHeader('Content-Type', 'application/json');
+      response.status(200).json(data);
+    }
   } catch (error) {
     console.error('Proxy error:', error);
     response.status(500).json({ 
