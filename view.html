@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCPixel - Ver Addon</title>
+    <link rel="icon" href="./img/logo.png" type="image/png">
+    <style>
+        :root {
+            --primary-color: #3B82F6;
+            --primary-hover: #2563EB;
+            --secondary-color: #F59E0B;
+            --accent-color: #10B981;
+            --dark-bg: #0F172A;
+            --dark-card: #1E293B;
+            --dark-text: #F8FAFC;
+            --dark-border: #334155;
+            --light-bg: #F1F5F9;
+            --light-card: #FFFFFF;
+            --light-text: #1E293B;
+            --light-border: #E2E8F0;
+            --error-color: #EF4444;
+            --success-color: #10B981;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --rounded: 0.75rem;
+            --rounded-lg: 1rem;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        /* Barra de navegación */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: var(--dark-card);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background-color: rgba(30, 41, 59, 0.8);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            height: 2.5rem;
+            width: 2.5rem;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .site-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(90deg, #3B82F6, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .container {
+            padding: 0 2rem 2rem;
+            max-width: 70rem;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+            padding: 0.5rem 1rem;
+            background-color: var(--dark-card);
+            color: var(--dark-text);
+            border-radius: var(--rounded);
+            text-decoration: none;
+            transition: var(--transition);
+            border: 1px solid var(--dark-border);
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .back-btn svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .addon-header {
+            margin-bottom: 2rem;
+        }
+
+        .addon-cover {
+            width: 100%;
+            max-height: 30rem;
+            object-fit: cover;
+            border-radius: var(--rounded-lg);
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--dark-border);
+            max-width: 100%;
+        }
+
+        .addon-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark-text);
+            word-wrap: break-word;
+        }
+
+        .addon-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .author-pic {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+            max-width: 100%;
+        }
+
+        .author-name {
+            font-weight: 600;
+            color: var(--dark-text);
+            word-break: break-word;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .author-name:hover {
+            color: var(--primary-color);
+        }
+
+        .verified-icon {
+            color: #94a3b8;
+            font-size: 1.125rem;
+        }
+
+        .addon-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--dark-text);
+            font-size: 0.9rem;
+        }
+
+        .meta-item svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: var(--primary-color);
+        }
+
+        .addon-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .addon-tag {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .addon-description {
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            color: var(--dark-text);
+            white-space: pre-line;
+            word-wrap: break-word;
+            max-width: 100%;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--rounded);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            max-width: 100%;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .download-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .download-btn svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem;
+            color: var(--dark-text);
+            position: relative;
+            padding-bottom: 0.5rem;
+            word-break: break-word;
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 3rem;
+            height: 0.25rem;
+            background: linear-gradient(90deg, #3B82F6, #10B981);
+            border-radius: 0.25rem;
+        }
+
+        .rating-container {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .average-rating {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .rating-count {
+            color: var(--dark-text);
+            font-size: 0.9rem;
+        }
+
+        .stars {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .star {
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+        }
+
+        .empty-star {
+            color: #94a3b8;
+            font-size: 1.5rem;
+        }
+
+        .no-reviews {
+            text-align: center;
+            padding: 3rem;
+            color: var(--dark-text);
+            background-color: var(--dark-card);
+            border-radius: var(--rounded);
+            box-shadow: var(--shadow);
+        }
+
+        .review-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .review-link:hover {
+            text-decoration: underline;
+            transform: translateY(-2px);
+        }
+
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            width: 100%;
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid rgba(59, 130, 246, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            text-align: center;
+            color: var(--dark-text);
+            background-color: var(--dark-card);
+            border-radius: var(--rounded);
+            box-shadow: var(--shadow);
+            margin: 2rem 0;
+        }
+        
+        .error-icon {
+            font-size: 3rem;
+            color: var(--error-color);
+            margin-bottom: 1rem;
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+        
+        .error-text {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .error-details {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            max-width: 30rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem 1rem;
+            }
+            
+            .navbar {
+                padding: 0.75rem 1rem;
+            }
+            
+            .addon-title {
+                font-size: 1.5rem;
+            }
+            
+            .addon-meta {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="./img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPk08L3RleHQ+PC9zdmc+'">
+            <h1 class="site-title">MCPixel</h1>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <!-- Botón para volver al inicio -->
+        <a href="index.html" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver al inicio
+        </a>
+
+        <div id="addonContent">
+            <div class="loader-container">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        const API_BASE_URL = 'http://87.106.36.114:6322/api.php';
+        const PHP_BASE_URL = 'http://87.106.36.114:6322';
+        
+        // Obtener ID del addon de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const addonId = urlParams.get('id');
+        
+        // Cargar addon al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!addonId) {
+                showError('ID de addon no especificado');
+                return;
+            }
+            
+            fetchAddon(addonId);
+        });
+
+        // Función para obtener addon desde la API
+        async function fetchAddon(id) {
+            try {
+                // Mostrar loader
+                document.getElementById('addonContent').innerHTML = `
+                    <div class="loader-container">
+                        <div class="loader"></div>
+                    </div>
+                `;
+                
+                // Timeout para evitar esperas infinitas
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
+                
+                const response = await fetch(`${API_BASE_URL}?action=get_addon&id=${id}`, {
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayAddon(data.data);
+                } else {
+                    throw new Error(data.message || 'Error en la respuesta de la API');
+                }
+            } catch (error) {
+                console.error('Error fetching addon:', error);
+                
+                let errorMessage = 'Error al cargar el addon';
+                if (error.name === 'AbortError') {
+                    errorMessage = 'La conexión está tardando demasiado. Por favor, intenta nuevamente.';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión a internet.';
+                } else if (error.message.includes('404')) {
+                    errorMessage = 'El addon solicitado no existe.';
+                }
+                
+                showError(errorMessage);
+            }
+        }
+
+        // Función para mostrar addon
+        function displayAddon(addon) {
+            // Corregir las URLs de las imágenes
+            const coverImageUrl = fixImageUrl(addon.cover_image_url);
+            const authorProfilePicUrl = fixImageUrl(addon.author_profile_pic_url);
+            
+            // Calcular estrellas para la valoración
+            const avgRating = addon.avg_rating || 0;
+            const starRating = getStarRating(avgRating);
+            
+            const addonContent = document.getElementById('addonContent');
+            addonContent.innerHTML = `
+                <div class="addon-header">
+                    <img src="${coverImageUrl}" alt="Portada del addon" class="addon-cover" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly83d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMUUyOTNCIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5NEEzQjgiPkFkZG9uIEltYWdlbjwvdGV4dD48L3N2Zz4='">
+                    <h1 class="addon-title">${escapeHtml(addon.title)}</h1>
+                    
+                    <div class="addon-author">
+                        <img src="${authorProfilePicUrl}" alt="Autor" class="author-pic" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I="Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(addon.username)}')">
+                        <span class="author-name" onclick="viewUserProfile(${addon.user_id})">
+                            ${escapeHtml(addon.username)}
+                            ${addon.is_verified ? `
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="verified-icon" width="18" height="18">
+                                <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                            </svg>
+                            ` : ''}
+                        </span>
+                    </div>
+                    
+                    <div class="addon-meta">
+                        <div class="meta-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <span>Minecraft ${escapeHtml(addon.version)}</span>
+                        </div>
+                        <div class="meta-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                            <span>${addon.review_count || 0} reseñas</span>
+                        </div>
+                    </div>
+                    
+                    ${addon.tag ? `
+                    <div class="addon-tags">
+                        ${addon.tag.split(',').map(tag => tag.trim()).filter(tag => tag !== '').map(tag => `
+                            <span class="addon-tag">${escapeHtml(tag)}</span>
+                        `).join('')}
+                    </div>
+                    ` : ''}
+                    
+                    <p class="addon-description">${escapeHtml(addon.description)}</p>
+                    
+                    <a href="${escapeHtml(addon.download_link)}" class="download-btn" target="_blank" rel="noopener noreferrer">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Descargar
+                    </a>
+                </div>
+                
+                <h2 class="section-title">Valoración</h2>
+                
+                ${addon.review_count > 0 ? `
+                <div class="rating-container">
+                    <div class="average-rating">${parseFloat(avgRating).toFixed(1)}</div>
+                    <div class="stars">
+                        ${starRating}
+                    </div>
+                    <div class="rating-count">(${addon.review_count} reseñas)</div>
+                </div>
+                ` : `
+                <div class="no-reviews">
+                    <p>Este addon aún no tiene reseñas.</p>
+                    <a href="${PHP_BASE_URL}/addon.php?id=${addon.id}" class="review-link" target="_blank">
+                        ¡Sé el primero en dejar una reseña!
+                    </a>
+                </div>
+                `}
+            `;
+        }
+
+        // Función para corregir las URLs de las imágenes
+        function fixImageUrl(url) {
+            if (!url) return '';
+            
+            // Si la URL ya es completa, no hacer nada
+            if (url.startsWith('http://') || url.startsWith('https://')) {
+                return url;
+            }
+            
+            // Si la URL comienza con ./uploads/, construir la URL completa
+            if (url.startsWith('./uploads/')) {
+                const baseUrl = API_BASE_URL.substring(0, API_BASE_URL.lastIndexOf('/'));
+                return baseUrl + url.substring(1);
+            }
+            
+            // Si la URL es solo un nombre de archivo, construir la URL completa
+            const baseUrl = API_BASE_URL.substring(0, API_BASE_URL.lastIndexOf('/'));
+            return `${baseUrl}/uploads/${url}`;
+        }
+
+        // Función auxiliar para generar estrellas de valoración
+        function getStarRating(rating) {
+            let stars = '';
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<span class="star">★</span>';
+            }
+            
+            if (hasHalfStar) {
+                stars += '<span class="star">★</span>';
+            }
+            
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<span class="empty-star">☆</span>';
+            }
+            
+            return stars;
+        }
+
+        // Función para mostrar errores
+        function showError(message) {
+            document.getElementById('addonContent').innerHTML = `
+                <div class="error-message">
+                    <div class="error-icon">!</div>
+                    <h3 class="error-text">Error</h3>
+                    <p class="error-details">${message}</p>
+                    <button class="download-btn" onclick="window.location.href='index.html'">Volver al inicio</button>
+                </div>
+            `;
+        }
+
+        // Función para escapar HTML (prevenir XSS)
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Función para obtener iniciales de un nombre
+        function getInitials(name) {
+            if (!name) return 'U';
+            return name.split(' ').map(word => word[0]).join('').toUpperCase().substring(0, 2);
+        }
+
+        // Función para ver perfil de usuario
+        function viewUserProfile(userId) {
+            window.open(`${PHP_BASE_URL}/profile_view.php?id=${userId}`, '_blank');
+        }
+    </script>
+</body>
+</html>
