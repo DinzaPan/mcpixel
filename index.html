@@ -757,8 +757,6 @@
             gap: 0.5rem;
             max-width: 70%;
             overflow: hidden;
-            text-decoration: none;
-            color: inherit;
         }
 
         .author-pic {
@@ -771,6 +769,8 @@
         }
 
         .author-name {
+            text-decoration: none;
+            color: inherit;
             font-weight: 500;
             display: flex;
             align-items: center;
@@ -905,7 +905,7 @@
     <!-- Barra de navegación -->
     <nav class="navbar">
         <div class="logo-container">
-            <img src="./img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPk08L3RleHQ+PC9zdmc+'">
+            <img src="./img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1iZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPk08L3RleHQ+PC9zdmc+'">
             <h1 class="site-title">MCPixel</h1>
         </div>
         
@@ -994,7 +994,7 @@
                 <button class="close-button" id="closeShareModal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2='18'></line>
                     </svg>
                 </button>
             </div>
@@ -1238,10 +1238,24 @@
                 } else if (data && Array.isArray(data.addons)) {
                     // Estructura alternativa: data.addons
                     allAddons = data.addons;
+                    allAddons = allAddons.map(addon => {
+                        return {
+                            ...addon,
+                            cover_image_url: fixImageUrl(addon.cover_image_url || addon.cover_image),
+                            author_profile_pic_url: fixImageUrl(addon.author_profile_pic_url || addon.author_avatar)
+                        };
+                    });
                     displayAddons(allAddons);
                 } else if (Array.isArray(data)) {
                     // Estructura alternativa: array directo
                     allAddons = data;
+                    allAddons = allAddons.map(addon => {
+                        return {
+                            ...addon,
+                            cover_image_url: fixImageUrl(addon.cover_image_url || addon.cover_image),
+                            author_profile_pic_url: fixImageUrl(addon.author_profile_pic_url || addon.author_avatar)
+                        };
+                    });
                     displayAddons(allAddons);
                 } else {
                     throw new Error(data.message || 'Estructura de datos inesperada de la API');
@@ -1326,7 +1340,7 @@
                         
                         <div class="addon-footer">
                             <div class="addon-author">
-                                <img src="${addon.author_profile_pic_url || addon.author_avatar || './img/default-avatar.png'}" alt="Autor" class="author-pic" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I=">
+                                <img src="${addon.author_profile_pic_url || addon.author_avatar || './img/default-avatar.png'}" alt="Autor" class="author-pic" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(addon.username || addon.author || 'U')}')">
                                 <span class="author-name">${escapeHtml(addon.username || addon.author || 'Usuario')}
                                     ${addon.is_verified || addon.author_verified ? `
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="verified-user-icon" width="16" height="16">
