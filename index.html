@@ -1068,8 +1068,7 @@
             </div>
         </div>
     </div>
-
-    <script>
+<script>
     // Variables globales
     const API_BASE_URL = 'http://87.106.36.114:6322/api.php';
     let allAddons = [];
@@ -1527,20 +1526,5 @@
         }, 100);
     }
 </script>
-</body>
-</html>ar si hay parámetros de búsqueda en la URL al cargar
-        const urlParams = new URLSearchParams(window.location.search);
-        const searchParam = urlParams.get('search');
-        if (searchParam) {
-            document.getElementById('searchInput').value = searchParam;
-            // Esperar a que los addons se carguen antes de filtrar
-            const checkAddonsLoaded = setInterval(() => {
-                if (allAddons && allAddons.length > 0) {
-                    clearInterval(checkAddonsLoaded);
-                    filterAddons(searchParam, true);
-                }
-            }, 100);
-        }
-    </script>
-</body>
+    </body>
 </html>
