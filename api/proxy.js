@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
 
   try {
     // Obtener parámetros de consulta
-    const { action, image } = req.query;
+    const { action, image, id } = req.query;
     
     // Si es una solicitud de imagen
     if (image) {
@@ -47,8 +47,16 @@ module.exports = async (req, res) => {
       return;
     }
 
-    // Construir URL de la API destino
-    const apiUrl = `http://87.106.36.114:6322/api.php?action=${action}`;
+    // Construir URL de la API destino según el action
+    let apiUrl;
+    if (action === 'get_addons') {
+      apiUrl = 'http://87.106.36.114:6322/api.php?action=get_addons';
+    } else if (action === 'get_addon' && id) {
+      apiUrl = `http://87.106.36.114:6322/api.php?action=get_addon&id=${id}`;
+    } else {
+      res.status(400).json({ error: 'Parámetros inválidos para la acción solicitada' });
+      return;
+    }
     
     // Realizar solicitud a la API
     const protocol = apiUrl.startsWith('https') ? https : http;
@@ -92,6 +100,7 @@ module.exports = async (req, res) => {
           res.status(200).json(jsonData);
         } catch (e) {
           // Si no es JSON, devolver como texto
+          console.log('La respuesta no es JSON, devolviendo como texto:', data.substring(0, 100));
           res.status(200).send(data);
         }
       });
