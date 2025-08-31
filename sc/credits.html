@@ -260,12 +260,11 @@
         }
 
         .mcpixel-logo {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
+            width: 100%;
+            max-height: 300px;
             object-fit: cover;
             margin: 0 auto 1.5rem;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border-radius: var(--rounded);
         }
 
         .mcpixel-text {
@@ -318,7 +317,6 @@
             width: 60px;
             height: 60px;
             margin-bottom: 1rem;
-            color: var(--primary-color);
         }
 
         .discord-title {
@@ -421,7 +419,7 @@
         <!-- Menú desplegable -->
         <div class="nav-menu">
             <button class="menu-button" id="menuButton">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 极速0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="3" y1="6" x2="21" y2="6"></line>
                     <line x1="3" y1="12" x2="21" y2="12"></line>
                     <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -439,25 +437,25 @@
                 <a href="./credits.html" class="menu-item">
                     <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M9.09 9a3 极速 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
                         <line x1="12" y1="17" x2="12.01" y2="17"></line>
                     </svg>
                     Créditos
                 </a>
                 <a href="#" class="menu-item" id="apiButton">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke极速-linejoin="round">
                         <path d="M4 7V4h16v3"></path>
                         <path d="M5 20h3l2-10h6l2 10h3"></path>
-                        <path d="M9 10V极速4"></path>
-                        <极速path d="M15 10V4"></path>
+                        <path d="M9 10V4"></path>
+                        <path d="M15 10V4"></path>
                     </svg>
                     API
                 </a>
                 <a href="http://87.106.36.114:6322/" target="_blank" class="menu-item">
                     <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="2" y1="12" x2="22" y2="12"></line>
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        <line x1="2" y1="12" x2="22" y2="极速12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 极速0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
                     </svg>
                     Página Oficial
                 </a>
@@ -475,14 +473,14 @@
         <h2 class="section-title">Desarrolladores</h2>
         <div class="developers-grid">
             <div class="developer-card">
-                <img src="https://api.dicebear.com/6.x/adventurer/svg?seed=Dinza" alt="DinzaDV" class="developer-avatar">
+                <img src="https://api.dicebear.com/6.x/adventurer/svg?seed=Max" alt="DinzaDV" class="developer-avatar">
                 <h3 class="developer-name">DinzaDV</h3>
                 <p class="developer-role">Desarrollador</p>
                 <p class="developer-description">Desarrollador principal de la página web encargado de la estructuración y creación de la página.</p>
             </div>
             
             <div class="developer-card">
-                <img src="https://api.dicebear.com/6.x/adventurer/svg?seed=Daniel" alt="Daniel" class="developer-avatar">
+                <img src="https://api.dicebear.com/6.x/adventurer/svg?seed=Jack" alt="Daniel" class="developer-avatar">
                 <h3 class="developer-name">Daniel</h3>
                 <p class="developer-role">Adaptador</p>
                 <p class="developer-description">Encargado de adaptar la estructura a la api utilizando proxy.js entre otros para el desarrollo y obtención de información.</p>
@@ -499,24 +497,24 @@
         <h2 class="section-title">Únete a Nuestras Comunidades</h2>
         <div class="discord-grid">
             <a href="https://discord.gg/RMfzSyNxjT" target="_blank" class="discord-card">
-                <svg xmlns="http://www.w3.org/2000/svg" class="discord-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                <svg class="discord-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z"/>
                 </svg>
                 <h3 class="discord-title">Discord de MegaPixel</h3>
                 <p class="discord-description">Únete a nuestra comunidad de desarrolladores y colabora con nosotros.</p>
             </a>
             
             <a href="https://discord.gg/9EkhYdV325" target="_blank" class="discord-card">
-                <svg xmlns="http://www.w3.org/2000/svg" class="discord-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                <svg class="discord-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11极速c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z"/>
                 </svg>
                 <h3 class="discord-title">Discord de MCPixel</h3>
                 <p class="discord-description">Comunidad oficial de MCPixel para compartir addons y recibir soporte.</p>
             </a>
             
             <a href="https://whatsapp.com/channel/0029VbAYKWw4yltQ6JzedF1W" target="_blank" class="discord-card">
-                <svg xmlns="http://www.w3.org/2000/svg" class="discord-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                <svg class="discord-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.864 3.488"/>
                 </svg>
                 <h3 class="discord-title">WhatsApp de MCPixel</h3>
                 <p class="discord-description">Mantente informado con las últimas novedades a través de nuestro canal de WhatsApp.</p>
