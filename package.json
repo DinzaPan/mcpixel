@@ -1,13 +1,10 @@
 {
   "name": "mcpixel-addons",
   "version": "1.0.0",
-  "description": "Sitio web de addons para Minecraft",
+  "description": "Página de addons para Minecraft",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "vercel dev"
   },
-  "devDependencies": {
-    "vite": "^4.4.0"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }
