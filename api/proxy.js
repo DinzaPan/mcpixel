@@ -1,6 +1,7 @@
 // api/proxy.js
 const https = require('https');
 const http = require('http');
+const { parse } = require('url');
 
 module.exports = async (req, res) => {
   // Configurar CORS
@@ -22,8 +23,25 @@ module.exports = async (req, res) => {
 
   try {
     // Obtener parámetros de consulta
-    const { action } = req.query;
+    const { action, image } = req.query;
     
+    // Si es una solicitud de imagen
+    if (image) {
+      const imageUrl = `http://87.106.36.114:6322${image}`;
+      const protocol = imageUrl.startsWith('https') ? https : http;
+      
+      protocol.get(imageUrl, (imageRes) => {
+        res.setHeader('Content-Type', imageRes.headers['content-type'] || 'image/jpeg');
+        res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache de 1 día
+        imageRes.pipe(res);
+      }).on('error', (err) => {
+        console.error('Error al obtener imagen:', err);
+        res.status(500).json({ error: 'Error al obtener imagen' });
+      });
+      return;
+    }
+
+    // Si es una solicitud de API normal
     if (!action) {
       res.status(400).json({ error: 'Parámetro action requerido' });
       return;
@@ -44,8 +62,33 @@ module.exports = async (req, res) => {
 
       apiRes.on('end', () => {
         try {
-          // Intentar parsear como JSON
+          // Parsear JSON y modificar URLs de imágenes
           const jsonData = JSON.parse(data);
+          
+          // Función para modificar URLs de imágenes
+          const modifyImageUrls = (obj) => {
+            if (obj && typeof obj === 'object') {
+              for (let key in obj) {
+                if (typeof obj[key] === 'string' && 
+                    (obj[key].includes('/uploads/') || obj[key].includes('87.106.36.114:6322'))) {
+                  // Reemplazar con ruta del proxy
+                  obj[key] = obj[key].replace(
+                    'http://87.106.36.114:6322', 
+                    ''
+                  ).replace(
+                    './uploads/', 
+                    '/api/proxy?image=/uploads/'
+                  );
+                } else if (typeof obj[key] === 'object') {
+                  modifyImageUrls(obj[key]);
+                }
+              }
+            }
+          };
+          
+          // Modificar URLs en la respuesta
+          modifyImageUrls(jsonData);
+          
           res.status(200).json(jsonData);
         } catch (e) {
           // Si no es JSON, devolver como texto
