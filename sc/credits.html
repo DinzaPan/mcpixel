@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créditos - MCPixel</title>
+    <link rel="icon" href="../img/logo.png" type="image/png">
+    <style>
+        :root {
+            --primary-color: #3B82F6;
+            --primary-hover: #2563EB;
+            --secondary-color: #F59E0B;
+            --accent-color: #10B981;
+            --dark-bg: #0F172A;
+            --dark-card: #1E293B;
+            --dark-text: #F8FAFC;
+            --dark-border: #334155;
+            --light-bg: #F1F5F9;
+            --light-card: #FFFFFF;
+            --light-text: #1E293B;
+            --light-border: #E2E8F0;
+            --error-color: #EF4444;
+            --success-color: #10B981;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --rounded: 0.75rem;
+            --rounded-lg: 1rem;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        /* Barra de navegación */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: var(--dark-card);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background-color: rgba(30, 41, 59, 0.8);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            height: 2.5rem;
+            width: 2.5rem;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .site-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(90deg, #3B82F6, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        /* Menú desplegable */
+        .nav-menu {
+            position: relative;
+        }
+
+        .menu-button {
+            background: none;
+            border: none;
+            color: var(--dark-text);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--rounded);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .menu-button:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--dark-card);
+            border-radius: var(--rounded);
+            box-shadow: var(--shadow-lg);
+            min-width: 12rem;
+            z-index: 1001;
+            border: 1px solid var(--dark-border);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+        }
+
+        .menu-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .menu-item {
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--dark-text);
+            transition: var(--transition);
+            border-bottom: 1px solid var(--dark-border);
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .menu-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .credits-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .credits-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #3B82F6, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .credits-subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin: 3rem 0 1.5rem;
+            color: var(--primary-color);
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--dark-border);
+            display: inline-block;
+        }
+
+        .developers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .developer-card {
+            background: linear-gradient(135deg, var(--dark-card) 0%, var(--dark-bg) 100%);
+            border-radius: var(--rounded);
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid var(--dark-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .developer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .developer-avatar {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 1.5rem;
+            object-fit: cover;
+            border-radius: 50%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+        }
+
+        .developer-card:hover .developer-avatar {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px var(--primary-color);
+        }
+
+        .developer-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .developer-role {
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 1rem;
+            display: inline-block;
+        }
+
+        .developer-description {
+            color: var(--dark-text);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .mcpixel-info {
+            background: linear-gradient(135deg, var(--dark-card) 0%, var(--dark-bg) 100%);
+            border-radius: var(--rounded);
+            padding: 2rem;
+            margin: 3rem 0;
+            text-align: center;
+            border: 1px solid var(--dark-border);
+        }
+
+        .mcpixel-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .mcpixel-text {
+            color: var(--dark-text);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .mcpixel-link {
+            color: var(--primary-color);
+            font-weight: bold;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .mcpixel-link:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+        .discord-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .discord-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, var(--dark-card) 0%, var(--dark-bg) 100%);
+            padding: 1.5rem;
+            border-radius: var(--rounded);
+            border: 1px solid var(--dark-border);
+            transition: var(--transition);
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .discord-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary-color);
+        }
+
+        .discord-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .discord-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-text);
+        }
+
+        .discord-description {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .back-button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.75rem 1rem;
+            }
+            
+            .credits-header {
+                padding: 1.5rem 0;
+            }
+            
+            .credits-title {
+                font-size: 2rem;
+            }
+            
+            .developers-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .discord-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .developer-avatar {
+                width: 120px;
+                height: 120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .credits-title {
+                font-size: 1.75rem;
+            }
+            
+            .credits-subtitle {
+                font-size: 1rem;
+            }
+            
+            .developer-card {
+                padding: 1.5rem;
+            }
+            
+            .developer-name {
+                font-size: 1.3rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="../img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPk08L3RleHQ+PC9zdmc+'">
+            <h1 class="site-title">MCPixel</h1>
+        </div>
+        
+        <!-- Menú desplegable -->
+        <div class="nav-menu">
+            <button class="menu-button" id="menuButton">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            
+            <div class="menu-dropdown" id="menuDropdown">
+                <a href="../index.html" class="menu-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    Inicio
+                </a>
+                <a href="./credits.html" class="menu-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 极速 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    Créditos
+                </a>
+                <a href="#" class="menu-item" id="apiButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7V4h16v3"></path>
+                        <path d="M5 20h3l2-10h6l2 10h3"></path>
+                        <path d="M9 10V极速4"></path>
+                        <极速path d="M15 10V4"></path>
+                    </svg>
+                    API
+                </a>
+                <a href="http://87.106.36.114:6322/" target="_blank" class="menu-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    Página Oficial
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <div class="credits-header">
+            <h1 class="credits-title">Créditos de MCPixel</h1>
+            <p class="credits-subtitle">Conoce al equipo detrás de la plataforma</p>
+        </div>
+        
+        <h2 class="section-title">Desarrolladores</h2>
+        <div class="developers-grid">
+            <div class="developer-card">
+                <img src="https://api.dicebear.com/6.x/adventurer/svg?seed=Dinza" alt="DinzaDV" class="developer-avatar">
+                <h3 class="developer-name">DinzaDV</h3>
+                <p class="developer-role">Desarrollador</p>
+                <p class="developer-description">Desarrollador principal de la página web encargado de la estructuración y creación de la página.</p>
+            </div>
+            
+            <div class="developer-card">
+                <img src="https://api.dicebear.com/6.x/adventurer/svg?seed=Daniel" alt="Daniel" class="developer-avatar">
+                <h3 class="developer-name">Daniel</h3>
+                <p class="developer-role">Adaptador</p>
+                <p class="developer-description">Encargado de adaptar la estructura a la api utilizando proxy.js entre otros para el desarrollo y obtención de información.</p>
+            </div>
+        </div>
+        
+        <div class="mcpixel-info">
+            <img src="../img/f1.jpg" alt="MegaPixel" class="mcpixel-logo">
+            <p class="mcpixel-text">
+                <strong>Todos los derechos reservados, MegaPixel</strong> un equipo de desarrollo web que trae a tu disposición una página donde podrás descargar complementos para tu Minecraft. Si quieres subir tus propios complementos puedes visitar la ruta principal dando click <a href="http://87.106.36.114:6322/" class="mcpixel-link">aquí</a>.
+            </p>
+        </div>
+        
+        <h2 class="section-title">Únete a Nuestras Comunidades</h2>
+        <div class="discord-grid">
+            <a href="https://discord.gg/RMfzSyNxjT" target="_blank" class="discord-card">
+                <svg xmlns="http://www.w3.org/2000/svg" class="discord-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                </svg>
+                <h3 class="discord-title">Discord de MegaPixel</h3>
+                <p class="discord-description">Únete a nuestra comunidad de desarrolladores y colabora con nosotros.</p>
+            </a>
+            
+            <a href="https://discord.gg/9EkhYdV325" target="_blank" class="discord-card">
+                <svg xmlns="http://www.w3.org/2000/svg" class="discord-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                </svg>
+                <h3 class="discord-title">Discord de MCPixel</h3>
+                <p class="discord-description">Comunidad oficial de MCPixel para compartir addons y recibir soporte.</p>
+            </a>
+            
+            <a href="https://whatsapp.com/channel/0029VbAYKWw4yltQ6JzedF1W" target="_blank" class="discord-card">
+                <svg xmlns="http://www.w3.org/2000/svg" class="discord-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                </svg>
+                <h3 class="discord-title">WhatsApp de MCPixel</h3>
+                <p class="discord-description">Mantente informado con las últimas novedades a través de nuestro canal de WhatsApp.</p>
+            </a>
+        </div>
+        
+        <a href="../index.html" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Volver a la página principal
+        </a>
+    </div>
+
+    <script>
+        // Configurar menú desplegable
+        const menuButton = document.getElementById('menuButton');
+        const menuDropdown = document.getElementById('menuDropdown');
+        
+        menuButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            menuDropdown.classList.toggle('show');
+        });
+        
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', function() {
+            menuDropdown.classList.remove('show');
+        });
+        
+        // Evitar que el menú se cierre al hacer clic en él
+        menuDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    </script>
+</body>
+</html>
