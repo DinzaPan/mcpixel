@@ -483,6 +483,7 @@
 
         .search-result-item:hover {
             background-color: rgba(59, 130, 246, 0.1);
+            transform: translateY(-1px);
         }
 
         .search-result-item img {
@@ -490,10 +491,12 @@
             height: 2.5rem;
             object-fit: cover;
             border-radius: 0.5rem;
+            flex-shrink: 0;
         }
 
         .search-result-info {
             flex-grow: 1;
+            min-width: 0;
         }
 
         .search-result-title {
@@ -503,7 +506,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 200px;
         }
 
         .search-result-author {
@@ -515,13 +517,13 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 200px;
         }
 
         .search-result-author img {
             width: 1.25rem;
             height: 1.25rem;
             border-radius: 50%;
+            flex-shrink: 0;
         }
 
         .search-result-rating {
@@ -530,6 +532,7 @@
             gap: 0.25rem;
             font-size: 0.75rem;
             color: var(--secondary-color);
+            flex-shrink: 0;
         }
 
         .no-results {
@@ -928,6 +931,12 @@
                     </svg>
                     Inicio
                 </a>
+                <a href="./valued.html" class="menu-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    Mejor Valorados
+                </a>
                 <a href="./sc/credits.html" class="menu-item">
                     <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
@@ -1003,14 +1012,14 @@
             <div class="share-url" id="shareUrl"></div>
             
             <div class="share-options">
-                <div class="share-option" onclick="shareOnPlatform('whatsapp')">
+                <div class="share-option" id="shareWhatsApp">
                     <svg xmlns="http://www.w3.org/2000/svg" class="share-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                     </svg>
                     <span class="share-option-text">WhatsApp</span>
                 </div>
                 
-                <div class="share-option" onclick="shareOnPlatform('telegram')">
+                <div class="share-option" id="shareTelegram">
                     <svg xmlns="http://www.w3.org/2000/svg" class="share-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M22 2L11 13"></path>
                         <path d="M22 2l-7 20-4-9-9-4 20-7z"></path>
@@ -1018,14 +1027,14 @@
                     <span class="share-option-text">Telegram</span>
                 </div>
                 
-                <div class="share-option" onclick="shareOnPlatform('twitter')">
+                <div class="share-option" id="shareTwitter">
                     <svg xmlns="http://www.w3.org/2000/svg" class="share-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
                     </svg>
                     <span class="share-option-text">Twitter</span>
                 </div>
                 
-                <div class="share-option" onclick="shareOnPlatform('facebook')">
+                <div class="share-option" id="shareFacebook">
                     <svg xmlns="http://www.w3.org/2000/svg" class="share-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                     </svg>
@@ -1056,7 +1065,7 @@
                 </button>
             </form>
             
-            <div class="search-results-dropdown" id="searchResultsDropdown"></div>
+            <div class="search-results-dropdown" id="searchResults"></div>
         </div>
     </section>
 
@@ -1065,7 +1074,6 @@
         <h2 class="page-title">Addons Mejor Valorados</h2>
         
         <div class="addons-grid" id="addonsGrid">
-            <!-- Los addons se cargarán aquí dinámicamente -->
             <div class="loader-container">
                 <div class="loader"></div>
             </div>
@@ -1076,7 +1084,7 @@
         // Variables globales
         let allAddons = [];
         let filteredAddons = [];
-        let currentShareUrl = '';
+        let currentAddonId = null;
 
         // Elementos DOM
         const menuButton = document.getElementById('menuButton');
@@ -1087,309 +1095,299 @@
         const copyApiButton = document.getElementById('copyApiButton');
         const shareModal = document.getElementById('shareModal');
         const closeShareModal = document.getElementById('closeShareModal');
-        const shareUrl = document.getElementById('shareUrl');
         const copyShareButton = document.getElementById('copyShareButton');
+        const shareUrl = document.getElementById('shareUrl');
         const searchForm = document.getElementById('searchForm');
         const searchInput = document.getElementById('searchInput');
-        const searchResultsDropdown = document.getElementById('searchResultsDropdown');
+        const searchResults = document.getElementById('searchResults');
         const addonsGrid = document.getElementById('addonsGrid');
 
-        // Toggle del menú desplegable
-        menuButton.addEventListener('click', () => {
-            menuDropdown.classList.toggle('show');
-        });
-
-        // Cerrar menú al hacer clic fuera
-        document.addEventListener('click', (e) => {
-            if (!menuButton.contains(e.target) && !menuDropdown.contains(e.target)) {
-                menuDropdown.classList.remove('show');
-            }
-        });
-
-        // Modal de API
-        apiButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            apiModal.classList.add('show');
-        });
-
-        closeApiModal.addEventListener('click', () => {
-            apiModal.classList.remove('show');
-        });
-
-        copyApiButton.addEventListener('click', () => {
-            navigator.clipboard.writeText('http://87.106.36.114:6322/api.php')
-                .then(() => {
-                    copyApiButton.textContent = '¡URL copiada!';
-                    setTimeout(() => {
-                        copyApiButton.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                            </svg>
-                            Copiar URL de la API
-                        `;
-                    }, 2000);
-                })
-                .catch(err => {
-                    console.error('Error al copiar: ', err);
-                });
-        });
-
-        // Modal de compartir
-        function openShareModal(url) {
-            currentShareUrl = url;
-            shareUrl.textContent = url;
-            shareModal.classList.add('show');
-        }
-
-        closeShareModal.addEventListener('click', () => {
-            shareModal.classList.remove('show');
-        });
-
-        copyShareButton.addEventListener('click', () => {
-            navigator.clipboard.writeText(currentShareUrl)
-                .then(() => {
-                    copyShareButton.textContent = '¡Enlace copiado!';
-                    setTimeout(() => {
-                        copyShareButton.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                            </svg>
-                            Copiar enlace
-                        `;
-                    }, 2000);
-                })
-                .catch(err => {
-                    console.error('Error al copiar: ', err);
-                });
-        });
-
-        // Función para compartir en plataformas
-        function shareOnPlatform(platform) {
-            let shareUrl;
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Cargar addons al iniciar
+            fetchAddons();
             
-            switch(platform) {
-                case 'whatsapp':
-                    shareUrl = `https://wa.me/?text=${encodeURIComponent(currentShareUrl)}`;
-                    break;
-                case 'telegram':
-                    shareUrl = `https://t.me/share/url?url=${encodeURIComponent(currentShareUrl)}`;
-                    break;
-                case 'twitter':
-                    shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(currentShareUrl)}`;
-                    break;
-                case 'facebook':
-                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentShareUrl)}`;
-                    break;
-                default:
-                    return;
-            }
-            
-            window.open(shareUrl, '_blank');
-        }
-
-        // Búsqueda de addons
-        searchForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            performSearch();
-        });
-
-        searchInput.addEventListener('input', () => {
-            if (searchInput.value.length > 2) {
-                performSearch();
-            } else {
-                searchResultsDropdown.style.display = 'none';
-            }
-        });
-
-        function performSearch() {
-            const query = searchInput.value.toLowerCase().trim();
-            
-            if (query.length === 0) {
-                searchResultsDropdown.style.display = 'none';
-                return;
-            }
-            
-            const results = allAddons.filter(addon => 
-                addon.name.toLowerCase().includes(query) || 
-                addon.author.toLowerCase().includes(query) || 
-                addon.description.toLowerCase().includes(query)
-            ).slice(0, 5);
-            
-            if (results.length > 0) {
-                displaySearchResults(results);
-                searchResultsDropdown.style.display = 'block';
-            } else {
-                searchResultsDropdown.innerHTML = '<div class="no-results">No se encontraron resultados</div>';
-                searchResultsDropdown.style.display = 'block';
-            }
-        }
-
-        function displaySearchResults(results) {
-            searchResultsDropdown.innerHTML = '';
-            
-            results.forEach(addon => {
-                const resultItem = document.createElement('div');
-                resultItem.className = 'search-result-item';
-                resultItem.innerHTML = `
-                    <img src="${addon.cover_image || './img/placeholder.png'}" alt="${addon.name}" onerror="this.src='./img/placeholder.png'">
-                    <div class="search-result-info">
-                        <div class="search-result-title">${addon.name}</div>
-                        <div class="search-result-author">
-                            <img src="${addon.author_pic || './img/user.png'}" alt="${addon.author}" onerror="this.src='./img/user.png'">
-                            ${addon.author}
-                        </div>
-                    </div>
-                    <div class="search-result-rating">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${addon.rating >= 1 ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                        </svg>
-                        <span>${addon.rating || '0'}</span>
-                    </div>
-                `;
-                
-                resultItem.addEventListener('click', () => {
-                    window.location.href = addon.download_url || '#';
-                });
-                
-                searchResultsDropdown.appendChild(resultItem);
+            // Menú desplegable
+            menuButton.addEventListener('click', () => {
+                menuDropdown.classList.toggle('show');
             });
-        }
 
-        // Cerrar resultados de búsqueda al hacer clic fuera
-        document.addEventListener('click', (e) => {
-            if (!searchInput.contains(e.target) && !searchResultsDropdown.contains(e.target)) {
-                searchResultsDropdown.style.display = 'none';
-            }
+            // Cerrar menú al hacer clic fuera
+            document.addEventListener('click', (e) => {
+                if (!menuButton.contains(e.target) && !menuDropdown.contains(e.target)) {
+                    menuDropdown.classList.remove('show');
+                }
+            });
+
+            // Modal API
+            apiButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                apiModal.classList.add('show');
+            });
+
+            closeApiModal.addEventListener('click', () => {
+                apiModal.classList.remove('show');
+            });
+
+            copyApiButton.addEventListener('click', () => {
+                navigator.clipboard.writeText('http://87.106.36.114:6322/api.php')
+                    .then(() => {
+                        copyApiButton.textContent = '¡URL copiada!';
+                        setTimeout(() => {
+                            copyApiButton.innerHTML = `
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                                </svg>
+                                Copiar URL de la API
+                            `;
+                        }, 2000);
+                    });
+            });
+
+            // Modal compartir
+            closeShareModal.addEventListener('click', () => {
+                shareModal.classList.remove('show');
+            });
+
+            copyShareButton.addEventListener('click', () => {
+                navigator.clipboard.writeText(shareUrl.textContent)
+                    .then(() => {
+                        copyShareButton.textContent = '¡Enlace copiado!';
+                        setTimeout(() => {
+                            copyShareButton.innerHTML = `
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                                </svg>
+                                Copiar enlace
+                            `;
+                        }, 2000);
+                    });
+            });
+
+            // Compartir en redes sociales
+            document.getElementById('shareWhatsApp').addEventListener('click', () => {
+                window.open(`https://api.whatsapp.com/send?text=Mira este addon de MCPixel: ${encodeURIComponent(shareUrl.textContent)}`, '_blank');
+            });
+
+            document.getElementById('shareTelegram').addEventListener('click', () => {
+                window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl.textContent)}&text=Mira este addon de MCPixel`, '_blank');
+            });
+
+            document.getElementById('shareTwitter').addEventListener('click', () => {
+                window.open(`https://twitter.com/intent/tweet?text=Mira este addon de MCPixel&url=${encodeURIComponent(shareUrl.textContent)}`, '_blank');
+            });
+
+            document.getElementById('shareFacebook').addEventListener('click', () => {
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl.textContent)}`, '_blank');
+            });
+
+            // Búsqueda
+            searchForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                performSearch();
+            });
+
+            searchInput.addEventListener('input', () => {
+                if (searchInput.value.length > 2) {
+                    performSearch();
+                } else {
+                    searchResults.style.display = 'none';
+                }
+            });
+
+            // Cerrar resultados de búsqueda al hacer clic fuera
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                    searchResults.style.display = 'none';
+                }
+            });
         });
 
-        // Cargar datos de la API
+        // Función para obtener addons desde la API
         async function fetchAddons() {
             try {
                 const response = await fetch('http://87.106.36.114:6322/api.php');
                 if (!response.ok) {
-                    throw new Error('Error al cargar los datos');
+                    throw new Error('Error al cargar los addons');
                 }
                 
                 const data = await response.json();
                 allAddons = data.addons || [];
                 
-                // Ordenar addons por valoración (mejores primero) y luego los sin reseñas al final
-                filteredAddons = [...allAddons].sort((a, b) => {
-                    // Si ambos tienen rating, ordenar por rating descendente
-                    if (a.rating && b.rating) {
-                        return b.rating - a.rating;
-                    }
-                    // Si solo uno tiene rating, poner primero el que tiene rating
-                    if (a.rating && !b.rating) {
-                        return -1;
-                    }
-                    if (!a.rating && b.rating) {
-                        return 1;
-                    }
-                    // Si ninguno tiene rating, mantener el orden original
-                    return 0;
+                // Ordenar por mejor valoración (los sin reseñas al final)
+                allAddons.sort((a, b) => {
+                    // Si no tiene reseñas, va al final
+                    if (!a.rating || a.rating.count === 0) return 1;
+                    if (!b.rating || b.rating.count === 0) return -1;
+                    
+                    // Ordenar por mejor valoración
+                    return b.rating.average - a.rating.average;
                 });
                 
-                displayAddons(filteredAddons);
+                displayAddons(allAddons);
             } catch (error) {
                 console.error('Error:', error);
                 addonsGrid.innerHTML = `
                     <div class="error-message">
-                        <div class="error-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="8" x2="12" y2="12"></line>
-                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                            </svg>
-                        </div>
+                        <div class="error-icon">!</div>
                         <div class="error-text">Error al cargar los addons</div>
-                        <div class="error-details">No se pudieron cargar los datos desde el servidor. Por favor, intenta nuevamente más tarde.</div>
+                        <div class="error-details">No se pudo conectar con el servidor. Por favor, intenta nuevamente más tarde.</div>
                         <button class="clear-search" onclick="fetchAddons()">Reintentar</button>
                     </div>
                 `;
             }
         }
 
-        // Mostrar addons en la cuadrícula
+        // Función para mostrar addons en la cuadrícula
         function displayAddons(addons) {
             if (addons.length === 0) {
                 addonsGrid.innerHTML = `
                     <div class="no-addons">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem;">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
                         <h3>No se encontraron addons</h3>
-                        <p>No hay addons disponibles en este momento.</p>
+                        <p>Intenta ajustar tus criterios de búsqueda o filtros.</p>
                     </div>
                 `;
                 return;
             }
             
-            addonsGrid.innerHTML = '';
-            
-            addons.forEach(addon => {
-                const rating = addon.rating || 0;
-                const ratingCount = addon.rating_count || 0;
+            addonsGrid.innerHTML = addons.map(addon => {
+                const hasRating = addon.rating && addon.rating.count > 0;
+                const ratingValue = hasRating ? addon.rating.average : 0;
+                const ratingCount = hasRating ? addon.rating.count : 0;
                 
-                const addonCard = document.createElement('a');
-                addonCard.className = 'addon-card';
-                addonCard.href = addon.download_url || '#';
+                // Generar estrellas según la valoración
+                const stars = [];
+                const fullStars = Math.floor(ratingValue);
+                const hasHalfStar = ratingValue % 1 >= 0.5;
                 
-                // Generar estrellas de valoración
-                let starsHtml = '';
-                for (let i = 1; i <= 5; i++) {
-                    if (i <= Math.floor(rating)) {
-                        starsHtml += `<svg xmlns="http://www.w3.org/2000/svg" class="rating-star" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
+                for (let i = 0; i < 5; i++) {
+                    if (i < fullStars) {
+                        stars.push('<span class="rating-star">★</span>');
+                    } else if (i === fullStars && hasHalfStar) {
+                        stars.push('<span class="rating-star">★</span>');
                     } else {
-                        starsHtml += `<svg xmlns="http://www.w3.org/2000/svg" class="empty-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
+                        stars.push('<span class="empty-star">★</span>');
                     }
                 }
                 
-                addonCard.innerHTML = `
-                    <button class="share-button" onclick="event.preventDefault(); event.stopPropagation(); openShareModal('${addon.download_url || '#'}')">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="18" cy="5" r="3"></circle>
-                            <circle cx="6" cy="12" r="3"></circle>
-                            <circle cx="18" cy="19" r="3"></circle>
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                        </svg>
-                    </button>
-                    <img src="${addon.cover_image || './img/placeholder.png'}" alt="${addon.name}" class="addon-cover" onerror="this.src='./img/placeholder.png'">
-                    <div class="addon-info">
-                        <h3 class="addon-title">${addon.name}</h3>
-                        <p class="addon-description">${addon.description || 'Sin descripción disponible.'}</p>
-                        <div class="addon-rating">
-                            <div class="rating-stars">
-                                ${starsHtml}
+                return `
+                    <div class="addon-card" data-id="${addon.id}">
+                        <img src="${addon.cover_image || './img/default-cover.png'}" alt="${addon.name}" class="addon-cover" onerror="this.src='./img/default-cover.png'">
+                        <button class="share-button" onclick="event.stopPropagation(); openShareModal('${addon.id}')">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                        </button>
+                        <div class="addon-info">
+                            <h3 class="addon-title">${addon.name}</h3>
+                            <p class="addon-description">${addon.description || 'Sin descripción disponible.'}</p>
+                            <div class="addon-rating">
+                                <div class="rating-stars">
+                                    ${stars.join('')}
+                                </div>
+                                <span class="rating-count">(${ratingCount})</span>
                             </div>
-                            <span class="rating-count">${ratingCount} ${ratingCount === 1 ? 'reseña' : 'reseñas'}</span>
-                        </div>
-                        <div class="addon-footer">
-                            <div class="addon-author">
-                                <img src="${addon.author_pic || './img/user.png'}" alt="${addon.author}" class="author-pic" onerror="this.src='./img/user.png'">
-                                <span class="author-name">
-                                    ${addon.author}
-                                    ${addon.verified ? '<svg xmlns="http://www.w3.org/2000/svg" class="verified-user-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>' : ''}
-                                </span>
+                            <div class="addon-footer">
+                                <div class="addon-author">
+                                    <img src="${addon.author?.avatar || './img/default-avatar.png'}" alt="${addon.author?.name || 'Autor'}" class="author-pic" onerror="this.src='./img/default-avatar.png'">
+                                    <span class="author-name">
+                                        ${addon.author?.name || 'Autor desconocido'}
+                                        ${addon.author?.verified ? '<span class="verified-user-icon">✓</span>' : ''}
+                                    </span>
+                                </div>
+                                <span class="addon-version">v${addon.version || '1.0.0'}</span>
                             </div>
-                            <span class="addon-version">v${addon.version || '1.0.0'}</span>
                         </div>
                     </div>
                 `;
-                
-                addonsGrid.appendChild(addonCard);
+            }).join('');
+            
+            // Agregar event listeners a las tarjetas
+            document.querySelectorAll('.addon-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const addonId = card.getAttribute('data-id');
+                    window.location.href = `./sc/addon.html?id=${addonId}`;
+                });
             });
         }
 
-        // Inicializar
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchAddons();
-        });
+        // Función para abrir modal de compartir
+        function openShareModal(addonId) {
+            currentAddonId = addonId;
+            const addon = allAddons.find(a => a.id === addonId);
+            
+            if (addon) {
+                const shareLink = `${window.location.origin}${window.location.pathname}?id=${addonId}`;
+                shareUrl.textContent = shareLink;
+                shareModal.classList.add('show');
+            }
+        }
+
+        // Función para realizar búsqueda
+        function performSearch() {
+            const query = searchInput.value.toLowerCase().trim();
+            
+            if (query.length < 3) {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            const results = allAddons.filter(addon => {
+                return (
+                    addon.name.toLowerCase().includes(query) ||
+                    (addon.description && addon.description.toLowerCase().includes(query)) ||
+                    (addon.author && addon.author.name && addon.author.name.toLowerCase().includes(query))
+                );
+            });
+            
+            displaySearchResults(results);
+        }
+
+        // Función para mostrar resultados de búsqueda
+        function displaySearchResults(results) {
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="no-results">No se encontraron resultados</div>';
+                searchResults.style.display = 'block';
+                return;
+            }
+            
+            searchResults.innerHTML = results.map(addon => {
+                const hasRating = addon.rating && addon.rating.count > 0;
+                const ratingValue = hasRating ? addon.rating.average : 0;
+                
+                return `
+                    <div class="search-result-item" data-id="${addon.id}">
+                        <img src="${addon.cover_image || './img/default-cover.png'}" alt="${addon.name}" onerror="this.src='./img/default-cover.png'">
+                        <div class="search-result-info">
+                            <div class="search-result-title">${addon.name}</div>
+                            <div class="search-result-author">
+                                <img src="${addon.author?.avatar || './img/default-avatar.png'}" alt="${addon.author?.name || 'Autor'}" onerror="this.src='./img/default-avatar.png'">
+                                ${addon.author?.name || 'Autor desconocido'}
+                            </div>
+                        </div>
+                        <div class="search-result-rating">
+                            <span>★</span> ${ratingValue.toFixed(1)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            searchResults.style.display = 'block';
+            
+            // Agregar event listeners a los resultados
+            document.querySelectorAll('.search-result-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const addonId = item.getAttribute('data-id');
+                    window.location.href = `./sc/addon.html?id=${addonId}`;
+                });
+            });
+        }
     </script>
 </body>
 </html>
