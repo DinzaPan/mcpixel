@@ -102,6 +102,7 @@
             transition: var(--transition);
             border: 1px solid var(--dark-border);
             font-size: 0.9rem;
+            cursor: pointer;
         }
 
         .back-btn:hover {
@@ -423,12 +424,12 @@
     <!-- Contenido principal -->
     <div class="container">
         <!-- Botón para volver al inicio -->
-        <a href="index.html" class="back-btn">
+        <button class="back-btn" id="backButton">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            Volver al inicio
-        </a>
+            Volver
+        </button>
 
         <div id="addonContent">
             <div class="loader-container">
@@ -454,6 +455,17 @@
             }
             
             fetchAddon(addonId);
+            
+            // Configurar el botón de volver
+            document.getElementById('backButton').addEventListener('click', function() {
+                // Intentar volver a la página anterior
+                if (window.history.length > 1) {
+                    window.history.back();
+                } else {
+                    // Si no hay historial, redirigir al inicio
+                    window.location.href = 'index.html';
+                }
+            });
         });
 
         // Función para obtener addon desde la API
