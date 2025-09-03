@@ -442,7 +442,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
         }
 
         .search-button svg {
@@ -483,7 +482,6 @@
 
         .search-result-item:hover {
             background-color: rgba(59, 130, 246, 0.1);
-            transform: translateY(-1px);
         }
 
         .search-result-item img {
@@ -491,12 +489,10 @@
             height: 2.5rem;
             object-fit: cover;
             border-radius: 0.5rem;
-            flex-shrink: 0;
         }
 
         .search-result-info {
             flex-grow: 1;
-            min-width: 0;
         }
 
         .search-result-title {
@@ -506,6 +502,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            max-width: 200px;
         }
 
         .search-result-author {
@@ -517,13 +514,13 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            max-width: 200px;
         }
 
         .search-result-author img {
             width: 1.25rem;
             height: 1.25rem;
             border-radius: 50%;
-            flex-shrink: 0;
         }
 
         .search-result-rating {
@@ -532,7 +529,6 @@
             gap: 0.25rem;
             font-size: 0.75rem;
             color: var(--secondary-color);
-            flex-shrink: 0;
         }
 
         .no-results {
@@ -909,7 +905,7 @@
     <!-- Barra de navegación -->
     <nav class="navbar">
         <div class="logo-container">
-            <img src="./img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1iZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPk08L3RleHQ+PC9zdmc+'">
+            <img src="./img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU=">
             <h1 class="site-title">MCPixel</h1>
         </div>
         
@@ -979,7 +975,7 @@
                 </button>
             </div>
             <p>La información de los addons se obtiene desde la siguiente URL:</p>
-            <div class="api-url">http://87.106.36.114:6322/api.php</div>
+            <div class="api-url">/api/proxy?action=get_addons</div>
             
             <div class="api-info">
                 <div class="api-info-title">Cómo utilizar la API</div>
@@ -1012,33 +1008,33 @@
             <div class="share-url" id="shareUrl"></div>
             
             <div class="share-options">
-                <div class="share-option" id="shareWhatsApp">
+                <div class="share-option" onclick="shareOnPlatform('whatsapp')">
                     <svg xmlns="http://www.w3.org/2000/svg" class="share-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                     </svg>
                     <span class="share-option-text">WhatsApp</span>
                 </div>
                 
-                <div class="share-option" id="shareTelegram">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="share-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 2L11 13"></path>
-                        <path d="M22 2l-7 20-4-9-9-4 20-7z"></path>
-                    </svg>
-                    <span class="share-option-text">Telegram</span>
-                </div>
-                
-                <div class="share-option" id="shareTwitter">
+                <div class="share-option" onclick="shareOnPlatform('twitter')">
                     <svg xmlns="http://www.w3.org/2000/svg" class="share-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
                     </svg>
                     <span class="share-option-text">Twitter</span>
                 </div>
                 
-                <div class="share-option" id="shareFacebook">
+                <div class="share-option" onclick="shareOnPlatform('facebook')">
                     <svg xmlns="http://www.w3.org/2000/svg" class="share-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                     </svg>
                     <span class="share-option-text">Facebook</span>
+                </div>
+                
+                <div class="share-option" onclick="shareOnPlatform('telegram')">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="share-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 2L11 13"></path>
+                        <path d="M22 2l-7 20-4-9-9-4 20-7z"></path>
+                    </svg>
+                    <span class="share-option-text">Telegram</span>
                 </div>
             </div>
             
@@ -1056,7 +1052,7 @@
     <section class="search-section">
         <div class="search-container">
             <form class="search-form" id="searchForm">
-                <input type="text" class="search-input" id="searchInput" placeholder="Buscar addons por nombre, autor o descripción...">
+                <input type="text" class="search-input" id="searchInput" placeholder="Buscar addons por título o autor...">
                 <button type="submit" class="search-button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="11" cy="11" r="8"></circle>
@@ -1064,14 +1060,13 @@
                     </svg>
                 </button>
             </form>
-            
             <div class="search-results-dropdown" id="searchResults"></div>
         </div>
     </section>
 
     <!-- Contenedor principal -->
     <div class="container">
-        <h2 class="page-title">Addons Mejor Valorados</h2>
+        <h1 class="page-title">Addons Mejor Valorados</h1>
         
         <div class="addons-grid" id="addonsGrid">
             <div class="loader-container">
@@ -1082,125 +1077,133 @@
 
     <script>
         // Variables globales
+        const API_BASE_URL = '/api/proxy?action=get_addons';
+
         let allAddons = [];
-        let filteredAddons = [];
+        let searchTimeout = null;
+        let isSearchActive = false;
         let currentAddonId = null;
 
-        // Elementos DOM
-        const menuButton = document.getElementById('menuButton');
-        const menuDropdown = document.getElementById('menuDropdown');
-        const apiButton = document.getElementById('apiButton');
-        const apiModal = document.getElementById('apiModal');
-        const closeApiModal = document.getElementById('closeApiModal');
-        const copyApiButton = document.getElementById('copyApiButton');
-        const shareModal = document.getElementById('shareModal');
-        const closeShareModal = document.getElementById('closeShareModal');
-        const copyShareButton = document.getElementById('copyShareButton');
-        const shareUrl = document.getElementById('shareUrl');
-        const searchForm = document.getElementById('searchForm');
-        const searchInput = document.getElementById('searchInput');
-        const searchResults = document.getElementById('searchResults');
-        const addonsGrid = document.getElementById('addonsGrid');
-
-        // Event Listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            // Cargar addons al iniciar
+        // Cargar addons al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
             fetchAddons();
             
-            // Menú desplegable
-            menuButton.addEventListener('click', () => {
-                menuDropdown.classList.toggle('show');
+            // Configurar búsqueda
+            const searchInput = document.getElementById('searchInput');
+            const searchForm = document.getElementById('searchForm');
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                const query = this.value.trim();
+                
+                // Si el campo está vacío, reiniciar la búsqueda
+                if (query.length === 0) {
+                    clearSearch();
+                    return;
+                }
+                
+                if (query.length < 2) {
+                    document.getElementById('searchResults').style.display = 'none';
+                    return;
+                }
+                
+                searchTimeout = setTimeout(() => {
+                    filterAddons(query);
+                }, 300);
             });
-
-            // Cerrar menú al hacer clic fuera
-            document.addEventListener('click', (e) => {
-                if (!menuButton.contains(e.target) && !menuDropdown.contains(e.target)) {
-                    menuDropdown.classList.remove('show');
+            
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const query = searchInput.value.trim();
+                if (query) {
+                    filterAddons(query, true);
                 }
             });
-
-            // Modal API
-            apiButton.addEventListener('click', (e) => {
+            
+            // Configurar menú desplegable
+            const menuButton = document.getElementById('menuButton');
+            const menuDropdown = document.getElementById('menuDropdown');
+            
+            menuButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                menuDropdown.classList.toggle('show');
+            });
+            
+            // Cerrar menú al hacer clic fuera
+            document.addEventListener('click', function() {
+                menuDropdown.classList.remove('show');
+            });
+            
+            // Evitar que el menú se cierre al hacer clic en él
+            menuDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            // Configurar modal de API
+            const apiButton = document.getElementById('apiButton');
+            const apiModal = document.getElementById('apiModal');
+            const closeApiModal = document.getElementById('closeApiModal');
+            const copyApiButton = document.getElementById('copyApiButton');
+            
+            apiButton.addEventListener('click', function(e) {
                 e.preventDefault();
                 apiModal.classList.add('show');
             });
-
-            closeApiModal.addEventListener('click', () => {
+            
+            closeApiModal.addEventListener('click', function() {
                 apiModal.classList.remove('show');
             });
-
-            copyApiButton.addEventListener('click', () => {
-                navigator.clipboard.writeText('http://87.106.36.114:6322/api.php')
-                    .then(() => {
-                        copyApiButton.textContent = '¡URL copiada!';
-                        setTimeout(() => {
-                            copyApiButton.innerHTML = `
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                                </svg>
-                                Copiar URL de la API
-                            `;
-                        }, 2000);
-                    });
+            
+            copyApiButton.addEventListener('click', function() {
+                navigator.clipboard.writeText('/api/proxy?action=get_addons').then(() => {
+                    copyApiButton.textContent = '¡URL copiada!';
+                    setTimeout(() => {
+                        copyApiButton.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                            </svg>
+                            Copiar URL de la API
+                        `;
+                    }, 2000);
+                });
             });
-
-            // Modal compartir
-            closeShareModal.addEventListener('click', () => {
+            
+            // Configurar modal de compartir
+            const shareModal = document.getElementById('shareModal');
+            const closeShareModal = document.getElementById('closeShareModal');
+            const copyShareButton = document.getElementById('copyShareButton');
+            
+            closeShareModal.addEventListener('click', function() {
                 shareModal.classList.remove('show');
             });
-
-            copyShareButton.addEventListener('click', () => {
-                navigator.clipboard.writeText(shareUrl.textContent)
-                    .then(() => {
-                        copyShareButton.textContent = '¡Enlace copiado!';
-                        setTimeout(() => {
-                            copyShareButton.innerHTML = `
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                                </svg>
-                                Copiar enlace
-                            `;
-                        }, 2000);
-                    });
+            
+            copyShareButton.addEventListener('click', function() {
+                const shareUrl = document.getElementById('shareUrl');
+                navigator.clipboard.writeText(shareUrl.textContent).then(() => {
+                    copyShareButton.textContent = '¡Enlace copiado!';
+                    setTimeout(() => {
+                        copyShareButton.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                            </svg>
+                            Copiar enlace
+                        `;
+                    }, 2000);
+                });
             });
-
-            // Compartir en redes sociales
-            document.getElementById('shareWhatsApp').addEventListener('click', () => {
-                window.open(`https://api.whatsapp.com/send?text=Mira este addon de MCPixel: ${encodeURIComponent(shareUrl.textContent)}`, '_blank');
-            });
-
-            document.getElementById('shareTelegram').addEventListener('click', () => {
-                window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl.textContent)}&text=Mira este addon de MCPixel`, '_blank');
-            });
-
-            document.getElementById('shareTwitter').addEventListener('click', () => {
-                window.open(`https://twitter.com/intent/tweet?text=Mira este addon de MCPixel&url=${encodeURIComponent(shareUrl.textContent)}`, '_blank');
-            });
-
-            document.getElementById('shareFacebook').addEventListener('click', () => {
-                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl.textContent)}`, '_blank');
-            });
-
-            // Búsqueda
-            searchForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                performSearch();
-            });
-
-            searchInput.addEventListener('input', () => {
-                if (searchInput.value.length > 2) {
-                    performSearch();
-                } else {
-                    searchResults.style.display = 'none';
+            
+            // Cerrar modales al hacer clic fuera
+            apiModal.addEventListener('click', function(e) {
+                if (e.target === apiModal) {
+                    apiModal.classList.remove('show');
                 }
             });
-
-            // Cerrar resultados de búsqueda al hacer clic fuera
-            document.addEventListener('click', (e) => {
-                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-                    searchResults.style.display = 'none';
+            
+            shareModal.addEventListener('click', function(e) {
+                if (e.target === shareModal) {
+                    shareModal.classList.remove('show');
                 }
             });
         });
@@ -1208,185 +1211,361 @@
         // Función para obtener addons desde la API
         async function fetchAddons() {
             try {
-                const response = await fetch('http://87.106.36.114:6322/api.php');
+                // Mostrar loader
+                document.getElementById('addonsGrid').innerHTML = `
+                    <div class="loader-container">
+                        <div class="loader"></div>
+                    </div>
+                `;
+                
+                // Timeout para evitar esperas infinitas
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
+                
+                const response = await fetch(API_BASE_URL, {
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
                 if (!response.ok) {
-                    throw new Error('Error al cargar los addons');
+                    throw new Error(`Error HTTP: ${response.status}`);
                 }
                 
                 const data = await response.json();
-                allAddons = data.addons || [];
                 
-                // Ordenar por mejor valoración (los sin reseñas al final)
-                allAddons.sort((a, b) => {
-                    // Si no tiene reseñas, va al final
-                    if (!a.rating || a.rating.count === 0) return 1;
-                    if (!b.rating || b.rating.count === 0) return -1;
+                // Verificar si la respuesta tiene la estructura esperada
+                if (data && data.success && Array.isArray(data.data)) {
+                    allAddons = data.data;
+                    // Corregir las URLs de las imágenes
+                    allAddons = allAddons.map(addon => {
+                        return {
+                            ...addon,
+                            cover_image_url: fixImageUrl(addon.cover_image_url),
+                            author_profile_pic_url: fixImageUrl(addon.author_profile_pic_url)
+                        };
+                    });
                     
-                    // Ordenar por mejor valoración
-                    return b.rating.average - a.rating.average;
-                });
-                
-                displayAddons(allAddons);
+                    // Ordenar por mejor valoración (los sin reseñas al final)
+                    allAddons.sort((a, b) => {
+                        const ratingA = a.avg_rating || a.rating || 0;
+                        const ratingB = b.avg_rating || b.rating || 0;
+                        const countA = a.review_count || a.rating_count || 0;
+                        const countB = b.review_count || b.rating_count || 0;
+                        
+                        // Si no tiene reseñas, va al final
+                        if (countA === 0) return 1;
+                        if (countB === 0) return -1;
+                        
+                        // Ordenar por mejor valoración
+                        return ratingB - ratingA;
+                    });
+                    
+                    displayAddons(allAddons);
+                } else if (data && Array.isArray(data.addons)) {
+                    // Estructura alternativa: data.addons
+                    allAddons = data.addons;
+                    
+                    // Ordenar por mejor valoración (los sin reseñas al final)
+                    allAddons.sort((a, b) => {
+                        const ratingA = a.rating?.average || 0;
+                        const ratingB = b.rating?.average || 0;
+                        const countA = a.rating?.count || 0;
+                        const countB = b.rating?.count || 0;
+                        
+                        // Si no tiene reseñas, va al final
+                        if (countA === 0) return 1;
+                        if (countB === 0) return -1;
+                        
+                        // Ordenar por mejor valoración
+                        return ratingB - ratingA;
+                    });
+                    
+                    displayAddons(allAddons);
+                } else if (Array.isArray(data)) {
+                    // Estructura alternativa: array directo
+                    allAddons = data;
+                    
+                    // Ordenar por mejor valoración (los sin reseñas al final)
+                    allAddons.sort((a, b) => {
+                        const ratingA = a.avg_rating || a.rating || 0;
+                        const ratingB = b.avg_rating || b.rating || 0;
+                        const countA = a.review_count || a.rating_count || 0;
+                        const countB = b.review_count || b.rating_count || 0;
+                        
+                        // Si no tiene reseñas, va al final
+                        if (countA === 0) return 1;
+                        if (countB === 0) return -1;
+                        
+                        // Ordenar por mejor valoración
+                        return ratingB - ratingA;
+                    });
+                    
+                    displayAddons(allAddons);
+                } else {
+                    throw new Error(data.message || 'Estructura de datos inesperada de la API');
+                }
             } catch (error) {
-                console.error('Error:', error);
-                addonsGrid.innerHTML = `
+                console.error('Error fetching addons:', error);
+                
+                let errorMessage = 'Error al cargar los addons';
+                if (error.name === 'AbortError') {
+                    errorMessage = 'La conexión está tardando demasiado. Por favor, intenta nuevamente.';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión a internet.';
+                }
+                
+                document.getElementById('addonsGrid').innerHTML = `
                     <div class="error-message">
                         <div class="error-icon">!</div>
-                        <div class="error-text">Error al cargar los addons</div>
-                        <div class="error-details">No se pudo conectar con el servidor. Por favor, intenta nuevamente más tarde.</div>
+                        <h3 class="error-text">Error de conexión</h3>
+                        <p class="error-details">${errorMessage}</p>
                         <button class="clear-search" onclick="fetchAddons()">Reintentar</button>
                     </div>
                 `;
             }
         }
 
+        // Función para corregir las URLs de las imágenes
+        function fixImageUrl(url) {
+            if (!url) return '';
+            
+            // Si la URL ya es completa o ya está procesada, no hacer nada
+            if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('/api/proxy')) {
+                return url;
+            }
+            
+            // Si la URL comienza con ./uploads/, usar el proxy
+            if (url.startsWith('./uploads/')) {
+                return `/api/proxy?image=${url.substring(1)}`;
+            }
+            
+            // Si la URL es solo un nombre de archivo, construir la URL del proxy
+            if (url.includes('/')) {
+                return `/api/proxy?image=/${url}`;
+            }
+            
+            // Para cualquier otro caso, usar el proxy con la ruta de uploads
+            return `/api/proxy?image=/uploads/${url}`;
+        }
+
         // Función para mostrar addons en la cuadrícula
         function displayAddons(addons) {
-            if (addons.length === 0) {
+            const addonsGrid = document.getElementById('addonsGrid');
+            
+            // Verificar que addons es un array y tiene elementos
+            if (!addons || !Array.isArray(addons) || addons.length === 0) {
                 addonsGrid.innerHTML = `
                     <div class="no-addons">
-                        <h3>No se encontraron addons</h3>
-                        <p>Intenta ajustar tus criterios de búsqueda o filtros.</p>
+                        <p>No hay addons disponibles.</p>
                     </div>
                 `;
                 return;
             }
             
             addonsGrid.innerHTML = addons.map(addon => {
-                const hasRating = addon.rating && addon.rating.count > 0;
-                const ratingValue = hasRating ? addon.rating.average : 0;
-                const ratingCount = hasRating ? addon.rating.count : 0;
-                
-                // Generar estrellas según la valoración
-                const stars = [];
-                const fullStars = Math.floor(ratingValue);
-                const hasHalfStar = ratingValue % 1 >= 0.5;
-                
-                for (let i = 0; i < 5; i++) {
-                    if (i < fullStars) {
-                        stars.push('<span class="rating-star">★</span>');
-                    } else if (i === fullStars && hasHalfStar) {
-                        stars.push('<span class="rating-star">★</span>');
-                    } else {
-                        stars.push('<span class="empty-star">★</span>');
-                    }
-                }
+                const rating = addon.avg_rating || addon.rating || 0;
+                const ratingCount = addon.review_count || addon.rating_count || 0;
+                const hasRating = ratingCount > 0;
                 
                 return `
-                    <div class="addon-card" data-id="${addon.id}">
-                        <img src="${addon.cover_image || './img/default-cover.png'}" alt="${addon.name}" class="addon-cover" onerror="this.src='./img/default-cover.png'">
-                        <button class="share-button" onclick="event.stopPropagation(); openShareModal('${addon.id}')">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="18" cy="5" r="3"></circle>
-                                <circle cx="6" cy="12" r="3"></circle>
-                                <circle cx="18" cy="19" r="3"></circle>
-                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                            </svg>
-                        </button>
-                        <div class="addon-info">
-                            <h3 class="addon-title">${addon.name}</h3>
-                            <p class="addon-description">${addon.description || 'Sin descripción disponible.'}</p>
-                            <div class="addon-rating">
-                                <div class="rating-stars">
-                                    ${stars.join('')}
-                                </div>
-                                <span class="rating-count">(${ratingCount})</span>
+                <div class="addon-card" onclick="viewAddon(${addon.id})">
+                    <button class="share-button" onclick="event.stopPropagation(); openShareModal(${addon.id})">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                    </button>
+                    <img src="${addon.cover_image_url || addon.cover_image || './img/default-cover.jpg'}" alt="Portada del addon" class="addon-cover" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMUUyOTNCIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UsIHNhbnMtc2VyaWYiIGZvbnQtc2l6PSIyNCIgZmlsbD0iIzk0QTNCOCI+QWRkb24gSW1hZ2VuPC90ZXh0Pjwvc3ZnPg=='">
+                    <div class="addon-info">
+                        <h3 class="addon-title">${escapeHtml(addon.title || 'Sin título')}
+                            ${addon.verified ? '<span class="verified-icon" title="Addon verificado">✓</span>' : ''}
+                        </h3>
+                        <p class="addon-description">${escapeHtml(addon.description || 'Sin descripción disponible')}</p>
+                        
+                        <div class="addon-rating">
+                            <div class="rating-stars">
+                                ${getStarRating(rating)}
                             </div>
-                            <div class="addon-footer">
-                                <div class="addon-author">
-                                    <img src="${addon.author?.avatar || './img/default-avatar.png'}" alt="${addon.author?.name || 'Autor'}" class="author-pic" onerror="this.src='./img/default-avatar.png'">
-                                    <span class="author-name">
-                                        ${addon.author?.name || 'Autor desconocido'}
-                                        ${addon.author?.verified ? '<span class="verified-user-icon">✓</span>' : ''}
-                                    </span>
-                                </div>
-                                <span class="addon-version">v${addon.version || '1.0.0'}</span>
+                            <span class="rating-count">${ratingCount} reseña(s)</span>
+                        </div>
+                        
+                        <div class="addon-footer">
+                            <div class="addon-author">
+                                <img src="${addon.author_profile_pic_url || addon.author_avatar || './img/default-avatar.png'}" alt="Autor" class="author-pic" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1iZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(addon.username || addon.author || 'U')}')">
+                                <span class="author-name">${escapeHtml(addon.username || addon.author || 'Usuario')}
+                                    ${addon.is_verified || addon.author_verified ? `
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="verified-user-icon" width="16" height="16">
+                                        <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                                    </svg>
+                                    ` : ''}
+                                </span>
                             </div>
+                            <span class="addon-version">${escapeHtml(addon.version || '1.0.0')}</span>
                         </div>
                     </div>
-                `;
-            }).join('');
+                </div>
+            `}).join('');
+        }
+
+        // Función para filtrar addons según búsqueda
+        function filterAddons(query, updateURL = false) {
+            isSearchActive = true;
             
-            // Agregar event listeners a las tarjetas
-            document.querySelectorAll('.addon-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    const addonId = card.getAttribute('data-id');
-                    window.location.href = `./sc/addon.html?id=${addonId}`;
-                });
+            // Verificar que allAddons es un array
+            if (!allAddons || !Array.isArray(allAddons)) {
+                console.error('allAddons no es un array válido');
+                return;
+            }
+            
+            const filteredAddons = allAddons.filter(addon => {
+                const title = addon.title || '';
+                const username = addon.username || addon.author || '';
+                const description = addon.description || '';
+                
+                return title.toLowerCase().includes(query.toLowerCase()) || 
+                       username.toLowerCase().includes(query.toLowerCase()) ||
+                       description.toLowerCase().includes(query.toLowerCase());
             });
+            
+            if (updateURL) {
+                // Actualizar URL con parámetro de búsqueda (without recargar la página)
+                window.history.pushState({}, '', `?search=${encodeURIComponent(query)}`);
+                
+                // Actualizar título
+                document.querySelector('.page-title').textContent = 'Resultados de Búsqueda';
+                
+                // Mostrar información de resultados
+                const searchHeader = document.createElement('div');
+                searchHeader.className = 'search-header';
+                searchHeader.innerHTML = `
+                    <h2 class="search-results-title">Resultados Encontrados</h2>
+                    <span class="search-results-count">${filteredAddons.length} resultado${filteredAddons.length !== 1 ? 's' : ''} para "${query}"</span>
+                    <button class="clear-search" onclick="clearSearch()">Limpiar búsqueda</button>
+                `;
+                
+                const container = document.querySelector('.container');
+                const pageTitle = document.querySelector('.page-title');
+                if (!document.querySelector('.search-header')) {
+                    container.insertBefore(searchHeader, pageTitle.nextSibling);
+                } else {
+                    document.querySelector('.search-header').innerHTML = searchHeader.innerHTML;
+                }
+            }
+            
+            displayAddons(filteredAddons);
+        }
+
+        // Función para limpiar búsqueda
+        function clearSearch() {
+            isSearchActive = false;
+            document.getElementById('searchInput').value = '';
+            window.history.pushState({}, '', window.location.pathname);
+            document.querySelector('.page-title').textContent = 'Addons Mejor Valorados';
+            
+            const searchHeader = document.querySelector('.search-header');
+            if (searchHeader) {
+                searchHeader.remove();
+            }
+            
+            displayAddons(allAddons);
+        }
+
+        // Función para ver un addon específico
+        function viewAddon(id) {
+            window.location.href = `view.html?id=${id}`;
         }
 
         // Función para abrir modal de compartir
-        function openShareModal(addonId) {
-            currentAddonId = addonId;
-            const addon = allAddons.find(a => a.id === addonId);
-            
+        function openShareModal(id) {
+            currentAddonId = id;
+            const addon = allAddons.find(a => a.id === id);
             if (addon) {
-                const shareLink = `${window.location.origin}${window.location.pathname}?id=${addonId}`;
-                shareUrl.textContent = shareLink;
-                shareModal.classList.add('show');
+                const shareUrl = `${window.location.origin}${window.location.pathname.replace('valued.html', '')}view.html?id=${id}`;
+                document.getElementById('shareUrl').textContent = shareUrl;
+                document.getElementById('shareModal').classList.add('show');
             }
         }
 
-        // Función para realizar búsqueda
-        function performSearch() {
-            const query = searchInput.value.toLowerCase().trim();
+        // Función para compartir en plataformas
+        function shareOnPlatform(platform) {
+            const url = encodeURIComponent(document.getElementById('shareUrl').textContent);
+            const title = encodeURIComponent("¡Mira este increíble addon para Minecraft!");
             
-            if (query.length < 3) {
-                searchResults.style.display = 'none';
-                return;
+            let shareUrlPlatform = '';
+            
+            switch(platform) {
+                case 'whatsapp':
+                    shareUrlPlatform = `https://api.whatsapp.com/send?text=${title}%20${url}`;
+                    break;
+                case 'twitter':
+                    shareUrlPlatform = `https://twitter.com/intent/tweet?text=${title}&url=${url}`;
+                    break;
+                case 'facebook':
+                    shareUrlPlatform = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+                    break;
+                case 'telegram':
+                    shareUrlPlatform = `https://t.me/share/url?url=${url}&text=${title}`;
+                    break;
             }
             
-            const results = allAddons.filter(addon => {
-                return (
-                    addon.name.toLowerCase().includes(query) ||
-                    (addon.description && addon.description.toLowerCase().includes(query)) ||
-                    (addon.author && addon.author.name && addon.author.name.toLowerCase().includes(query))
-                );
-            });
-            
-            displaySearchResults(results);
+            window.open(shareUrlPlatform, '_blank');
         }
 
-        // Función para mostrar resultados de búsqueda
-        function displaySearchResults(results) {
-            if (results.length === 0) {
-                searchResults.innerHTML = '<div class="no-results">No se encontraron resultados</div>';
-                searchResults.style.display = 'block';
-                return;
+        // Función auxiliar para generar estrellas de valoración
+        function getStarRating(rating) {
+            let stars = '';
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<span class="rating-star">★</span>';
             }
             
-            searchResults.innerHTML = results.map(addon => {
-                const hasRating = addon.rating && addon.rating.count > 0;
-                const ratingValue = hasRating ? addon.rating.average : 0;
-                
-                return `
-                    <div class="search-result-item" data-id="${addon.id}">
-                        <img src="${addon.cover_image || './img/default-cover.png'}" alt="${addon.name}" onerror="this.src='./img/default-cover.png'">
-                        <div class="search-result-info">
-                            <div class="search-result-title">${addon.name}</div>
-                            <div class="search-result-author">
-                                <img src="${addon.author?.avatar || './img/default-avatar.png'}" alt="${addon.author?.name || 'Autor'}" onerror="this.src='./img/default-avatar.png'">
-                                ${addon.author?.name || 'Autor desconocido'}
-                            </div>
-                        </div>
-                        <div class="search-result-rating">
-                            <span>★</span> ${ratingValue.toFixed(1)}
-                        </div>
-                    </div>
-                `;
-            }).join('');
+            if (hasHalfStar) {
+                stars += '<span class="rating-star">★</span>';
+            }
             
-            searchResults.style.display = 'block';
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<span class="empty-star">☆</span>';
+            }
             
-            // Agregar event listeners a los resultados
-            document.querySelectorAll('.search-result-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const addonId = item.getAttribute('data-id');
-                    window.location.href = `./sc/addon.html?id=${addonId}`;
-                });
-            });
+            return stars;
+        }
+
+        // Función para escapar HTML (prevenir XSS)
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Función para obtener iniciales de un nombre
+        function getInitials(name) {
+            if (!name) return 'U';
+            return name.split(' ').map(word => word[0]).join('').toUpperCase().substring(0, 2);
+        }
+
+        // Comprobar si hay parámetros de búsqueda en la URL al cargar
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchParam = urlParams.get('search');
+        if (searchParam) {
+            document.getElementById('searchInput').value = searchParam;
+            // Esperar a que los addons se carguen antes de filtrar
+            const checkAddonsLoaded = setInterval(() => {
+                if (allAddons && allAddons.length > 0) {
+                    clearInterval(checkAddonsLoaded);
+                    filterAddons(searchParam, true);
+                }
+            }, 100);
         }
     </script>
 </body>
