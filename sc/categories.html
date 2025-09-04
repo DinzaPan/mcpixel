@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorías de Addons | MCPixel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3B82F6;
+            --primary-hover: #2563EB;
+            --secondary-color: #F59E0B;
+            --accent-color: #10B981;
+            --dark-bg: #0F172A;
+            --dark-card: #1E293B;
+            --dark-text: #F8FAFC;
+            --dark-border: #334155;
+            --light-bg: #F1F5F9;
+            --light-card: #FFFFFF;
+            --light-text: #1E293B;
+            --light-border: #E2E8F0;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --rounded: 0.75rem;
+            --rounded-lg: 1rem;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        /* Barra de navegación */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: var(--dark-card);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background-color: rgba(30, 41, 59, 0.8);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            height: 2.5rem;
+            width: 2.5rem;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .site-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(90deg, #3B82F6, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        /* Menú desplegable */
+        .nav-menu {
+            position: relative;
+        }
+
+        .menu-button {
+            background: none;
+            border: none;
+            color: var(--dark-text);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--rounded);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .menu-button:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--dark-card);
+            border-radius: var(--rounded);
+            box-shadow: var(--shadow-lg);
+            min-width: 12rem;
+            z-index: 1001;
+            border: 1px solid var(--dark-border);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+        }
+
+        .menu-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .menu-item {
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--dark-text);
+            transition: var(--transition);
+            border-bottom: 1px solid var(--dark-border);
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .menu-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        /* Contenido principal */
+        .container {
+            padding: 2rem;
+            max-width: 90rem;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark-text);
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title:after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4rem;
+            height: 0.25rem;
+            background: linear-gradient(90deg, #3B82F6, #10B981);
+            border-radius: 0.25rem;
+        }
+
+        .page-subtitle {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            max-width: 40rem;
+            margin: 0 auto;
+        }
+
+        /* Grid de categorías */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .category-card {
+            background-color: var(--dark-card);
+            border-radius: var(--rounded-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            border: 1px solid var(--dark-border);
+            padding: 1.5rem;
+        }
+
+        .category-card:hover {
+            transform: translateY(-0.5rem);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+
+        .category-icon {
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--rounded);
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 1.5rem;
+            background-color: var(--icon-color);
+        }
+
+        .category-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 0.75rem 0;
+            color: var(--dark-text);
+        }
+
+        .category-description {
+            font-size: 0.9375rem;
+            color: #94a3b8;
+            margin: 0 0 1.5rem 0;
+            line-height: 1.5;
+        }
+
+        .explore-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            margin-top: auto;
+            align-self: flex-start;
+        }
+
+        .explore-btn:hover {
+            color: var(--primary-hover);
+            transform: translateX(0.25rem);
+        }
+
+        .explore-btn i {
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .navbar {
+                padding: 0.75rem 1rem;
+            }
+            
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .page-subtitle {
+                font-size: 1rem;
+            }
+            
+            .menu-dropdown {
+                right: -1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="../img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPk08L3RleHQ+PC9zdmc+'">
+            <h1 class="site-title">MCPixel</h1>
+        </div>
+        
+        <!-- Menú desplegable -->
+        <div class="nav-menu">
+            <button class="menu-button" id="menuButton">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            
+            <div class="menu-dropdown" id="menuDropdown">
+                <a href="../index.html" class="menu-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    Inicio
+                </a>
+                <a href="credits.html" class="menu-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    Créditos
+                </a>
+                <a href="categories.html" class="menu-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7V4h16v3"></path>
+                        <path d="M5 20h3l2-10h6l2 10h3"></path>
+                        <path d="M9 10V4"></path>
+                        <path d="M15 10V4"></path>
+                    </svg>
+                    Categorías
+                </a>
+                <a href="http://87.106.36.114:6322/" target="_blank" class="menu-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    Página Oficial
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Explora nuestras categorías</h1>
+            <p class="page-subtitle">Descubre una amplia variedad de contenido para Minecraft organizado por categorías</p>
+        </div>
+        
+        <div class="categories-grid">
+            <a href="../category/mods.php" class="category-card" style="--icon-color: #3B82F6">
+                <div class="category-icon">
+                    <span class="material-icons">extension</span>
+                </div>
+                <h3 class="category-name">Addons/Mods</h3>
+                <p class="category-description">Mejora tu experiencia de juego con nuestros increíbles addons y mods para Minecraft</p>
+                <span class="explore-btn">
+                    Explorar
+                    <span class="material-icons">arrow_forward</span>
+                </span>
+            </a>
+            
+            <a href="../category/textures.php" class="category-card" style="--icon-color: #10B981">
+                <div class="category-icon">
+                    <span class="material-icons">texture</span>
+                </div>
+                <h3 class="category-name">Texturas</h3>
+                <p class="category-description">Cambia completamente el aspecto de Minecraft con nuestros paquetes de texturas</p>
+                <span class="explore-btn">
+                    Explorar
+                    <span class="material-icons">arrow_forward</span>
+                </span>
+            </a>
+            
+            <a href="../category/skins.php" class="category-card" style="--icon-color: #F59E0B">
+                <div class="category-icon">
+                    <span class="material-icons">accessibility</span>
+                </div>
+                <h3 class="category-name">Skins</h3>
+                <p class="category-description">Personaliza tu personaje con skins únicas creadas por nuestra comunidad</p>
+                <span class="explore-btn">
+                    Explorar
+                    <span class="material-icons">arrow_forward</span>
+                </span>
+            </a>
+            
+            <a href="../category/maps.php" class="category-card" style="--icon-color: #8B5CF6">
+                <div class="category-icon">
+                    <span class="material-icons">map</span>
+                </div>
+                <h3 class="category-name">Mapas</h3>
+                <p class="category-description">Explora mundos creados por la comunidad con aventuras y desafíos únicos</p>
+                <span class="explore-btn">
+                    Explorar
+                    <span class="material-icons">arrow_forward</span>
+                </span>
+            </a>
+            
+            <a href="../category/shaders.php" class="category-card" style="--icon-color: #EC4899">
+                <div class="category-icon">
+                    <span class="material-icons">filter_vintage</span>
+                </div>
+                <h3 class="category-name">Shaders</h3>
+                <p class="category-description">Mejora los gráficos de Minecraft con increíbles efectos visuales y realismo</p>
+                <span class="explore-btn">
+                    Explorar
+                    <span class="material-icons">arrow_forward</span>
+                </span>
+            </a>
+            
+            <a href="../category/top-rated.php" class="category-card" style="--icon-color: #F43F5E">
+                <div class="category-icon">
+                    <span class="material-icons">star</span>
+                </div>
+                <h3 class="category-name">Mejor valorados</h3>
+                <p class="category-description">Los addons más populares y mejor valorados por nuestra comunidad</p>
+                <span class="explore-btn">
+                    Explorar
+                    <span class="material-icons">arrow_forward</span>
+                </span>
+            </a>
+            
+            <a href="../category/plugins.php" class="category-card" style="--icon-color: #6366F1">
+                <div class="category-icon">
+                    <span class="material-icons">power</span>
+                </div>
+                <h3 class="category-name">Plugins</h3>
+                <p class="category-description">Mejora tu servidor con estos plugins funcionales y optimizados</p>
+                <span class="explore-btn">
+                    Explorar
+                    <span class="material-icons">arrow_forward</span>
+                </span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Configurar menú desplegable
+        const menuButton = document.getElementById('menuButton');
+        const menuDropdown = document.getElementById('menuDropdown');
+        
+        menuButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            menuDropdown.classList.toggle('show');
+        });
+        
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', function() {
+            menuDropdown.classList.remove('show');
+        });
+        
+        // Evitar que el menú se cierre al hacer clic en él
+        menuDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    </script>
+</body>
+</html>
