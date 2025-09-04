@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Addons/Mods para Minecraft | MCPixel</title>
+    <link rel="icon" href="../img/logo.png" type="image/png">
+    <style>
+        :root {
+            --primary-color: #3B82F6;
+            --primary-hover: #2563EB;
+            --secondary-color: #F59E0B;
+            --accent-color: #10B981;
+            --dark-bg: #0F172A;
+            --dark-card: #1E293B;
+            --dark-text: #F8FAFC;
+            --dark-border: #334155;
+            --light-bg: #F1F5F9;
+            --light-card: #FFFFFF;
+            --light-text: #1E293B;
+            --light-border: #E2E8F0;
+            --error-color: #EF4444;
+            --success-color: #10B981;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --rounded: 0.75rem;
+            --rounded-lg: 1rem;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        /* Barra de navegación */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: var(--dark-card);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background-color: rgba(30, 41, 59, 0.8);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            height: 2.5rem;
+            width: 2.5rem;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .site-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(90deg, #3B82F6, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        /* Menú desplegable */
+        .nav-menu {
+            position: relative;
+        }
+
+        .menu-button {
+            background: none;
+            border: none;
+            color: var(--dark-text);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--rounded);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .menu-button:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--dark-card);
+            border-radius: var(--rounded);
+            box-shadow: var(--shadow-lg);
+            min-width: 12rem;
+            z-index: 1001;
+            border: 1px solid var(--dark-border);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+        }
+
+        .menu-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .menu-item {
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--dark-text);
+            transition: var(--transition);
+            border-bottom: 1px solid var(--dark-border);
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .menu-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        /* Modal de API - Mejorado */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background-color: var(--dark-card);
+            border-radius: var(--rounded-lg);
+            padding: 2rem;
+            max-width: 90%;
+            width: 35rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+            border: 1px solid var(--dark-border);
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--dark-border);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #3B82F6, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            color: var(--dark-text);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .close-button:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .api-url {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: var(--rounded);
+            font-family: monospace;
+            word-break: break-all;
+            margin: 1.5rem 0;
+            border: 1px solid var(--dark-border);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .api-url:hover {
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+        .api-info {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
+            border-radius: var(--rounded);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .api-info-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .copy-api-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--rounded);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .copy-api-button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Modal de compartir - Mejorado */
+        .share-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+        }
+
+        .share-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .share-modal {
+            background-color: var(--dark-card);
+            border-radius: var(--rounded-lg);
+            padding: 2rem;
+            max-width: 90%;
+            width: 30rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+            border: 1px solid var(--dark-border);
+        }
+
+        .share-overlay.show .share-modal {
+            transform: scale(1);
+        }
+
+        .share-url {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: var(--rounded);
+            font-family: monospace;
+            word-break: break-all;
+            margin: 1.5rem 0;
+            border: 1px solid var(--dark-border);
+            transition: var(--transition);
+        }
+
+        .share-url:hover {
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+        .share-options {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+
+        .share-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: var(--rounded);
+            background-color: rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .share-option:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .share-option-icon {
+            width: 2rem;
+            height: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .share-option-text {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .copy-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--rounded);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .copy-button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Sección del buscador */
+        .search-section {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
+            padding: 2rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 0.75rem 1.5rem;
+            padding-right: 3rem;
+            border-radius: 2rem;
+            border: 2px solid var(--dark-border);
+            background-color: var(--dark-card);
+            color: var(--dark-text);
+            font-size: 1rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        .search-button {
+            position: absolute;
+            right: 0.75rem;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: var(--transition);
+            background-color: var(--primary-color);
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-button svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .search-button:hover {
+            background-color: var(--primary-hover);
+            transform: scale(1.05);
+        }
+
+        .search-results-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--dark-card);
+            border-radius: 0 0 var(--rounded) var(--rounded);
+            box-shadow: var(--shadow-lg);
+            max-height: 20rem;
+            overflow-y: auto;
+            z-index: 1001;
+            border: 1px solid var(--dark-border);
+            border-top: none;
+        }
+
+        .search-result-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--dark-border);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .search-result-item:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .search-result-item img {
+            width: 2.5rem;
+            height: 2.5rem;
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+
+        .search-result-info {
+            flex-grow: 1;
+        }
+
+        .search-result-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--dark-text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .search-result-author {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .search-result-author img {
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+        }
+
+        .search-result-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            color: var(--secondary-color);
+        }
+
+        .no-results {
+            padding: 1rem;
+            text-align: center;
+            color: var(--dark-text);
+            font-size: 0.9rem;
+        }
+
+        /* Contenedor principal */
+        .container {
+            padding: 0 2rem 2rem;
+            max-width: 90rem;
+            margin: 0 auto;
+        }
+
+        .search-header {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .search-results-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            background: linear-gradient(90deg, #3B82F6, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        
+        .search-results-count {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        
+        .clear-search {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            text-decoration: none;
+            align-self: flex-start;
+            margin-top: 1rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .clear-search:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            text-align: center;
+            color: var(--dark-text);
+            grid-column: 1 / -1;
+            background-color: var(--dark-card);
+            border-radius: var(--rounded);
+            box-shadow: var(--shadow);
+            margin: 2rem 0;
+        }
+        
+        .error-icon {
+            font-size: 3rem;
+            color: var(--error-color);
+            margin-bottom: 1rem;
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+        
+        .error-text {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .error-details {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            max-width: 30rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--dark-text);
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+
+        .page-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 4rem;
+            height: 0.25rem;
+            background: linear-gradient(90deg, #3B82F6, #10B981);
+            border-radius: 0.25rem;
+        }
+
+        /* Grid de addons */
+        .addons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .addon-card {
+            background-color: var(--dark-card);
+            border-radius: var(--rounded-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            border: 1px solid var(--dark-border);
+            cursor: pointer;
+        }
+
+        .addon-card:hover {
+            transform: translateY(-0.5rem);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+
+        .addon-cover {
+            width: 100%;
+            height: 12rem;
+            object-fit: cover;
+            border-bottom: 1px solid var(--dark-border);
+        }
+
+        .addon-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .addon-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 0.75rem 0;
+            color: var(--dark-text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .addon-description {
+            font-size: 0.9375rem;
+            color: #94a3b8;
+            margin: 0 0 1rem 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex-grow: 1;
+            line-height: 1.5;
+        }
+
+        .addon-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 0.1rem;
+        }
+
+        .rating-star {
+            color: var(--secondary-color);
+            font-size: 1rem;
+        }
+
+        .empty-star {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        .rating-count {
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .addon-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            color: #94a3b8;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--dark-border);
+        }
+
+        .addon-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            max-width: 70%;
+            overflow: hidden;
+        }
+
+        .author-pic {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .author-name {
+            text-decoration: none;
+            color: inherit;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.15rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .addon-version {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .verified-icon {
+            color: var(--accent-color);
+            margin-left: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .verified-user-icon {
+            color: #94a3b8;
+            margin-left: 0.15rem;
+            font-size: 1rem;
+            vertical-align: middle;
+            width: 1rem;
+            height: 1rem;
+            flex-shrink: 0;
+        }
+
+        .no-addons {
+            text-align: center;
+            padding: 3rem;
+            color: var(--dark-text);
+            grid-column: 1 / -1;
+            background-color: var(--dark-card);
+            border-radius: var(--rounded);
+            box-shadow: var(--shadow);
+        }
+
+        /* Botón de compartir en tarjeta - Solo visible al pasar el ratón */
+        .share-button {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 2.25rem;
+            height: 2.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 10;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        .addon-card:hover .share-button {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .share-button:hover {
+            background-color: var(--primary-color);
+            transform: scale(1.1) !important;
+        }
+
+        .share-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        /* Loader */
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            grid-column: 1 / -1;
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid rgba(59, 130, 246, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem 1rem;
+            }
+            
+            .addons-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                padding: 0.75rem 1rem;
+            }
+            
+            .search-section {
+                padding: 1.5rem 1rem;
+            }
+            
+            .menu-dropdown {
+                right: -1rem;
+            }
+            
+            .share-options {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="../img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbm�PSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IndoaXRlIj5NPC90ZXh0Pjwvc3ZnPg=='">
+            <h1 class="site-title">MCPixel</h1>
+        </div>
+        
+        <!-- Menú desplegable -->
+        <div class="nav-menu">
+            <button class="menu-button" id="menuButton">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            
+            <div class="menu-dropdown" id="menuDropdown">
+                <a href="../index.html" class="menu-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    Inicio
+                </a>
+                <a href="../categories.html" class="menu-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7V4h16v3"></path>
+                        <path d="M5 20h3l2-10h6l2 10h3"></path>
+                        <path d="M9 10V4"></path>
+                        <path d="M15 10V4"></path>
+                    </svg>
+                    Categorías
+                </a>
+                <a href="../valued.html" class="menu-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    Mejor Valorados
+                </a>
+                <a href="../sc/credits.html" class="menu-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    Créditos
+                </a>
+                <a href="#" class="menu-item" id="apiButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7V4h16v3"></path>
+                        <path d="M5 20h3l2-10h6l2 10h3"></path>
+                        <path d="M9 10V4"></path>
+                        <path d="M15 10V4"></path>
+                    </svg>
+                    API
+                </a>
+                <a href="http://87.106.36.114:6322/" target="_blank" class="menu-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    Página Oficial
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Modal de API - Mejorado -->
+    <div class="modal-overlay" id="apiModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Información de la API</h3>
+                <button class="close-button" id="closeApiModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <p>La información de los addons se obtiene desde la siguiente URL:</p>
+            <div class="api-url">/api/proxy?action=get_addons</div>
+            
+            <div class="api-info">
+                <div class="api-info-title">Cómo utilizar la API</div>
+                <p>Puedes utilizar esta API para integrar los addons en tus propias aplicaciones. Simplemente realiza una solicitud GET a la URL proporcionada.</p>
+            </div>
+            
+            <button class="copy-api-button" id="copyApiButton">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg>
+                Copiar URL de la API
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de compartir - Mejorado -->
+    <div class="share-overlay" id="shareModal">
+        <div class="share-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Compartir Addon</h3>
+                <button class="close-button" id="closeShareModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <p>Comparte este addon con otros usuarios usando el siguiente enlace:</p>
+            <div class="share-url" id="shareUrl"></div>
+            
+            <div class="share-options">
+                <div class="share-option" onclick="shareOnPlatform('whatsapp')">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="share-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                    </svg>
+                    <span class="share-option-text">WhatsApp</span>
+                </div>
+                
+                <div class="share-option" onclick="shareOnPlatform('twitter')">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="share-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                    </svg>
+                    <span class="share-option-text">Twitter</span>
+                </div>
+                
+                <div class="share-option" onclick="shareOnPlatform('facebook')">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="share-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                    </svg>
+                    <span class="share-option-text">Facebook</span>
+                </div>
+                
+                <div class="share-option" onclick="shareOnPlatform('telegram')">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="share-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 2L11 13"></path>
+                        <path d="M22 2l-7 20-4-9-9-4 20-7z"></path>
+                    </svg>
+                    <span class="share-option-text">Telegram</span>
+                </div>
+            </div>
+            
+            <button class="copy-button" id="copyShareButton">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg>
+                Copiar enlace
+            </button>
+        </div>
+    </div>
+
+    <!-- Sección del buscador -->
+    <section class="search-section">
+        <div class="search-container">
+            <form class="search-form" id="searchForm">
+                <input type="text" class="search-input" id="searchInput" placeholder="Buscar addons por título o autor...">
+                <button type="submit" class="search-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+            </form>
+            <div class="search-results-dropdown" id="searchResults"></div>
+        </div>
+    </section>
+
+    <!-- Contenedor principal -->
+    <div class="container">
+        <h1 class="page-title">Addons y Mods</h1>
+        
+        <div class="search-header">
+            <h2 class="search-results-title">Addons Disponibles</h2>
+            <span class="search-results-count" id="resultsCount">Cargando...</span>
+        </div>
+        
+        <div class="addons-grid" id="addonsGrid">
+            <div class="loader-container">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        const API_BASE_URL = '/api/proxy?action=get_addons';
+        let allAddons = [];
+        let filteredAddons = [];
+        let searchTimeout = null;
+        let isSearchActive = false;
+        let currentAddonId = null;
+
+        // Cargar addons al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchAddons();
+            
+            // Configurar búsqueda
+            const searchInput = document.getElementById('searchInput');
+            const searchForm = document.getElementById('searchForm');
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                const query = this.value.trim();
+                
+                // Si el campo está vacío, reiniciar la búsqueda
+                if (query.length === 0) {
+                    clearSearch();
+                    return;
+                }
+                
+                if (query.length < 2) {
+                    document.getElementById('searchResults').style.display = 'none';
+                    return;
+                }
+                
+                searchTimeout = setTimeout(() => {
+                    filterAddons(query);
+                }, 300);
+            });
+            
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const query = searchInput.value.trim();
+                if (query) {
+                    filterAddons(query, true);
+                }
+            });
+            
+            // Configurar menú desplegable
+            const menuButton = document.getElementById('menuButton');
+            const menuDropdown = document.getElementById('menuDropdown');
+            
+            menuButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                menuDropdown.classList.toggle('show');
+            });
+            
+            // Cerrar menú al hacer clic fuera
+            document.addEventListener('click', function() {
+                menuDropdown.classList.remove('show');
+            });
+            
+            // Evitar que el menú se cierre al hacer clic en él
+            menuDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            // Configurar modal de API
+            const apiButton = document.getElementById('apiButton');
+            const apiModal = document.getElementById('apiModal');
+            const closeApiModal = document.getElementById('closeApiModal');
+            const copyApiButton = document.getElementById('copyApiButton');
+            
+            apiButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                apiModal.classList.add('show');
+            });
+            
+            closeApiModal.addEventListener('click', function() {
+                apiModal.classList.remove('show');
+            });
+            
+            copyApiButton.addEventListener('click', function() {
+                navigator.clipboard.writeText('/api/proxy?action=get_addons').then(() => {
+                    copyApiButton.textContent = '¡URL copiada!';
+                    setTimeout(() => {
+                        copyApiButton.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                            </svg>
+                            Copiar URL de la API
+                        `;
+                    }, 2000);
+                });
+            });
+            
+            // Configurar modal de compartir
+            const shareModal = document.getElementById('shareModal');
+            const closeShareModal = document.getElementById('closeShareModal');
+            const copyShareButton = document.getElementById('copyShareButton');
+            
+            closeShareModal.addEventListener('click', function() {
+                shareModal.classList.remove('show');
+            });
+            
+            copyShareButton.addEventListener('click', function() {
+                const shareUrl = document.getElementById('shareUrl');
+                navigator.clipboard.writeText(shareUrl.textContent).then(() => {
+                    copyShareButton.textContent = '¡Enlace copiado!';
+                    setTimeout(() => {
+                        copyShareButton.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                            </svg>
+                            Copiar enlace
+                        `;
+                    }, 2000);
+                });
+            });
+            
+            // Cerrar modales al hacer clic fuera
+            apiModal.addEventListener('click', function(e) {
+                if (e.target === apiModal) {
+                    apiModal.classList.remove('show');
+                }
+            });
+            
+            shareModal.addEventListener('click', function(e) {
+                if (e.target === shareModal) {
+                    shareModal.classList.remove('show');
+                }
+            });
+        });
+
+        // Función para obtener addons desde la API
+        async function fetchAddons() {
+            try {
+                // Mostrar loader
+                document.getElementById('addonsGrid').innerHTML = `
+                    <div class="loader-container">
+                        <div class="loader"></div>
+                    </div>
+                `;
+                
+                // Timeout para evitar esperas infinitas
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
+                
+                const response = await fetch(API_BASE_URL, {
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Verificar si la respuesta tiene la estructura esperada
+                if (data && data.success && Array.isArray(data.data)) {
+                    allAddons = data.data;
+                    // Filtrar addons que tengan la etiqueta "Add-on" o "Addon"
+                    filteredAddons = allAddons.filter(addon => {
+                        if (!addon.tags) return false;
+                        
+                        const tags = Array.isArray(addon.tags) ? 
+                            addon.tags : 
+                            addon.tags.split(',').map(tag => tag.trim());
+                        
+                        return tags.some(tag => 
+                            tag.toLowerCase().includes('add-on') || 
+                            tag.toLowerCase().includes('addon')
+                        );
+                    });
+                    
+                    // Corregir las URLs de las imágenes
+                    filteredAddons = filteredAddons.map(addon => {
+                        return {
+                            ...addon,
+                            cover_image_url: fixImageUrl(addon.cover_image_url),
+                            author_profile_pic_url: fixImageUrl(addon.author_profile_pic_url)
+                        };
+                    });
+                    
+                    displayAddons(filteredAddons);
+                    document.getElementById('resultsCount').textContent = `${filteredAddons.length} addon${filteredAddons.length !== 1 ? 's' : ''} encontrado${filteredAddons.length !== 1 ? 's' : ''}`;
+                } else if (data && Array.isArray(data.addons)) {
+                    // Estructura alternativa: data.addons
+                    allAddons = data.addons;
+                    // Filtrar addons que tengan la etiqueta "Add-on" o "Addon"
+                    filteredAddons = allAddons.filter(addon => {
+                        if (!addon.tags) return false;
+                        
+                        const tags = Array.isArray(addon.tags) ? 
+                            addon.tags : 
+                            addon.tags.split(',').map(tag => tag.trim());
+                        
+                        return tags.some(tag => 
+                            tag.toLowerCase().includes('add-on') || 
+                            tag.toLowerCase().includes('addon')
+                        );
+                    });
+                    
+                    displayAddons(filteredAddons);
+                    document.getElementById('resultsCount').textContent = `${filteredAddons.length} addon${filteredAddons.length !== 1 ? 's' : ''} encontrado${filteredAddons.length !== 1 ? 's' : ''}`;
+                } else if (Array.isArray(data)) {
+                    // Estructura alternativa: array directo
+                    allAddons = data;
+                    // Filtrar addons que tengan la etiqueta "Add-on" o "Addon"
+                    filteredAddons = allAddons.filter(addon => {
+                        if (!addon.tags) return false;
+                        
+                        const tags = Array.isArray(addon.tags) ? 
+                            addon.tags : 
+                            addon.tags.split(',').map(tag => tag.trim());
+                        
+                        return tags.some(tag => 
+                            tag.toLowerCase().includes('add-on') || 
+                            tag.toLowerCase().includes('addon')
+                        );
+                    });
+                    
+                    displayAddons(filteredAddons);
+                    document.getElementById('resultsCount').textContent = `${filteredAddons.length} addon${filteredAddons.length !== 1 ? 's' : ''} encontrado${filteredAddons.length !== 1 ? 's' : ''}`;
+                } else {
+                    throw new Error(data.message || 'Estructura de datos inesperada de la API');
+                }
+            } catch (error) {
+                console.error('Error fetching addons:', error);
+                
+                let errorMessage = 'Error al cargar los addons';
+                if (error.name === 'AbortError') {
+                    errorMessage = 'La conexión está tardando demasiado. Por favor, intenta nuevamente.';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión a internet.';
+                }
+                
+                document.getElementById('addonsGrid').innerHTML = `
+                    <div class="error-message">
+                        <div class="error-icon">!</div>
+                        <h3 class="error-text">Error de conexión</h3>
+                        <p class="error-details">${errorMessage}</p>
+                        <button class="clear-search" onclick="fetchAddons()">Reintentar</button>
+                    </div>
+                `;
+                
+                document.getElementById('resultsCount').textContent = 'Error al cargar addons';
+            }
+        }
+
+        // Función para corregir las URLs de las imágenes
+        function fixImageUrl(url) {
+            if (!url) return '';
+            
+            // Si la URL ya es completa o ya está procesada, no hacer nada
+            if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('/api/proxy')) {
+                return url;
+            }
+            
+            // Si la URL comienza con ./uploads/, usar el proxy
+            if (url.startsWith('./uploads/')) {
+                return `/api/proxy?image=${url.substring(1)}`;
+            }
+            
+            // Si la URL es solo un nombre de archivo, construir la URL del proxy
+            if (url.includes('/')) {
+                return `/api/proxy?image=/${url}`;
+            }
+            
+            // Para cualquier otro caso, usar el proxy con la ruta de uploads
+            return `/api/proxy?image=/uploads/${url}`;
+        }
+
+        // Función para mostrar addons en la cuadrícula
+        function displayAddons(addons) {
+            const addonsGrid = document.getElementById('addonsGrid');
+            
+            // Verificar que addons es un array y tiene elementos
+            if (!addons || !Array.isArray(addons) || addons.length === 0) {
+                addonsGrid.innerHTML = `
+                    <div class="no-addons">
+                        <p>No hay addons disponibles en esta categoría.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            addonsGrid.innerHTML = addons.map(addon => `
+                <div class="addon-card" onclick="viewAddon(${addon.id})">
+                    <button class="share-button" onclick="event.stopPropagation(); openShareModal(${addon.id})">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                    </button>
+                    <img src="${addon.cover_image_url || addon.cover_image || '../img/default-cover.jpg'}" alt="Portada del addon" class="addon-cover" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMUUyOTNCIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UsIHNhbnMtc2VyaWYiIGZvbnQtc2l6PSIyNCIgZmlsbD0iIzk0QTNCOCI+QWRkb24gSW1hZ2VuPC90ZXh0Pjwvc3ZnPg=='">
+                    <div class="addon-info">
+                        <h3 class="addon-title">${escapeHtml(addon.title || 'Sin título')}
+                            ${addon.verified ? '<span class="verified-icon" title="Addon verificado">✓</span>' : ''}
+                        </h3>
+                        <p class="addon-description">${escapeHtml(addon.description || 'Sin descripción disponible')}</p>
+                        
+                        <div class="addon-rating">
+                            <div class="rating-stars">
+                                ${getStarRating(addon.avg_rating || addon.rating || 0)}
+                            </div>
+                            <span class="rating-count">${addon.review_count || addon.rating_count || 0} reseña(s)</span>
+                        </div>
+                        
+                        <div class="addon-footer">
+                            <div class="addon-author">
+                                <img src="${addon.author_profile_pic_url || addon.author_avatar || '../img/default-avatar.png'}" alt="Autor" class="author-pic" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1sZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(addon.username || addon.author || 'U')}')">
+                                <span class="author-name">${escapeHtml(addon.username || addon.author || 'Usuario')}
+                                    ${addon.is_verified || addon.author_verified ? `
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="verified-user-icon" width="16" height="16">
+                                        <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                                    </svg>
+                                    ` : ''}
+                                </span>
+                            </div>
+                            <span class="addon-version">${escapeHtml(addon.version || '1.0.0')}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Función para filtrar addons según búsqueda
+        function filterAddons(query, updateURL = false) {
+            isSearchActive = true;
+            
+            // Verificar que allAddons es un array
+            if (!filteredAddons || !Array.isArray(filteredAddons)) {
+                console.error('filteredAddons no es un array válido');
+                return;
+            }
+            
+            const searchResults = filteredAddons.filter(addon => {
+                const title = addon.title || '';
+                const username = addon.username || addon.author || '';
+                const description = addon.description || '';
+                
+                return title.toLowerCase().includes(query.toLowerCase()) || 
+                       username.toLowerCase().includes(query.toLowerCase()) ||
+                       description.toLowerCase().includes(query.toLowerCase());
+            });
+            
+            if (updateURL) {
+                // Actualizar URL con parámetro de búsqueda (without recargar la página)
+                window.history.pushState({}, '', `?search=${encodeURIComponent(query)}`);
+                
+                // Actualizar título
+                document.querySelector('.page-title').textContent = 'Resultados de Búsqueda';
+                
+                // Mostrar información de resultados
+                const searchHeader = document.createElement('div');
+                searchHeader.className = 'search-header';
+                searchHeader.innerHTML = `
+                    <h2 class="search-results-title">Resultados Encontrados</h2>
+                    <span class="search-results-count">${searchResults.length} resultado${searchResults.length !== 1 ? 's' : ''} para "${query}"</span>
+                    <button class="clear-search" onclick="clearSearch()">Limpiar búsqueda</button>
+                `;
+                
+                const container = document.querySelector('.container');
+                const pageTitle = document.querySelector('.page-title');
+                if (!document.querySelector('.search-header')) {
+                    container.insertBefore(searchHeader, pageTitle.nextSibling);
+                } else {
+                    document.querySelector('.search-header').innerHTML = searchHeader.innerHTML;
+                }
+            }
+            
+            displayAddons(searchResults);
+            document.getElementById('resultsCount').textContent = `${searchResults.length} resultado${searchResults.length !== 1 ? 's' : ''} para "${query}"`;
+        }
+
+        // Función para limpiar búsqueda
+        function clearSearch() {
+            isSearchActive = false;
+            document.getElementById('searchInput').value = '';
+            window.history.pushState({}, '', window.location.pathname);
+            document.querySelector('.page-title').textContent = 'Addons y Mods';
+            
+            const searchHeader = document.querySelector('.search-header');
+            if (searchHeader) {
+                searchHeader.remove();
+            }
+            
+            displayAddons(filteredAddons);
+            document.getElementById('resultsCount').textContent = `${filteredAddons.length} addon${filteredAddons.length !== 1 ? 's' : ''} encontrado${filteredAddons.length !== 1 ? 's' : ''}`;
+        }
+
+        // Función para ver un addon específico
+        function viewAddon(id) {
+            window.location.href = `../view.html?id=${id}`;
+        }
+
+        // Función para abrir modal de compartir
+        function openShareModal(id) {
+            currentAddonId = id;
+            const addon = filteredAddons.find(a => a.id === id);
+            if (addon) {
+                const shareUrl = `${window.location.origin}${window.location.pathname.replace('category/mods.html', '')}view.html?id=${id}`;
+                document.getElementById('shareUrl').textContent = shareUrl;
+                document.getElementById('shareModal').classList.add('show');
+            }
+        }
+
+        // Función para compartir en plataformas
+        function shareOnPlatform(platform) {
+            const url = encodeURIComponent(document.getElementById('shareUrl').textContent);
+            const title = encodeURIComponent("¡Mira este increíble addon para Minecraft!");
+            
+            let shareUrlPlatform = '';
+            
+            switch(platform) {
+                case 'whatsapp':
+                    shareUrlPlatform = `https://api.whatsapp.com/send?text=${title}%20${url}`;
+                    break;
+                case 'twitter':
+                    shareUrlPlatform = `https://twitter.com/intent/tweet?text=${title}&url=${url}`;
+                    break;
+                case 'facebook':
+                    shareUrlPlatform = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+                    break;
+                case 'telegram':
+                    shareUrlPlatform = `https://t.me/share/url?url=${url}&text=${title}`;
+                    break;
+            }
+            
+            window.open(shareUrlPlatform, '_blank');
+        }
+
+        // Función auxiliar para generar estrellas de valoración
+        function getStarRating(rating) {
+            let stars = '';
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<span class="rating-star">★</span>';
+            }
+            
+            if (hasHalfStar) {
+                stars += '<span class="rating-star">★</span>';
+            }
+            
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<span class="empty-star">☆</span>';
+            }
+            
+            return stars;
+        }
+
+        // Función para escapar HTML (prevenir XSS)
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Función para obtener iniciales de un nombre
+        function getInitials(name) {
+            if (!name) return 'U';
+            return name.split(' ').map(word => word[0]).join('').toUpperCase().substring(0, 2);
+        }
+
+        // Comprobar si hay parámetros de búsqueda en la URL al cargar
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchParam = urlParams.get('search');
+        if (searchParam) {
+            document.getElementById('searchInput').value = searchParam;
+            // Esperar a que los addons se carguen antes de filtrar
+            const checkAddonsLoaded = setInterval(() => {
+                if (filteredAddons && filteredAddons.length > 0) {
+                    clearInterval(checkAddonsLoaded);
+                    filterAddons(searchParam, true);
+                }
+            }, 100);
+        }
+    </script>
+</body>
+</html>
