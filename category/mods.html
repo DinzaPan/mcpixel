@@ -905,7 +905,7 @@
     <!-- Barra de navegación -->
     <nav class="navbar">
         <div class="logo-container">
-            <img src="../img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbm�PSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IndoaXRlIj5NPC90ZXh0Pjwvc3ZnPg=='">
+            <img src="../img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I=">
             <h1 class="site-title">MCPixel</h1>
         </div>
         
@@ -1008,7 +1008,7 @@
                 <h3 class="modal-title">Compartir Addon</h3>
                 <button class="close-button" id="closeShareModal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="18" y1="6" x2="6" y2='18'></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                 </button>
@@ -1251,18 +1251,27 @@
                 // Verificar si la respuesta tiene la estructura esperada
                 if (data && data.success && Array.isArray(data.data)) {
                     allAddons = data.data;
-                    // Filtrar addons que tengan la etiqueta "Add-on" o "Addon"
+                    // Filtrar addons que tengan la etiqueta "Add-on" o "Addon" (sin importar mayúsculas, espacios, etc.)
                     filteredAddons = allAddons.filter(addon => {
                         if (!addon.tags) return false;
                         
-                        const tags = Array.isArray(addon.tags) ? 
-                            addon.tags : 
-                            addon.tags.split(',').map(tag => tag.trim());
+                        // Normalizar tags - manejar diferentes formatos
+                        let tagsArray = [];
+                        if (Array.isArray(addon.tags)) {
+                            tagsArray = addon.tags;
+                        } else if (typeof addon.tags === 'string') {
+                            // Separar por comas y limpiar espacios
+                            tagsArray = addon.tags.split(',').map(tag => tag.trim());
+                        }
                         
-                        return tags.some(tag => 
-                            tag.toLowerCase().includes('add-on') || 
-                            tag.toLowerCase().includes('addon')
-                        );
+                        // Buscar tags que coincidan con "addon" o "add-on" (sin importar mayúsculas, espacios, guiones)
+                        return tagsArray.some(tag => {
+                            const normalizedTag = tag.toLowerCase()
+                                .replace(/\s+/g, '') // Eliminar espacios
+                                .replace(/-/g, '');  // Eliminar guiones
+                            
+                            return normalizedTag.includes('addon');
+                        });
                     });
                     
                     // Corregir las URLs de las imágenes
@@ -1279,18 +1288,27 @@
                 } else if (data && Array.isArray(data.addons)) {
                     // Estructura alternativa: data.addons
                     allAddons = data.addons;
-                    // Filtrar addons que tengan la etiqueta "Add-on" o "Addon"
+                    // Filtrar addons que tengan la etiqueta "Add-on" o "Addon" (sin importar mayúsculas, espacios, etc.)
                     filteredAddons = allAddons.filter(addon => {
                         if (!addon.tags) return false;
                         
-                        const tags = Array.isArray(addon.tags) ? 
-                            addon.tags : 
-                            addon.tags.split(',').map(tag => tag.trim());
+                        // Normalizar tags - manejar diferentes formatos
+                        let tagsArray = [];
+                        if (Array.isArray(addon.tags)) {
+                            tagsArray = addon.tags;
+                        } else if (typeof addon.tags === 'string') {
+                            // Separar por comas y limpiar espacios
+                            tagsArray = addon.tags.split(',').map(tag => tag.trim());
+                        }
                         
-                        return tags.some(tag => 
-                            tag.toLowerCase().includes('add-on') || 
-                            tag.toLowerCase().includes('addon')
-                        );
+                        // Buscar tags que coincidan con "addon" o "add-on" (sin importar mayúsculas, espacios, guiones)
+                        return tagsArray.some(tag => {
+                            const normalizedTag = tag.toLowerCase()
+                                .replace(/\s+/g, '') // Eliminar espacios
+                                .replace(/-/g, '');  // Eliminar guiones
+                            
+                            return normalizedTag.includes('addon');
+                        });
                     });
                     
                     displayAddons(filteredAddons);
@@ -1298,18 +1316,27 @@
                 } else if (Array.isArray(data)) {
                     // Estructura alternativa: array directo
                     allAddons = data;
-                    // Filtrar addons que tengan la etiqueta "Add-on" o "Addon"
+                    // Filtrar addons que tengan la etiqueta "Add-on" o "Addon" (sin importar mayúsculas, espacios, etc.)
                     filteredAddons = allAddons.filter(addon => {
                         if (!addon.tags) return false;
                         
-                        const tags = Array.isArray(addon.tags) ? 
-                            addon.tags : 
-                            addon.tags.split(',').map(tag => tag.trim());
+                        // Normalizar tags - manejar diferentes formatos
+                        let tagsArray = [];
+                        if (Array.isArray(addon.tags)) {
+                            tagsArray = addon.tags;
+                        } else if (typeof addon.tags === 'string') {
+                            // Separar por comas y limpiar espacios
+                            tagsArray = addon.tags.split(',').map(tag => tag.trim());
+                        }
                         
-                        return tags.some(tag => 
-                            tag.toLowerCase().includes('add-on') || 
-                            tag.toLowerCase().includes('addon')
-                        );
+                        // Buscar tags que coincidan con "addon" o "add-on" (sin importar mayúsculas, espacios, guiones)
+                        return tagsArray.some(tag => {
+                            const normalizedTag = tag.toLowerCase()
+                                .replace(/\s+/g, '') // Eliminar espacios
+                                .replace(/-/g, '');  // Eliminar guiones
+                            
+                            return normalizedTag.includes('addon');
+                        });
                     });
                     
                     displayAddons(filteredAddons);
@@ -1404,7 +1431,7 @@
                         
                         <div class="addon-footer">
                             <div class="addon-author">
-                                <img src="${addon.author_profile_pic_url || addon.author_avatar || '../img/default-avatar.png'}" alt="Autor" class="author-pic" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1sZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(addon.username || addon.author || 'U')}')">
+                                <img src="${addon.author_profile_pic_url || addon.author_avatar || '../img/default-avatar.png'}" alt="Autor" class="author-pic" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(addon.username || addon.author || 'U')}')">
                                 <span class="author-name">${escapeHtml(addon.username || addon.author || 'Usuario')}
                                     ${addon.is_verified || addon.author_verified ? `
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="verified-user-icon" width="16" height="16">
@@ -1424,7 +1451,7 @@
         function filterAddons(query, updateURL = false) {
             isSearchActive = true;
             
-            // Verificar que allAddons es un array
+            // Verificar que filteredAddons es un array
             if (!filteredAddons || !Array.isArray(filteredAddons)) {
                 console.error('filteredAddons no es un array válido');
                 return;
