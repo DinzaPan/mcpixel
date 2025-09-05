@@ -2,6 +2,7 @@
 const https = require('https');
 const http = require('http');
 const { parse } = require('url');
+const querystring = require('querystring');
 
 module.exports = async (req, res) => {
   // Configurar CORS
@@ -23,7 +24,7 @@ module.exports = async (req, res) => {
 
   try {
     // Obtener parámetros de consulta
-    const { action, image, id } = req.query;
+    const { action, image, id, tag } = req.query;
     
     // Si es una solicitud de imagen
     if (image) {
@@ -51,8 +52,15 @@ module.exports = async (req, res) => {
     let apiUrl;
     if (action === 'get_addons') {
       apiUrl = 'http://87.106.36.114:6322/api.php?action=get_addons';
+      
+      // Si hay un parámetro de tag, añadirlo a la URL
+      if (tag) {
+        apiUrl += `&tag=${encodeURIComponent(tag)}`;
+      }
     } else if (action === 'get_addon' && id) {
       apiUrl = `http://87.106.36.114:6322/api.php?action=get_addon&id=${id}`;
+    } else if (action === 'get_tags') {
+      apiUrl = 'http://87.106.36.114:6322/api.php?action=get_tags';
     } else {
       res.status(400).json({ error: 'Parámetros inválidos para la acción solicitada' });
       return;
