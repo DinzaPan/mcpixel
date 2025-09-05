@@ -905,7 +905,7 @@
     <!-- Barra de navegación -->
     <nav class="navbar">
         <div class="logo-container">
-            <img src="../img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I=">
+            <img src="../img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', 'M')">
             <h1 class="site-title">MCPixel</h1>
         </div>
         
@@ -1075,10 +1075,10 @@
 
     <!-- Contenedor principal -->
     <div class="container">
-        <h1 class="page-title">Addons y Mods</h1>
+        <h1 class="page-title" id="pageTitle">Addons y Mods</h1>
         
         <div class="search-header">
-            <h2 class="search-results-title">Addons Disponibles</h2>
+            <h2 class="search-results-title" id="resultsTitle">Addons Disponibles</h2>
             <span class="search-results-count" id="resultsCount">Cargando...</span>
         </div>
         
@@ -1232,11 +1232,23 @@
                     </div>
                 `;
                 
+                // Obtener parámetro de tag de la URL si existe
+                const urlParams = new URLSearchParams(window.location.search);
+                const tagParam = urlParams.get('tag');
+                
+                // Construir URL de la API con el tag si está presente
+                let apiUrl = API_BASE_URL;
+                if (tagParam) {
+                    apiUrl += `&tag=${encodeURIComponent(tagParam)}`;
+                    document.getElementById('pageTitle').textContent = `Addons de ${tagParam}`;
+                    document.getElementById('resultsTitle').textContent = `Addons de ${tagParam}`;
+                }
+                
                 // Timeout para evitar esperas infinitas
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 8000);
                 
-                const response = await fetch(API_BASE_URL, {
+                const response = await fetch(apiUrl, {
                     signal: controller.signal
                 });
                 
@@ -1251,28 +1263,7 @@
                 // Verificar si la respuesta tiene la estructura esperada
                 if (data && data.success && Array.isArray(data.data)) {
                     allAddons = data.data;
-                    // Filtrar addons que tengan la etiqueta "Add-on" o "Addon" (sin importar mayúsculas, espacios, etc.)
-                    filteredAddons = allAddons.filter(addon => {
-                        if (!addon.tags) return false;
-                        
-                        // Normalizar tags - manejar diferentes formatos
-                        let tagsArray = [];
-                        if (Array.isArray(addon.tags)) {
-                            tagsArray = addon.tags;
-                        } else if (typeof addon.tags === 'string') {
-                            // Separar por comas y limpiar espacios
-                            tagsArray = addon.tags.split(',').map(tag => tag.trim());
-                        }
-                        
-                        // Buscar tags que coincidan con "addon" o "add-on" (sin importar mayúsculas, espacios, guiones)
-                        return tagsArray.some(tag => {
-                            const normalizedTag = tag.toLowerCase()
-                                .replace(/\s+/g, '') // Eliminar espacios
-                                .replace(/-/g, '');  // Eliminar guiones
-                            
-                            return normalizedTag.includes('addon');
-                        });
-                    });
+                    filteredAddons = allAddons;
                     
                     // Corregir las URLs de las imágenes
                     filteredAddons = filteredAddons.map(addon => {
@@ -1288,27 +1279,15 @@
                 } else if (data && Array.isArray(data.addons)) {
                     // Estructura alternativa: data.addons
                     allAddons = data.addons;
-                    // Filtrar addons que tengan la etiqueta "Add-on" o "Addon" (sin importar mayúsculas, espacios, etc.)
-                    filteredAddons = allAddons.filter(addon => {
-                        if (!addon.tags) return false;
-                        
-                        // Normalizar tags - manejar diferentes formatos
-                        let tagsArray = [];
-                        if (Array.isArray(addon.tags)) {
-                            tagsArray = addon.tags;
-                        } else if (typeof addon.tags === 'string') {
-                            // Separar por comas y limpiar espacios
-                            tagsArray = addon.tags.split(',').map(tag => tag.trim());
-                        }
-                        
-                        // Buscar tags que coincidan con "addon" o "add-on" (sin importar mayúsculas, espacios, guiones)
-                        return tagsArray.some(tag => {
-                            const normalizedTag = tag.toLowerCase()
-                                .replace(/\s+/g, '') // Eliminar espacios
-                                .replace(/-/g, '');  // Eliminar guiones
-                            
-                            return normalizedTag.includes('addon');
-                        });
+                    filteredAddons = allAddons;
+                    
+                    // Corregir las URLs de las imágenes
+                    filteredAddons = filteredAddons.map(addon => {
+                        return {
+                            ...addon,
+                            cover_image_url: fixImageUrl(addon.cover_image_url),
+                            author_profile_pic_url: fixImageUrl(addon.author_profile_pic_url)
+                        };
                     });
                     
                     displayAddons(filteredAddons);
@@ -1316,27 +1295,15 @@
                 } else if (Array.isArray(data)) {
                     // Estructura alternativa: array directo
                     allAddons = data;
-                    // Filtrar addons que tengan la etiqueta "Add-on" o "Addon" (sin importar mayúsculas, espacios, etc.)
-                    filteredAddons = allAddons.filter(addon => {
-                        if (!addon.tags) return false;
-                        
-                        // Normalizar tags - manejar diferentes formatos
-                        let tagsArray = [];
-                        if (Array.isArray(addon.tags)) {
-                            tagsArray = addon.tags;
-                        } else if (typeof addon.tags === 'string') {
-                            // Separar por comas y limpiar espacios
-                            tagsArray = addon.tags.split(',').map(tag => tag.trim());
-                        }
-                        
-                        // Buscar tags que coincidan con "addon" o "add-on" (sin importar mayúsculas, espacios, guiones)
-                        return tagsArray.some(tag => {
-                            const normalizedTag = tag.toLowerCase()
-                                .replace(/\s+/g, '') // Eliminar espacios
-                                .replace(/-/g, '');  // Eliminar guiones
-                            
-                            return normalizedTag.includes('addon');
-                        });
+                    filteredAddons = allAddons;
+                    
+                    // Corregir las URLs de las imágenes
+                    filteredAddons = filteredAddons.map(addon => {
+                        return {
+                            ...addon,
+                            cover_image_url: fixImageUrl(addon.cover_image_url),
+                            author_profile_pic_url: fixImageUrl(addon.author_profile_pic_url)
+                        };
                     });
                     
                     displayAddons(filteredAddons);
@@ -1472,7 +1439,8 @@
                 window.history.pushState({}, '', `?search=${encodeURIComponent(query)}`);
                 
                 // Actualizar título
-                document.querySelector('.page-title').textContent = 'Resultados de Búsqueda';
+                document.getElementById('pageTitle').textContent = 'Resultados de Búsqueda';
+                document.getElementById('resultsTitle').textContent = 'Resultados Encontrados';
                 
                 // Mostrar información de resultados
                 const searchHeader = document.createElement('div');
@@ -1484,7 +1452,7 @@
                 `;
                 
                 const container = document.querySelector('.container');
-                const pageTitle = document.querySelector('.page-title');
+                const pageTitle = document.getElementById('pageTitle');
                 if (!document.querySelector('.search-header')) {
                     container.insertBefore(searchHeader, pageTitle.nextSibling);
                 } else {
@@ -1500,8 +1468,21 @@
         function clearSearch() {
             isSearchActive = false;
             document.getElementById('searchInput').value = '';
-            window.history.pushState({}, '', window.location.pathname);
-            document.querySelector('.page-title').textContent = 'Addons y Mods';
+            
+            // Obtener parámetro de tag de la URL si existe
+            const urlParams = new URLSearchParams(window.location.search);
+            const tagParam = urlParams.get('tag');
+            
+            // Limpiar solo el parámetro de búsqueda, mantener el tag si existe
+            if (tagParam) {
+                window.history.pushState({}, '', `?tag=${encodeURIComponent(tagParam)}`);
+                document.getElementById('pageTitle').textContent = `Addons de ${tagParam}`;
+                document.getElementById('resultsTitle').textContent = `Addons de ${tagParam}`;
+            } else {
+                window.history.pushState({}, '', window.location.pathname);
+                document.getElementById('pageTitle').textContent = 'Addons y Mods';
+                document.getElementById('resultsTitle').textContent = 'Addons Disponibles';
+            }
             
             const searchHeader = document.querySelector('.search-header');
             if (searchHeader) {
