@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPixel - Addons para Minecraft</title>
     <link rel="icon" href="./img/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #3B82F6;
@@ -147,6 +148,9 @@
         .menu-icon {
             width: 1.25rem;
             height: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Modal de API - Mejorado */
@@ -603,29 +607,35 @@
         }
         
         .error-icon {
-            font-size: 3rem;
-            color: var(--error-color);
-            margin-bottom: 1rem;
-            width: 4rem;
-            height: 4rem;
+            width: 6rem;
+            height: 6rem;
+            margin-bottom: 1.5rem;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: rgba(239, 68, 68, 0.1);
+            overflow: hidden;
+        }
+        
+        .error-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
         
         .error-text {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            color: var(--error-color);
         }
         
         .error-details {
             color: #94a3b8;
-            font-size: 0.9rem;
+            font-size: 1rem;
             margin-bottom: 1.5rem;
             max-width: 30rem;
+            line-height: 1.5;
         }
 
         .page-title {
@@ -905,7 +915,7 @@
     <!-- Barra de navegación -->
     <nav class="navbar">
         <div class="logo-container">
-            <img src="./img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1iZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPk08L3RleHQ+PC9zdmc+'">
+            <img src="./img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAi IGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1iZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPk08L3RleHQ+PC9zdmc+'">
             <h1 class="site-title">MCPixel</h1>
         </div>
         
@@ -921,41 +931,33 @@
             
             <div class="menu-dropdown" id="menuDropdown">
                 <a href="./index.html" class="menu-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                    </svg>
+                    <div class="menu-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
                     Inicio
                 </a>
                 <a href="./valued.html" class="menu-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                    </svg>
+                    <div class="menu-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
                     Mejor Valorados
                 </a>
                 <a href="./sc/credits.html" class="menu-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                    </svg>
+                    <div class="menu-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
                     Créditos
                 </a>
                 <a href="#" class="menu-item" id="apiButton">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 7V4h16v3"></path>
-                        <path d="M5 20h3l2-10h6l2 10h3"></path>
-                        <path d="M9 10V4"></path>
-                        <path d="M15 10V4"></path>
-                    </svg>
+                    <div class="menu-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
                     API
                 </a>
                 <a href="http://87.106.36.114:6322/" target="_blank" class="menu-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="2" y1="12" x2="22" y2="12"></line>
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                    </svg>
+                    <div class="menu-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
                     Página Oficial
                 </a>
             </div>
@@ -1069,8 +1071,13 @@
         <h1 class="page-title">Últimos Addons</h1>
         
         <div class="addons-grid" id="addonsGrid">
-            <div class="loader-container">
-                <div class="loader"></div>
+            <div class="error-message">
+                <div class="error-icon">
+                    <img src="./img/error.gif" alt="Error de conexión">
+                </div>
+                <h3 class="error-text">Error de Conexión</h3>
+                <p class="error-details">Ups, Los servidores de MCPixel están fuera de servicio. Nuestro equipo está trabajando para restablecer la conexión.</p>
+                <button class="clear-search" onclick="fetchAddons()">Reintentar</button>
             </div>
         </div>
     </div>
@@ -1270,9 +1277,11 @@
                 
                 document.getElementById('addonsGrid').innerHTML = `
                     <div class="error-message">
-                        <div class="error-icon">!</div>
-                        <h3 class="error-text">Error de conexión</h3>
-                        <p class="error-details">${errorMessage}</p>
+                        <div class="error-icon">
+                            <img src="./img/error.gif" alt="Error de conexión">
+                        </div>
+                        <h3 class="error-text">Error de Conexión</h3>
+                        <p class="error-details">Ups, Los servidores de MCPixel están fuera de servicio. Nuestro equipo está trabajando para restablecer la conexión.</p>
                         <button class="clear-search" onclick="fetchAddons()">Reintentar</button>
                     </div>
                 `;
@@ -1343,7 +1352,7 @@
                         
                         <div class="addon-footer">
                             <div class="addon-author">
-                                <img src="${addon.author_profile_pic_url || addon.author_avatar || './img/default-avatar.png'}" alt="Autor" class="author-pic" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(addon.username || addon.author || 'U')}')">
+                                <img src="${addon.author_profile_pic_url || addon.author_avatar || './img/default-avatar.png'}" alt="Autor" class="author-pic" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZилsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(addon.username || addon.author || 'U')}')">
                                 <span class="author-name">${escapeHtml(addon.username || addon.author || 'Usuario')}
                                     ${addon.is_verified || addon.author_verified ? `
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="verified-user-icon" width="16" height="16">
