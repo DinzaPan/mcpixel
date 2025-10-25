@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicar Addon - MCPixel</title>
+    <link rel="icon" href="./img/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3B82F6;
+            --primary-hover: #2563EB;
+            --secondary-color: #F59E0B;
+            --accent-color: #10B981;
+            --dark-bg: #0F172A;
+            --dark-card: #1E293B;
+            --dark-text: #F8FAFC;
+            --dark-border: #334155;
+            --light-bg: #F1F5F9;
+            --light-card: #FFFFFF;
+            --light-text: #1E293B;
+            --light-border: #E2E8F0;
+            --error-color: #EF4444;
+            --success-color: #10B981;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --rounded: 0.75rem;
+            --rounded-lg: 1rem;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        /* Barra de navegación */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: var(--dark-card);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background-color: rgba(30, 41, 59, 0.8);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            height: 2.5rem;
+            width: 2.5rem;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .site-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(90deg, #3B82F6, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .settings-btn {
+            background: none;
+            border: none;
+            color: var(--dark-text);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--rounded);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .settings-btn:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        /* Modal de ajustes */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background-color: var(--dark-card);
+            border-radius: var(--rounded-lg);
+            padding: 2rem;
+            max-width: 90%;
+            width: 30rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+            border: 1px solid var(--dark-border);
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--dark-border);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #3B82F6, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            color: var(--dark-text);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .close-button:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            transform: rotate(90deg);
+        }
+
+        /* Contenedor principal */
+        .container {
+            padding: 2rem;
+            max-width: 50rem;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--dark-text);
+            position: relative;
+            padding-bottom: 0.75rem;
+            text-align: center;
+        }
+
+        .page-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4rem;
+            height: 0.25rem;
+            background: linear-gradient(90deg, #3B82F6, #10B981);
+            border-radius: 0.25rem;
+        }
+
+        /* Formularios */
+        .form-container {
+            background-color: var(--dark-card);
+            border-radius: var(--rounded-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--dark-border);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: var(--rounded);
+            border: 2px solid var(--dark-border);
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        .form-textarea {
+            min-height: 6rem;
+            resize: vertical;
+        }
+
+        .form-help {
+            font-size: 0.875rem;
+            color: #94a3b8;
+            margin-top: 0.25rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--rounded);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--dark-border);
+            color: var(--dark-text);
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+        }
+
+        /* Botón de publicar */
+        .publish-section {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .publish-btn-large {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--rounded-lg);
+            font-size: 1.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .publish-btn-large:hover {
+            background-color: #059669;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Mensajes */
+        .message {
+            padding: 1rem;
+            border-radius: var(--rounded);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .message-success {
+            background-color: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+        }
+
+        .message-error {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
+        }
+
+        /* Addons del usuario */
+        .user-addon {
+            background-color: var(--dark-card);
+            border-radius: var(--rounded);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--dark-border);
+            position: relative;
+        }
+
+        .user-addon-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .user-addon-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .user-addon-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .no-addons {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+        }
+
+        /* Info de usuario */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background-color: var(--dark-card);
+            padding: 1rem;
+            border-radius: var(--rounded);
+            margin-bottom: 2rem;
+        }
+
+        .user-avatar {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+        }
+
+        .user-details {
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .form-container {
+                padding: 1.5rem;
+            }
+            
+            .navbar {
+                padding: 0.75rem 1rem;
+            }
+            
+            .user-addon-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .user-addon-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="./img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPk08L3RleHQ+PC9zdmc+'">
+            <h1 class="site-title">MCPixel</h1>
+        </div>
+        
+        <button class="settings-btn" id="settingsButton">
+            <i class="fas fa-cog"></i>
+            Ajustes
+        </button>
+    </nav>
+
+    <!-- Modal de ajustes -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Configurar Perfil</h3>
+                <button class="close-button" id="closeSettingsModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <form id="profileForm">
+                <div class="form-group">
+                    <label class="form-label" for="profileAvatar">URL de Foto de Perfil</label>
+                    <input type="url" class="form-input" id="profileAvatar" placeholder="https://ejemplo.com/foto.jpg">
+                    <p class="form-help">Pega la URL de tu imagen de perfil</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="profileUsername">Nombre de Usuario</label>
+                    <input type="text" class="form-input" id="profileUsername" required placeholder="Tu nombre de usuario">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Guardar Perfil
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div class="container">
+        <h1 class="page-title">Publicar Addon</h1>
+        
+        <div id="appContainer">
+            <!-- Aquí se cargará la interfaz según el estado -->
+        </div>
+    </div>
+
+    <script>
+        // Configuración para JSONBin.io
+        const config = {
+            usersBinId: "68f71bd3ae596e708f20d079",
+            addonsBinId: "68f71bc0ae596e708f20d03f",
+            apiKey: "$2a$10$O6gu6e1czFdZyjnMnHi5zudC/01BsP1Vng3V2xk/jyXexqovnDOwa"
+        };
+
+        // Variables globales
+        let addons = [];
+        let users = [];
+        let showPublishForm = false;
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadUsers();
+            await loadAddons();
+            checkUserProfile();
+            
+            // Configurar modal de ajustes
+            const settingsButton = document.getElementById('settingsButton');
+            const settingsModal = document.getElementById('settingsModal');
+            const closeSettingsModal = document.getElementById('closeSettingsModal');
+            const profileForm = document.getElementById('profileForm');
+            
+            settingsButton.addEventListener('click', function() {
+                loadProfileForm();
+                settingsModal.classList.add('show');
+            });
+            
+            closeSettingsModal.addEventListener('click', function() {
+                settingsModal.classList.remove('show');
+            });
+            
+            profileForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveUserProfile();
+            });
+            
+            // Cerrar modal al hacer clic fuera
+            settingsModal.addEventListener('click', function(e) {
+                if (e.target === settingsModal) {
+                    settingsModal.classList.remove('show');
+                }
+            });
+        });
+
+        // Cargar usuarios desde JSONBin.io
+        async function loadUsers() {
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${config.usersBinId}/latest`, {
+                    headers: {
+                        'X-Master-Key': config.apiKey
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Manejar diferentes estructuras de datos
+                if (data && data.record) {
+                    if (Array.isArray(data.record.users)) {
+                        users = data.record.users;
+                    } else if (Array.isArray(data.record)) {
+                        users = data.record;
+                    } else {
+                        users = [];
+                    }
+                } else {
+                    users = [];
+                }
+                console.log('Usuarios cargados:', users);
+            } catch (error) {
+                console.error('Error loading users:', error);
+                users = [];
+            }
+        }
+
+        // Cargar addons desde JSONBin.io
+        async function loadAddons() {
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${config.addonsBinId}/latest`, {
+                    headers: {
+                        'X-Master-Key': config.apiKey
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Manejar diferentes estructuras de datos
+                if (data && data.record) {
+                    if (Array.isArray(data.record.addons)) {
+                        addons = data.record.addons;
+                    } else if (Array.isArray(data.record)) {
+                        addons = data.record;
+                    } else if (typeof data.record === 'object') {
+                        // Si es un objeto, convertirlo a array
+                        addons = Object.values(data.record);
+                    } else {
+                        addons = [];
+                    }
+                } else {
+                    addons = [];
+                }
+                console.log('Addons cargados:', addons);
+            } catch (error) {
+                console.error('Error loading addons:', error);
+                addons = [];
+            }
+        }
+
+        // Cargar datos en el formulario de perfil
+        function loadProfileForm() {
+            const userProfile = localStorage.getItem('userProfile');
+            if (userProfile) {
+                const profile = JSON.parse(userProfile);
+                document.getElementById('profileAvatar').value = profile.avatar || '';
+                document.getElementById('profileUsername').value = profile.username || '';
+            } else {
+                document.getElementById('profileAvatar').value = '';
+                document.getElementById('profileUsername').value = '';
+            }
+        }
+
+        // Guardar perfil de usuario
+        async function saveUserProfile() {
+            const avatar = document.getElementById('profileAvatar').value.trim();
+            const username = document.getElementById('profileUsername').value.trim();
+            
+            if (!username) {
+                alert('Por favor ingresa un nombre de usuario');
+                return;
+            }
+
+            const userProfile = {
+                id: Date.now(),
+                avatar: avatar || './img/default-avatar.png',
+                username: username,
+                verified: false,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Guardar en localStorage
+            localStorage.setItem('userProfile', JSON.stringify(userProfile));
+            
+            // Guardar en JSONBin.io
+            try {
+                // Verificar si el usuario ya existe
+                const existingUserIndex = users.findIndex(u => u.username === username);
+                
+                if (existingUserIndex !== -1) {
+                    users[existingUserIndex] = userProfile;
+                } else {
+                    users.push(userProfile);
+                }
+                
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${config.usersBinId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': config.apiKey
+                    },
+                    body: JSON.stringify({ users: users })
+                });
+                
+                if (response.ok) {
+                    showMessage('Perfil guardado correctamente', 'success');
+                    document.getElementById('settingsModal').classList.remove('show');
+                    checkUserProfile();
+                } else {
+                    throw new Error('Error al guardar usuario');
+                }
+            } catch (error) {
+                console.error('Error saving user:', error);
+                showMessage('Error al guardar el perfil', 'error');
+            }
+        }
+
+        // Verificar perfil de usuario
+        function checkUserProfile() {
+            const appContainer = document.getElementById('appContainer');
+            const userProfile = localStorage.getItem('userProfile');
+            
+            if (!userProfile) {
+                // Mostrar interfaz para configurar perfil primero
+                appContainer.innerHTML = `
+                    <div class="form-container">
+                        <div style="text-align: center; margin-bottom: 2rem;">
+                            <h2 style="margin-bottom: 1rem;">Primero configura tu perfil</h2>
+                            <p style="color: #94a3b8;">Necesitas configurar tu perfil antes de publicar addons</p>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <button class="btn btn-primary" onclick="document.getElementById('settingsButton').click()">
+                                <i class="fas fa-cog"></i>
+                                Configurar Perfil
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Mostrar interfaz principal
+                showMainInterface();
+            }
+        }
+
+        // Mostrar interfaz principal
+        function showMainInterface() {
+            const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+            const appContainer = document.getElementById('appContainer');
+            
+            if (showPublishForm) {
+                // Mostrar formulario de publicación
+                appContainer.innerHTML = `
+                    <div class="user-info">
+                        <img src="${userProfile.avatar}" alt="Avatar" class="user-avatar" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(userProfile.username)}')">
+                        <div class="user-details">
+                            <div class="user-name">${escapeHtml(userProfile.username)}</div>
+                            <div style="color: #94a3b8; font-size: 0.875rem;">Publicando como autor</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-container">
+                        <h2 style="margin-bottom: 1.5rem; text-align: center;">Publicar Nuevo Addon</h2>
+                        <form id="publishForm">
+                            <div class="form-group">
+                                <label class="form-label" for="coverImage">URL de Foto de Portada</label>
+                                <input type="url" class="form-input" id="coverImage" required placeholder="https://ejemplo.com/portada.jpg">
+                                <p class="form-help">Imagen que representará tu addon en la lista</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="addonTitle">Nombre del Addon</label>
+                                <input type="text" class="form-input" id="addonTitle" required placeholder="Nombre único y descriptivo">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="addonDescription">Descripción</label>
+                                <textarea class="form-input form-textarea" id="addonDescription" required placeholder="Describe detalladamente tu addon, sus características y funcionalidades..."></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="addonVersion">Versión del Addon</label>
+                                <input type="text" class="form-input" id="addonVersion" required placeholder="Ej: 1.0.0" value="1.0.0">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="addonTags">Etiquetas</label>
+                                <input type="text" class="form-input" id="addonTags" placeholder="texturas, hd, realista (separadas por comas)">
+                                <p class="form-help">Etiquetas que ayudarán a los usuarios a encontrar tu addon</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="downloadLink">Link de Descarga</label>
+                                <input type="url" class="form-input" id="downloadLink" required placeholder="https://ejemplo.com/descarga.zip">
+                                <p class="form-help">Asegúrate de que el enlace sea accesible públicamente</p>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="showPublishForm = false; showMainInterface();">
+                                    <i class="fas fa-arrow-left"></i>
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-paper-plane"></i>
+                                    Publicar Addon
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                `;
+
+                document.getElementById('publishForm').addEventListener('submit', handlePublish);
+            } else {
+                // Mostrar interfaz principal con botón de publicar
+                appContainer.innerHTML = `
+                    <div class="user-info">
+                        <img src="${userProfile.avatar}" alt="Avatar" class="user-avatar" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(userProfile.username)}')">
+                        <div class="user-details">
+                            <div class="user-name">${escapeHtml(userProfile.username)}</div>
+                            <div style="color: #94a3b8; font-size: 0.875rem;">Autor registrado</div>
+                        </div>
+                    </div>
+                    
+                    <div class="publish-section">
+                        <button class="publish-btn-large" onclick="showPublishForm = true; showMainInterface();">
+                            <i class="fas fa-plus"></i>
+                            Publicar Addon
+                        </button>
+                    </div>
+                    
+                    <div id="userAddons">
+                        <h2 style="margin-bottom: 1.5rem; text-align: center;">Mis Addons Publicados</h2>
+                        <div id="userAddonsList"></div>
+                    </div>
+                `;
+
+                loadUserAddons();
+            }
+        }
+
+        // Manejar publicación de addon
+        async function handlePublish(e) {
+            e.preventDefault();
+            
+            const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+            const coverImage = document.getElementById('coverImage').value.trim();
+            const addonTitle = document.getElementById('addonTitle').value.trim();
+            const addonDescription = document.getElementById('addonDescription').value.trim();
+            const addonVersion = document.getElementById('addonVersion').value.trim();
+            const addonTags = document.getElementById('addonTags').value.trim();
+            const downloadLink = document.getElementById('downloadLink').value.trim();
+            
+            if (!coverImage || !addonTitle || !addonDescription || !addonVersion || !downloadLink) {
+                showMessage('Por favor completa todos los campos obligatorios', 'error');
+                return;
+            }
+
+            const newAddon = {
+                id: Date.now(),
+                title: addonTitle,
+                description: addonDescription,
+                version: addonVersion,
+                tags: addonTags,
+                download_link: downloadLink,
+                cover_image: coverImage,
+                author: userProfile.username,
+                author_avatar: userProfile.avatar,
+                author_verified: false,
+                verified: false,
+                rating: 0,
+                review_count: 0,
+                created_at: new Date().toISOString(),
+                user_id: userProfile.id
+            };
+            
+            addons.push(newAddon);
+            
+            // Guardar en JSONBin.io
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${config.addonsBinId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': config.apiKey
+                    },
+                    body: JSON.stringify({ addons: addons })
+                });
+                
+                if (response.ok) {
+                    showMessage('¡Addon publicado exitosamente!', 'success');
+                    showPublishForm = false;
+                    setTimeout(() => {
+                        showMainInterface();
+                    }, 1500);
+                } else {
+                    throw new Error('Error al guardar addon');
+                }
+            } catch (error) {
+                console.error('Error saving addon:', error);
+                showMessage('Error al publicar el addon', 'error');
+            }
+        }
+
+        // Cargar addons del usuario
+        function loadUserAddons() {
+            const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+            const userAddonsList = document.getElementById('userAddonsList');
+            const userAddons = addons.filter(addon => addon.user_id === userProfile.id);
+            
+            if (userAddons.length === 0) {
+                userAddonsList.innerHTML = `
+                    <div class="no-addons">
+                        <p>Aún no has publicado ningún addon</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            userAddonsList.innerHTML = userAddons.map(addon => `
+                <div class="user-addon">
+                    <div class="user-addon-header">
+                        <div style="flex-grow: 1;">
+                            <h3 class="user-addon-title">${escapeHtml(addon.title)}</h3>
+                            <p style="color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.875rem;">
+                                ${escapeHtml(addon.description.substring(0, 100))}...
+                            </p>
+                            <div style="display: flex; gap: 1rem; font-size: 0.875rem; color: #94a3b8;">
+                                <span>Versión: ${escapeHtml(addon.version)}</span>
+                                <span>•</span>
+                                <span>Publicado: ${new Date(addon.created_at).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                        <div class="user-addon-actions">
+                            <button class="btn btn-primary btn-small" onclick="editAddon(${addon.id})">
+                                <i class="fas fa-edit"></i>
+                                Editar
+                            </button>
+                            <button class="btn btn-small" style="background-color: var(--error-color); color: white;" onclick="deleteAddon(${addon.id})">
+                                <i class="fas fa-trash"></i>
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Editar addon
+        async function editAddon(addonId) {
+            const addon = addons.find(a => a.id === addonId);
+            if (!addon) return;
+            
+            const newTitle = prompt('Nuevo nombre del addon:', addon.title);
+            if (newTitle === null) return;
+            
+            const newDescription = prompt('Nueva descripción:', addon.description);
+            if (newDescription === null) return;
+            
+            const newVersion = prompt('Nueva versión:', addon.version);
+            if (newVersion === null) return;
+            
+            addon.title = newTitle.trim();
+            addon.description = newDescription.trim();
+            addon.version = newVersion.trim();
+            
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${config.addonsBinId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': config.apiKey
+                    },
+                    body: JSON.stringify({ addons: addons })
+                });
+                
+                if (response.ok) {
+                    showMessage('Addon actualizado correctamente', 'success');
+                    loadUserAddons();
+                } else {
+                    throw new Error('Error al actualizar addon');
+                }
+            } catch (error) {
+                console.error('Error updating addon:', error);
+                showMessage('Error al actualizar el addon', 'error');
+            }
+        }
+
+        // Eliminar addon
+        async function deleteAddon(addonId) {
+            if (!confirm('¿Estás seguro de que quieres eliminar este addon? Esta acción no se puede deshacer.')) {
+                return;
+            }
+            
+            addons = addons.filter(a => a.id !== addonId);
+            
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${config.addonsBinId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': config.apiKey
+                    },
+                    body: JSON.stringify({ addons: addons })
+                });
+                
+                if (response.ok) {
+                    showMessage('Addon eliminado correctamente', 'success');
+                    loadUserAddons();
+                } else {
+                    throw new Error('Error al eliminar addon');
+                }
+            } catch (error) {
+                console.error('Error deleting addon:', error);
+                showMessage('Error al eliminar el addon', 'error');
+            }
+        }
+
+        // Mostrar mensaje
+        function showMessage(message, type) {
+            const appContainer = document.getElementById('appContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${type}`;
+            messageDiv.textContent = message;
+            
+            appContainer.insertBefore(messageDiv, appContainer.firstChild);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+
+        // Función auxiliar para obtener iniciales
+        function getInitials(name) {
+            return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+        }
+
+        // Función auxiliar para escapar HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
