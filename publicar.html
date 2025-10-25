@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCPixel - Addons para Minecraft</title>
+    <title>Publicar Addon - MCPixel</title>
     <link rel="icon" href="./img/logo.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -44,7 +44,6 @@
             transition: var(--transition);
         }
 
-        /* Barra de navegación */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -82,243 +81,102 @@
             letter-spacing: -0.5px;
         }
 
-        /* Sección del buscador */
-        .search-section {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
-            padding: 2rem 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
-        }
-
-        .search-container {
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .search-form {
-            display: flex;
-            align-items: center;
-        }
-
-        .search-input {
-            flex-grow: 1;
-            padding: 0.75rem 1.5rem;
-            padding-right: 3rem;
-            border-radius: 2rem;
-            border: 2px solid var(--dark-border);
-            background-color: var(--dark-card);
-            color: var(--dark-text);
-            font-size: 1rem;
-            transition: var(--transition);
-            box-shadow: var(--shadow);
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-        }
-
-        .search-button {
-            position: absolute;
-            right: 0.75rem;
+        .settings-btn {
             background: none;
             border: none;
-            color: white;
+            color: var(--dark-text);
             cursor: pointer;
             padding: 0.5rem;
-            transition: var(--transition);
-            background-color: var(--primary-color);
-            width: 2rem;
-            height: 2rem;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .search-button svg {
-            width: 1rem;
-            height: 1rem;
-        }
-
-        .search-button:hover {
-            background-color: var(--primary-hover);
-            transform: scale(1.05);
-        }
-
-        .search-results-dropdown {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background-color: var(--dark-card);
-            border-radius: 0 0 var(--rounded) var(--rounded);
-            box-shadow: var(--shadow-lg);
-            max-height: 20rem;
-            overflow-y: auto;
-            z-index: 1001;
-            border: 1px solid var(--dark-border);
-            border-top: none;
-        }
-
-        .search-result-item {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid var(--dark-border);
-            cursor: pointer;
+            border-radius: var(--rounded);
             transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
+            font-size: 1rem;
         }
 
-        .search-result-item:hover {
+        .settings-btn:hover {
             background-color: rgba(59, 130, 246, 0.1);
         }
 
-        .search-result-item img {
-            width: 2.5rem;
-            height: 2.5rem;
-            object-fit: cover;
-            border-radius: 0.5rem;
-        }
-
-        .search-result-info {
-            flex-grow: 1;
-        }
-
-        .search-result-title {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            color: var(--dark-text);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 200px;
-        }
-
-        .search-result-author {
-            font-size: 0.75rem;
-            color: #94a3b8;
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
             display: flex;
             align-items: center;
-            gap: 0.25rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 200px;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
         }
 
-        .search-result-author img {
-            width: 1.25rem;
-            height: 1.25rem;
-            border-radius: 50%;
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
         }
 
-        .no-results {
-            padding: 1rem;
-            text-align: center;
-            color: var(--dark-text);
-            font-size: 0.9rem;
+        .modal {
+            background-color: var(--dark-card);
+            border-radius: var(--rounded-lg);
+            padding: 2rem;
+            max-width: 90%;
+            width: 30rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+            border: 1px solid var(--dark-border);
         }
 
-        /* Contenedor principal */
-        .container {
-            padding: 0 2rem 2rem;
-            max-width: 90rem;
-            margin: 0 auto;
+        .modal-overlay.show .modal {
+            transform: scale(1);
         }
 
-        .search-header {
+        .modal-header {
             display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--dark-border);
         }
-        
-        .search-results-title {
-            font-size: 1.75rem;
+
+        .modal-title {
+            font-size: 1.5rem;
             font-weight: 700;
-            color: var(--dark-text);
             background: linear-gradient(90deg, #3B82F6, #10B981);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            display: inline-block;
-        }
-        
-        .search-results-count {
-            font-size: 0.9rem;
-            color: #94a3b8;
-        }
-        
-        .clear-search {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0.5rem 1.25rem;
-            border-radius: 2rem;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: var(--transition);
-            text-decoration: none;
-            align-self: flex-start;
-            margin-top: 1rem;
-            box-shadow: var(--shadow);
-        }
-        
-        .clear-search:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-2px);
         }
 
-        .no-addons-message {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 3rem;
-            text-align: center;
+        .close-button {
+            background: none;
+            border: none;
             color: var(--dark-text);
-            grid-column: 1 / -1;
-            background-color: var(--dark-card);
-            border-radius: var(--rounded);
-            box-shadow: var(--shadow);
-            margin: 2rem 0;
-        }
-        
-        .no-addons-icon {
-            width: 6rem;
-            height: 6rem;
-            margin-bottom: 1.5rem;
-            border-radius: 50%;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            transition: var(--transition);
         }
-        
-        .no-addons-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+
+        .close-button:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            transform: rotate(90deg);
         }
-        
-        .no-addons-text {
-            font-size: 1.5rem;
-            margin-bottom: 0.75rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-        
-        .no-addons-details {
-            color: #94a3b8;
-            font-size: 1rem;
-            margin-bottom: 1.5rem;
-            max-width: 30rem;
-            line-height: 1.5;
+
+        .container {
+            padding: 2rem;
+            max-width: 50rem;
+            margin: 0 auto;
         }
 
         .page-title {
@@ -328,448 +186,400 @@
             color: var(--dark-text);
             position: relative;
             padding-bottom: 0.75rem;
+            text-align: center;
         }
 
         .page-title:after {
             content: '';
             position: absolute;
             bottom: 0;
-            left: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 4rem;
             height: 0.25rem;
             background: linear-gradient(90deg, #3B82F6, #10B981);
             border-radius: 0.25rem;
         }
 
-        /* Grid de addons */
-        .addons-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
-            gap: 2rem;
-            margin-top: 1.5rem;
-        }
-
-        .addon-card {
+        .form-container {
             background-color: var(--dark-card);
             border-radius: var(--rounded-lg);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            text-decoration: none;
-            color: inherit;
-            position: relative;
-            border: 1px solid var(--dark-border);
-            cursor: pointer;
-        }
-
-        .addon-card:hover {
-            transform: translateY(-0.5rem);
+            padding: 2rem;
             box-shadow: var(--shadow-lg);
-            border-color: var(--primary-color);
+            border: 1px solid var(--dark-border);
         }
 
-        .addon-cover {
-            width: 100%;
-            height: 12rem;
-            object-fit: cover;
-            border-bottom: 1px solid var(--dark-border);
+        .form-group {
+            margin-bottom: 1.5rem;
         }
 
-        .addon-info {
-            padding: 1.5rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .addon-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin: 0 0 0.75rem 0;
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
             color: var(--dark-text);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
-        .addon-description {
-            font-size: 0.9375rem;
-            color: #94a3b8;
-            margin: 0 0 1rem 0;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            flex-grow: 1;
-            line-height: 1.5;
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: var(--rounded);
+            border: 2px solid var(--dark-border);
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            font-size: 1rem;
+            transition: var(--transition);
         }
 
-        .addon-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        .form-textarea {
+            min-height: 6rem;
+            resize: vertical;
+        }
+
+        .form-help {
             font-size: 0.875rem;
             color: #94a3b8;
-            margin-top: auto;
-            padding-top: 1rem;
-            border-top: 1px solid var(--dark-border);
+            margin-top: 0.25rem;
         }
 
-        .addon-author {
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--rounded);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 1rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            max-width: 70%;
-            overflow: hidden;
         }
 
-        .author-pic {
-            width: 2rem;
-            height: 2rem;
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--dark-border);
+            color: var(--dark-text);
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+        }
+
+        .publish-section {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .publish-btn-large {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--rounded-lg);
+            font-size: 1.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .publish-btn-large:hover {
+            background-color: #059669;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: var(--rounded);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .message-success {
+            background-color: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+        }
+
+        .message-error {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
+        }
+
+        .user-addon {
+            background-color: var(--dark-card);
+            border-radius: var(--rounded);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--dark-border);
+            position: relative;
+        }
+
+        .user-addon-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .user-addon-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .user-addon-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .no-addons {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background-color: var(--dark-card);
+            padding: 1rem;
+            border-radius: var(--rounded);
+            margin-bottom: 2rem;
+        }
+
+        .user-avatar {
+            width: 3rem;
+            height: 3rem;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--primary-color);
-            flex-shrink: 0;
         }
 
-        .author-name {
-            text-decoration: none;
-            color: inherit;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.15rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .user-details {
+            flex-grow: 1;
+            text-align: left;
         }
 
-        .addon-version {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 2rem;
-            font-size: 0.75rem;
+        .user-name {
             font-weight: 600;
-            flex-shrink: 0;
+            color: var(--dark-text);
         }
 
-        .verified-user-icon {
-            color: #94a3b8;
-            margin-left: 0.15rem;
-            font-size: 1rem;
-            vertical-align: middle;
-            width: 1rem;
-            height: 1rem;
-            flex-shrink: 0;
+        .cover-preview-container {
+            margin-top: 1rem;
+            text-align: center;
         }
 
-        /* Botón de compartir en tarjeta - Solo visible al pasar el ratón */
-        .share-button {
-            position: absolute;
-            top: 0.75rem;
-            right: 0.75rem;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 2.25rem;
-            height: 2.25rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-            z-index: 10;
-            opacity: 0;
-            transform: scale(0.8);
+        .cover-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: var(--rounded);
+            border: 2px solid var(--dark-border);
+            display: none;
         }
 
-        .addon-card:hover .share-button {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .share-button:hover {
-            background-color: var(--primary-color);
-            transform: scale(1.1) !important;
-        }
-
-        .share-icon {
-            width: 1.25rem;
-            height: 1.25rem;
-        }
-
-        /* Loader */
-        .loader-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 3rem;
-            grid-column: 1 / -1;
-        }
-
-        .loader {
-            width: 48px;
-            height: 48px;
-            border: 5px solid rgba(59, 130, 246, 0.2);
-            border-radius: 50%;
-            border-top-color: var(--primary-color);
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .cover-preview.visible {
+            display: inline-block;
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 0 1rem 1rem;
+                padding: 1rem;
             }
             
-            .addons-grid {
-                grid-template-columns: 1fr;
+            .form-container {
+                padding: 1.5rem;
             }
             
             .navbar {
                 padding: 0.75rem 1rem;
             }
             
-            .search-section {
-                padding: 1.5rem 1rem;
+            .user-addon-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .user-addon-actions {
+                width: 100%;
+                justify-content: flex-end;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Barra de navegación -->
     <nav class="navbar">
         <div class="logo-container">
             <img src="./img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPk08L3RleHQ+PC9zdmc+'">
             <h1 class="site-title">MCPixel</h1>
         </div>
+        
+        <button class="settings-btn" id="settingsButton">
+            <i class="fas fa-cog"></i>
+            Ajustes
+        </button>
     </nav>
 
-    <!-- Sección del buscador -->
-    <section class="search-section">
-        <div class="search-container">
-            <form class="search-form" id="searchForm">
-                <input type="text" class="search-input" id="searchInput" placeholder="Buscar addons por título o autor...">
-                <button type="submit" class="search-button">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Configurar Perfil</h3>
+                <button class="close-button" id="closeSettingsModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                 </button>
-            </form>
-            <div class="search-results-dropdown" id="searchResults"></div>
-        </div>
-    </section>
-
-    <!-- Contenedor principal -->
-    <div class="container">
-        <h1 class="page-title">Últimos Addons</h1>
-        
-        <div class="addons-grid" id="addonsGrid">
-            <div class="loader-container">
-                <div class="loader"></div>
             </div>
+            
+            <form id="profileForm">
+                <div class="form-group">
+                    <label class="form-label" for="profileAvatar">URL de Foto de Perfil</label>
+                    <input type="url" class="form-input" id="profileAvatar" placeholder="https://ejemplo.com/foto.jpg">
+                    <p class="form-help">Pega la URL de tu imagen de perfil</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="profileUsername">Nombre de Usuario</label>
+                    <input type="text" class="form-input" id="profileUsername" required placeholder="Tu nombre de usuario">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Guardar Perfil
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="page-title">Publicar Addon</h1>
+        
+        <div id="appContainer">
         </div>
     </div>
 
     <script>
-        // Configuración para JSONBin.io
         const config = {
             usersBinId: "68f71bd3ae596e708f20d079",
             addonsBinId: "68f71bc0ae596e708f20d03f",
             apiKey: "$2a$10$O6gu6e1czFdZyjnMnHi5zudC/01BsP1Vng3V2xk/jyXexqovnDOwa"
         };
 
-        // Variables globales
-        let allAddons = [];
-        let searchTimeout = null;
-        let isSearchActive = false;
-        let refreshInterval = null;
+        let addons = [];
+        let users = [];
+        let showPublishForm = false;
 
-        // Configuración del cache - 5 minutos de duración
-        const CACHE_KEYS = {
-            ADDONS_DATA: 'mcpixel_addons_data',
-            ADDONS_TIMESTAMP: 'mcpixel_addons_timestamp',
-            ADDONS_HASH: 'mcpixel_addons_hash'
-        };
-        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos en milisegundos
-        const REFRESH_INTERVAL = 5 * 60 * 1000; // Verificar cada 5 minutos
-
-        // Cargar addons al iniciar
-        document.addEventListener('DOMContentLoaded', function() {
-            loadAddonsWithCache();
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadUsers();
+            await loadAddons();
+            checkUserProfile();
             
-            // Configurar búsqueda
-            const searchInput = document.getElementById('searchInput');
-            const searchForm = document.getElementById('searchForm');
+            const settingsButton = document.getElementById('settingsButton');
+            const settingsModal = document.getElementById('settingsModal');
+            const closeSettingsModal = document.getElementById('closeSettingsModal');
+            const profileForm = document.getElementById('profileForm');
             
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                const query = this.value.trim();
-                
-                // Si el campo está vacío, reiniciar la búsqueda
-                if (query.length === 0) {
-                    clearSearch();
-                    return;
-                }
-                
-                if (query.length < 2) {
-                    document.getElementById('searchResults').style.display = 'none';
-                    return;
-                }
-                
-                searchTimeout = setTimeout(() => {
-                    filterAddons(query);
-                }, 300);
+            settingsButton.addEventListener('click', function() {
+                loadProfileForm();
+                settingsModal.classList.add('show');
             });
             
-            searchForm.addEventListener('submit', function(e) {
+            closeSettingsModal.addEventListener('click', function() {
+                settingsModal.classList.remove('show');
+            });
+            
+            profileForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                const query = searchInput.value.trim();
-                if (query) {
-                    filterAddons(query, true);
+                saveUserProfile();
+            });
+            
+            settingsModal.addEventListener('click', function(e) {
+                if (e.target === settingsModal) {
+                    settingsModal.classList.remove('show');
                 }
             });
-
-            // Iniciar intervalo de actualización automática
-            startAutoRefresh();
         });
 
-        // Función para iniciar la actualización automática
-        function startAutoRefresh() {
-            // Limpiar intervalo existente si hay uno
-            if (refreshInterval) {
-                clearInterval(refreshInterval);
-            }
-            
-            // Verificar nuevos addons cada 5 minutos
-            refreshInterval = setInterval(() => {
-                console.log('Verificando nuevos addons...');
-                fetchAddonsFromAPI(true);
-            }, REFRESH_INTERVAL);
-        }
-
-        // Función para cargar addons con sistema de cache
-        async function loadAddonsWithCache() {
-            const cachedData = getCachedAddons();
-            
-            if (cachedData) {
-                // Usar datos del cache
-                allAddons = sortAddonsByDate(cachedData);
-                displayAddons(allAddons);
-                
-                // Actualizar en segundo plano si el cache es viejo
-                if (isCacheExpired()) {
-                    fetchAddonsFromAPI(true);
-                }
-            } else {
-                // Cargar desde la API
-                await fetchAddonsFromAPI(false);
-            }
-        }
-
-        // Función para ordenar addons por fecha (más recientes primero)
-        function sortAddonsByDate(addons) {
-            return addons.sort((a, b) => {
-                // Obtener las fechas de creación
-                const dateA = getAddonDate(a);
-                const dateB = getAddonDate(b);
-                
-                // Ordenar de más reciente a más antiguo
-                return dateB - dateA;
-            });
-        }
-
-        // Función para obtener la fecha de un addon
-        function getAddonDate(addon) {
-            // Intentar diferentes campos de fecha
-            if (addon.created_at) {
-                return new Date(addon.created_at).getTime();
-            }
-            if (addon.createdAt) {
-                return new Date(addon.createdAt).getTime();
-            }
-            if (addon.date) {
-                return new Date(addon.date).getTime();
-            }
-            if (addon.timestamp) {
-                return new Date(addon.timestamp).getTime();
-            }
-            // Si no hay fecha, usar el ID (asumiendo que IDs más altos son más recientes)
-            return addon.id || 0;
-        }
-
-        // Función para obtener addons desde el cache
-        function getCachedAddons() {
+        async function loadUsers() {
             try {
-                const cachedData = localStorage.getItem(CACHE_KEYS.ADDONS_DATA);
-                const cachedTimestamp = localStorage.getItem(CACHE_KEYS.ADDONS_TIMESTAMP);
-                
-                if (cachedData && cachedTimestamp) {
-                    const timestamp = parseInt(cachedTimestamp);
-                    if (Date.now() - timestamp < CACHE_DURATION) {
-                        return JSON.parse(cachedData);
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${config.usersBinId}/latest`, {
+                    headers: {
+                        'X-Master-Key': config.apiKey
                     }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data && data.record) {
+                    if (Array.isArray(data.record.users)) {
+                        users = data.record.users;
+                    } else if (Array.isArray(data.record)) {
+                        users = data.record;
+                    } else {
+                        users = [];
+                    }
+                } else {
+                    users = [];
                 }
             } catch (error) {
-                console.error('Error al leer del cache:', error);
-            }
-            return null;
-        }
-
-        // Función para verificar si el cache está expirado
-        function isCacheExpired() {
-            try {
-                const cachedTimestamp = localStorage.getItem(CACHE_KEYS.ADDONS_TIMESTAMP);
-                if (cachedTimestamp) {
-                    const timestamp = parseInt(cachedTimestamp);
-                    return Date.now() - timestamp >= CACHE_DURATION;
-                }
-            } catch (error) {
-                console.error('Error al verificar cache:', error);
-            }
-            return true;
-        }
-
-        // Función para generar un hash simple de los datos
-        function generateDataHash(data) {
-            return JSON.stringify(data).length.toString();
-        }
-
-        // Función para verificar si hay cambios en los datos
-        function hasDataChanged(newData) {
-            try {
-                const oldHash = localStorage.getItem(CACHE_KEYS.ADDONS_HASH);
-                const newHash = generateDataHash(newData);
-                return oldHash !== newHash;
-            } catch (error) {
-                console.error('Error al verificar cambios:', error);
-                return true;
+                console.error('Error loading users:', error);
+                users = [];
             }
         }
 
-        // Función para guardar addons en el cache
-        function saveAddonsToCache(addons) {
-            try {
-                localStorage.setItem(CACHE_KEYS.ADDONS_DATA, JSON.stringify(addons));
-                localStorage.setItem(CACHE_KEYS.ADDONS_TIMESTAMP, Date.now().toString());
-                localStorage.setItem(CACHE_KEYS.ADDONS_HASH, generateDataHash(addons));
-                return true;
-            } catch (error) {
-                console.error('Error al guardar en cache:', error);
-                return false;
-            }
-        }
-
-        // Función para obtener addons desde JSONBin.io
-        async function fetchAddonsFromAPI(silent = false) {
+        async function loadAddons() {
             try {
                 const response = await fetch(`https://api.jsonbin.io/v3/b/${config.addonsBinId}/latest`, {
                     headers: {
@@ -783,225 +593,419 @@
                 
                 const data = await response.json();
                 
-                // Verificar si la respuesta tiene la estructura esperada
                 if (data && data.record) {
-                    let newAddons = [];
-                    
-                    // Intentar diferentes estructuras posibles
                     if (Array.isArray(data.record.addons)) {
-                        newAddons = data.record.addons;
+                        addons = data.record.addons;
                     } else if (Array.isArray(data.record)) {
-                        newAddons = data.record;
+                        addons = data.record;
                     } else if (typeof data.record === 'object') {
-                        // Si es un objeto, convertirlo a array
-                        newAddons = Object.values(data.record);
+                        addons = Object.values(data.record);
                     } else {
-                        throw new Error('Estructura de datos inesperada');
-                    }
-                    
-                    // Verificar si hay cambios en los datos
-                    const dataChanged = hasDataChanged(newAddons);
-                    
-                    // Actualizar solo si hay cambios o es la primera carga
-                    if (dataChanged || allAddons.length === 0) {
-                        // Ordenar los addons por fecha antes de guardar
-                        const sortedAddons = sortAddonsByDate(newAddons);
-                        
-                        // Guardar en cache
-                        saveAddonsToCache(sortedAddons);
-                        
-                        // Actualizar la interfaz solo si no estamos en modo silencioso o hay cambios reales
-                        if (!silent || dataChanged) {
-                            allAddons = sortedAddons;
-                            
-                            if (allAddons.length === 0) {
-                                showNoAddonsMessage('No hay addons disponibles');
-                            } else {
-                                displayAddons(allAddons);
-                            }
-                        }
-                    } else {
-                        console.log('No hay cambios en los datos, manteniendo cache actual');
+                        addons = [];
                     }
                 } else {
-                    throw new Error('No se encontraron datos');
+                    addons = [];
                 }
             } catch (error) {
-                console.error('Error fetching addons:', error);
-                if (!silent) {
-                    showNoAddonsMessage('Error al cargar los addons');
-                }
+                console.error('Error loading addons:', error);
+                addons = [];
             }
         }
 
-        // Función para mostrar addons en la cuadrícula
-        function displayAddons(addons) {
-            const addonsGrid = document.getElementById('addonsGrid');
+        function loadProfileForm() {
+            const userProfile = localStorage.getItem('userProfile');
+            if (userProfile) {
+                const profile = JSON.parse(userProfile);
+                document.getElementById('profileAvatar').value = profile.avatar || '';
+                document.getElementById('profileUsername').value = profile.username || '';
+            } else {
+                document.getElementById('profileAvatar').value = '';
+                document.getElementById('profileUsername').value = '';
+            }
+        }
+
+        async function saveUserProfile() {
+            const avatar = document.getElementById('profileAvatar').value.trim();
+            const username = document.getElementById('profileUsername').value.trim();
             
-            // Verificar que addons es un array y tiene elementos
-            if (!addons || !Array.isArray(addons) || addons.length === 0) {
-                showNoAddonsMessage('No se encontró ningún addon');
+            if (!username) {
+                alert('Por favor ingresa un nombre de usuario');
+                return;
+            }
+
+            const userProfile = {
+                id: Date.now(),
+                avatar: avatar || './img/default-avatar.png',
+                username: username,
+                verified: false,
+                createdAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('userProfile', JSON.stringify(userProfile));
+            
+            try {
+                const existingUserIndex = users.findIndex(u => u.username === username);
+                
+                if (existingUserIndex !== -1) {
+                    users[existingUserIndex] = userProfile;
+                } else {
+                    users.push(userProfile);
+                }
+                
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${config.usersBinId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': config.apiKey
+                    },
+                    body: JSON.stringify({ users: users })
+                });
+                
+                if (response.ok) {
+                    showMessage('Perfil guardado correctamente', 'success');
+                    document.getElementById('settingsModal').classList.remove('show');
+                    checkUserProfile();
+                } else {
+                    throw new Error('Error al guardar usuario');
+                }
+            } catch (error) {
+                console.error('Error saving user:', error);
+                showMessage('Error al guardar el perfil', 'error');
+            }
+        }
+
+        function checkUserProfile() {
+            const appContainer = document.getElementById('appContainer');
+            const userProfile = localStorage.getItem('userProfile');
+            
+            if (!userProfile) {
+                appContainer.innerHTML = `
+                    <div class="form-container">
+                        <div style="text-align: center; margin-bottom: 2rem;">
+                            <h2 style="margin-bottom: 1rem;">Primero configura tu perfil</h2>
+                            <p style="color: #94a3b8;">Necesitas configurar tu perfil antes de publicar addons</p>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <button class="btn btn-primary" onclick="document.getElementById('settingsButton').click()">
+                                <i class="fas fa-cog"></i>
+                                Configurar Perfil
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                showMainInterface();
+            }
+        }
+
+        function showMainInterface() {
+            const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+            const appContainer = document.getElementById('appContainer');
+            
+            if (showPublishForm) {
+                appContainer.innerHTML = `
+                    <div class="user-info">
+                        <img src="${userProfile.avatar}" alt="Avatar" class="user-avatar" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(userProfile.username)}')">
+                        <div class="user-details">
+                            <div class="user-name">${escapeHtml(userProfile.username)}</div>
+                            <div style="color: #94a3b8; font-size: 0.875rem;">Publicando como autor</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-container">
+                        <h2 style="margin-bottom: 1.5rem; text-align: center;">Publicar Nuevo Addon</h2>
+                        <form id="publishForm">
+                            <div class="form-group">
+                                <label class="form-label" for="coverImage">URL de Foto de Portada</label>
+                                <input type="url" class="form-input" id="coverImage" required placeholder="https://ejemplo.com/portada.jpg" oninput="updateCoverPreview(this.value)">
+                                <p class="form-help">Imagen que representará tu addon en la lista</p>
+                                <div class="cover-preview-container">
+                                    <img id="coverPreview" class="cover-preview" alt="Vista previa de la portada">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="addonTitle">Nombre del Addon</label>
+                                <input type="text" class="form-input" id="addonTitle" required placeholder="Nombre único y descriptivo">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="addonDescription">Descripción</label>
+                                <textarea class="form-input form-textarea" id="addonDescription" required placeholder="Describe detalladamente tu addon, sus características y funcionalidades..."></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="addonVersion">Versión del Addon</label>
+                                <input type="text" class="form-input" id="addonVersion" required placeholder="Ej: 1.0.0" value="1.0.0">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="addonTags">Etiquetas</label>
+                                <input type="text" class="form-input" id="addonTags" placeholder="texturas, hd, realista (separadas por comas)">
+                                <p class="form-help">Etiquetas que ayudarán a los usuarios a encontrar tu addon</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="downloadLink">Link de Descarga</label>
+                                <input type="url" class="form-input" id="downloadLink" required placeholder="https://ejemplo.com/descarga.zip">
+                                <p class="form-help">Asegúrate de que el enlace sea accesible públicamente</p>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="showPublishForm = false; showMainInterface();">
+                                    <i class="fas fa-arrow-left"></i>
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-paper-plane"></i>
+                                    Publicar Addon
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                `;
+
+                document.getElementById('publishForm').addEventListener('submit', handlePublish);
+            } else {
+                appContainer.innerHTML = `
+                    <div class="user-info">
+                        <img src="${userProfile.avatar}" alt="Avatar" class="user-avatar" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(userProfile.username)}')">
+                        <div class="user-details">
+                            <div class="user-name">${escapeHtml(userProfile.username)}</div>
+                            <div style="color: #94a3b8; font-size: 0.875rem;">Autor registrado</div>
+                        </div>
+                    </div>
+                    
+                    <div class="publish-section">
+                        <button class="publish-btn-large" onclick="showPublishForm = true; showMainInterface();">
+                            <i class="fas fa-plus"></i>
+                            Publicar Addon
+                        </button>
+                    </div>
+                    
+                    <div id="userAddons">
+                        <h2 style="margin-bottom: 1.5rem; text-align: center;">Mis Addons Publicados</h2>
+                        <div id="userAddonsList"></div>
+                    </div>
+                `;
+
+                loadUserAddons();
+            }
+        }
+
+        function updateCoverPreview(url) {
+            const preview = document.getElementById('coverPreview');
+            if (url && isValidUrl(url)) {
+                preview.src = url;
+                preview.classList.add('visible');
+            } else {
+                preview.classList.remove('visible');
+            }
+        }
+
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        async function handlePublish(e) {
+            e.preventDefault();
+            
+            const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+            const coverImage = document.getElementById('coverImage').value.trim();
+            const addonTitle = document.getElementById('addonTitle').value.trim();
+            const addonDescription = document.getElementById('addonDescription').value.trim();
+            const addonVersion = document.getElementById('addonVersion').value.trim();
+            const addonTags = document.getElementById('addonTags').value.trim();
+            const downloadLink = document.getElementById('downloadLink').value.trim();
+            
+            if (!coverImage || !addonTitle || !addonDescription || !addonVersion || !downloadLink) {
+                showMessage('Por favor completa todos los campos obligatorios', 'error');
+                return;
+            }
+
+            const newAddon = {
+                id: Date.now(),
+                title: addonTitle,
+                description: addonDescription,
+                version: addonVersion,
+                tags: addonTags,
+                download_link: downloadLink,
+                cover_image: coverImage,
+                author: userProfile.username,
+                author_avatar: userProfile.avatar,
+                author_verified: false,
+                verified: false,
+                rating: 0,
+                review_count: 0,
+                created_at: new Date().toISOString(),
+                user_id: userProfile.id
+            };
+            
+            addons.push(newAddon);
+            
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${config.addonsBinId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': config.apiKey
+                    },
+                    body: JSON.stringify({ addons: addons })
+                });
+                
+                if (response.ok) {
+                    showMessage('¡Addon publicado exitosamente!', 'success');
+                    showPublishForm = false;
+                    setTimeout(() => {
+                        showMainInterface();
+                    }, 1500);
+                } else {
+                    throw new Error('Error al guardar addon');
+                }
+            } catch (error) {
+                console.error('Error saving addon:', error);
+                showMessage('Error al publicar el addon', 'error');
+            }
+        }
+
+        function loadUserAddons() {
+            const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+            const userAddonsList = document.getElementById('userAddonsList');
+            const userAddons = addons.filter(addon => addon.user_id === userProfile.id);
+            
+            if (userAddons.length === 0) {
+                userAddonsList.innerHTML = `
+                    <div class="no-addons">
+                        <p>Aún no has publicado ningún addon</p>
+                    </div>
+                `;
                 return;
             }
             
-            addonsGrid.innerHTML = addons.map(addon => `
-                <div class="addon-card" onclick="viewAddon(${addon.id || 0})">
-                    <button class="share-button" onclick="event.stopPropagation(); openShareModal(${addon.id || 0})">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="18" cy="5" r="3"></circle>
-                            <circle cx="6" cy="12" r="3"></circle>
-                            <circle cx="18" cy="19" r="3"></circle>
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                        </svg>
-                    </button>
-                    <img src="${addon.cover_image || addon.image || './img/default-cover.jpg'}" alt="Portada del addon" class="addon-cover" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMUUyOTNCIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5NEEzQjgiPkFkZG9uIEltYWdlbjwvdGV4dD48L3N2Zz4='">
-                    <div class="addon-info">
-                        <h3 class="addon-title">${escapeHtml(addon.title || addon.name || 'Sin título')}</h3>
-                        <p class="addon-description">${escapeHtml(addon.description || 'Sin descripción disponible')}</p>
-                        
-                        <div class="addon-footer">
-                            <div class="addon-author">
-                                <img src="${addon.author_avatar || addon.avatar || './img/default-avatar.png'}" alt="Autor" class="author-pic" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(addon.author || addon.creator || 'U')}')">
-                                <span class="author-name">${escapeHtml(addon.author || addon.creator || 'Usuario')}
-                                    ${addon.author_verified ? `
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="verified-user-icon" width="16" height="16">
-                                        <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
-                                    </svg>
-                                    ` : ''}
-                                </span>
+            userAddonsList.innerHTML = userAddons.map(addon => `
+                <div class="user-addon">
+                    <div class="user-addon-header">
+                        <div style="flex-grow: 1;">
+                            <h3 class="user-addon-title">${escapeHtml(addon.title)}</h3>
+                            <p style="color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.875rem;">
+                                ${escapeHtml(addon.description.substring(0, 100))}...
+                            </p>
+                            <div style="display: flex; gap: 1rem; font-size: 0.875rem; color: #94a3b8;">
+                                <span>Versión: ${escapeHtml(addon.version)}</span>
+                                <span>•</span>
+                                <span>Publicado: ${new Date(addon.created_at).toLocaleDateString()}</span>
                             </div>
-                            <span class="addon-version">${escapeHtml(addon.version || '1.0.0')}</span>
+                        </div>
+                        <div class="user-addon-actions">
+                            <button class="btn btn-primary btn-small" onclick="editAddon(${addon.id})">
+                                <i class="fas fa-edit"></i>
+                                Editar
+                            </button>
+                            <button class="btn btn-small" style="background-color: var(--error-color); color: white;" onclick="deleteAddon(${addon.id})">
+                                <i class="fas fa-trash"></i>
+                                Eliminar
+                            </button>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Función para mostrar mensaje de no hay addons
-        function showNoAddonsMessage(message = 'No se encontró ningún addon') {
-            const addonsGrid = document.getElementById('addonsGrid');
-            addonsGrid.innerHTML = `
-                <div class="no-addons-message">
-                    <div class="no-addons-icon">
-                        <img src="./img/error.gif" alt="No se encontraron addons" onerror="this.innerHTML='<i class=\"fas fa-exclamation-circle\" style=\"font-size: 3rem; color: #EF4444;\"></i>';">
-                    </div>
-                    <h3 class="no-addons-text">${message}</h3>
-                    <p class="no-addons-details">No hay addons disponibles en este momento.</p>
-                    <button class="clear-search" onclick="fetchAddonsFromAPI()">Reintentar</button>
-                </div>
-            `;
+        async function editAddon(addonId) {
+            const addon = addons.find(a => a.id === addonId);
+            if (!addon) return;
+            
+            const newTitle = prompt('Nuevo nombre del addon:', addon.title);
+            if (newTitle === null) return;
+            
+            const newDescription = prompt('Nueva descripción:', addon.description);
+            if (newDescription === null) return;
+            
+            const newVersion = prompt('Nueva versión:', addon.version);
+            if (newVersion === null) return;
+            
+            addon.title = newTitle.trim();
+            addon.description = newDescription.trim();
+            addon.version = newVersion.trim();
+            
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${config.addonsBinId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': config.apiKey
+                    },
+                    body: JSON.stringify({ addons: addons })
+                });
+                
+                if (response.ok) {
+                    showMessage('Addon actualizado correctamente', 'success');
+                    loadUserAddons();
+                } else {
+                    throw new Error('Error al actualizar addon');
+                }
+            } catch (error) {
+                console.error('Error updating addon:', error);
+                showMessage('Error al actualizar el addon', 'error');
+            }
         }
 
-        // Función para filtrar addons según búsqueda
-        function filterAddons(query, updateURL = false) {
-            isSearchActive = true;
-            
-            // Verificar que allAddons es un array
-            if (!allAddons || !Array.isArray(allAddons)) {
-                console.error('allAddons no es un array válido');
+        async function deleteAddon(addonId) {
+            if (!confirm('¿Estás seguro de que quieres eliminar este addon? Esta acción no se puede deshacer.')) {
                 return;
             }
             
-            const filteredAddons = allAddons.filter(addon => {
-                const title = addon.title || addon.name || '';
-                const author = addon.author || addon.creator || '';
-                const description = addon.description || '';
-                const tags = addon.tags || '';
-                
-                return title.toLowerCase().includes(query.toLowerCase()) || 
-                       author.toLowerCase().includes(query.toLowerCase()) ||
-                       description.toLowerCase().includes(query.toLowerCase()) ||
-                       tags.toLowerCase().includes(query.toLowerCase());
-            });
+            addons = addons.filter(a => a.id !== addonId);
             
-            if (updateURL) {
-                // Actualizar URL con parámetro de búsqueda (without recargar la página)
-                window.history.pushState({}, '', `?search=${encodeURIComponent(query)}`);
-                
-                // Actualizar título
-                document.querySelector('.page-title').textContent = 'Resultados de Búsqueda';
-                
-                // Mostrar información de resultados
-                const searchHeader = document.createElement('div');
-                searchHeader.className = 'search-header';
-                searchHeader.innerHTML = `
-                    <h2 class="search-results-title">Resultados Encontrados</h2>
-                    <span class="search-results-count">${filteredAddons.length} resultado${filteredAddons.length !== 1 ? 's' : ''} para "${query}"</span>
-                    <button class="clear-search" onclick="clearSearch()">Limpiar búsqueda</button>
-                `;
-                
-                const container = document.querySelector('.container');
-                const pageTitle = document.querySelector('.pageTitle');
-                if (!document.querySelector('.search-header')) {
-                    container.insertBefore(searchHeader, pageTitle.nextSibling);
-                } else {
-                    document.querySelector('.search-header').innerHTML = searchHeader.innerHTML;
-                }
-            }
-            
-            if (filteredAddons.length === 0) {
-                showNoAddonsMessage('No se encontraron resultados para tu búsqueda');
-            } else {
-                displayAddons(filteredAddons);
-            }
-        }
-
-        // Función para limpiar búsqueda
-        function clearSearch() {
-            isSearchActive = false;
-            document.getElementById('searchInput').value = '';
-            window.history.pushState({}, '', window.location.pathname);
-            document.querySelector('.page-title').textContent = 'Últimos Addons';
-            
-            const searchHeader = document.querySelector('.search-header');
-            if (searchHeader) {
-                searchHeader.remove();
-            }
-            
-            displayAddons(allAddons);
-        }
-
-        // Función para ver un addon específico
-        function viewAddon(id) {
-            window.location.href = `view.html?id=${id}`;
-        }
-
-        // Función para abrir modal de compartir
-        function openShareModal(id) {
-            const addon = allAddons.find(a => a.id === id);
-            if (addon) {
-                const shareUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}view.html?id=${id}`;
-                navigator.clipboard.writeText(shareUrl).then(() => {
-                    alert('Enlace copiado al portapapeles');
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${config.addonsBinId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': config.apiKey
+                    },
+                    body: JSON.stringify({ addons: addons })
                 });
+                
+                if (response.ok) {
+                    showMessage('Addon eliminado correctamente', 'success');
+                    loadUserAddons();
+                } else {
+                    throw new Error('Error al eliminar addon');
+                }
+            } catch (error) {
+                console.error('Error deleting addon:', error);
+                showMessage('Error al eliminar el addon', 'error');
             }
         }
 
-        // Función auxiliar para obtener iniciales
-        function getInitials(name) {
-            return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+        function showMessage(message, type) {
+            const appContainer = document.getElementById('appContainer');
+            const messageEl = document.createElement('div');
+            messageEl.className = `message message-${type}`;
+            messageEl.textContent = message;
+            
+            appContainer.insertBefore(messageEl, appContainer.firstChild);
+            
+            setTimeout(() => {
+                messageEl.remove();
+            }, 3000);
         }
 
-        // Función auxiliar para escapar HTML
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
 
-        // Comprobar si hay parámetros de búsqueda en la URL al cargar
-        const urlParams = new URLSearchParams(window.location.search);
-        const searchParam = urlParams.get('search');
-        if (searchParam) {
-            document.getElementById('searchInput').value = searchParam;
-            // Esperar a que los addons se carguen antes de filtrar
-            const checkAddonsLoaded = setInterval(() => {
-                if (allAddons && allAddons.length > 0) {
-                    clearInterval(checkAddonsLoaded);
-                    filterAddons(searchParam, true);
-                }
-            }, 100);
+        function getInitials(username) {
+            return username.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
         }
     </script>
 </body>
