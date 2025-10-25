@@ -591,14 +591,16 @@
         let allAddons = [];
         let searchTimeout = null;
         let isSearchActive = false;
+        let refreshInterval = null;
 
-        // Configuración del cache - 30 minutos de duración
+        // Configuración del cache - 5 minutos de duración
         const CACHE_KEYS = {
             ADDONS_DATA: 'mcpixel_addons_data',
             ADDONS_TIMESTAMP: 'mcpixel_addons_timestamp',
             ADDONS_HASH: 'mcpixel_addons_hash'
         };
-        const CACHE_DURATION = 30 * 60 * 1000; // 30 minutos en milisegundos
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos en milisegundos
+        const REFRESH_INTERVAL = 5 * 60 * 1000; // Verificar cada 5 minutos
 
         // Cargar addons al iniciar
         document.addEventListener('DOMContentLoaded', function() {
@@ -635,7 +637,24 @@
                     filterAddons(query, true);
                 }
             });
+
+            // Iniciar intervalo de actualización automática
+            startAutoRefresh();
         });
+
+        // Función para iniciar la actualización automática
+        function startAutoRefresh() {
+            // Limpiar intervalo existente si hay uno
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+            
+            // Verificar nuevos addons cada 5 minutos
+            refreshInterval = setInterval(() => {
+                console.log('Verificando nuevos addons...');
+                fetchAddonsFromAPI(true);
+            }, REFRESH_INTERVAL);
+        }
 
         // Función para cargar addons con sistema de cache
         async function loadAddonsWithCache() {
@@ -679,6 +698,9 @@
             }
             if (addon.date) {
                 return new Date(addon.date).getTime();
+            }
+            if (addon.timestamp) {
+                return new Date(addon.timestamp).getTime();
             }
             // Si no hay fecha, usar el ID (asumiendo que IDs más altos son más recientes)
             return addon.id || 0;
@@ -783,18 +805,24 @@
                     // Actualizar solo si hay cambios o es la primera carga
                     if (dataChanged || allAddons.length === 0) {
                         // Ordenar los addons por fecha antes de guardar
-                        allAddons = sortAddonsByDate(newAddons);
+                        const sortedAddons = sortAddonsByDate(newAddons);
                         
                         // Guardar en cache
-                        saveAddonsToCache(allAddons);
+                        saveAddonsToCache(sortedAddons);
                         
-                        if (allAddons.length === 0) {
-                            showNoAddonsMessage('No hay addons disponibles');
-                        } else {
-                            displayAddons(allAddons);
+                        // Actualizar la interfaz solo si no estamos en modo silencioso o hay cambios reales
+                        if (!silent || dataChanged) {
+                            allAddons = sortedAddons;
+                            
+                            if (allAddons.length === 0) {
+                                showNoAddonsMessage('No hay addons disponibles');
+                            } else {
+                                displayAddons(allAddons);
+                            }
                         }
+                    } else {
+                        console.log('No hay cambios en los datos, manteniendo cache actual');
                     }
-                    // Si no hay cambios, mantener los datos actuales sin hacer nada
                 } else {
                     throw new Error('No se encontraron datos');
                 }
@@ -904,7 +932,7 @@
                 `;
                 
                 const container = document.querySelector('.container');
-                const pageTitle = document.querySelector('.page-title');
+                const pageTitle = document.querySelector('.pageTitle');
                 if (!document.querySelector('.search-header')) {
                     container.insertBefore(searchHeader, pageTitle.nextSibling);
                 } else {
