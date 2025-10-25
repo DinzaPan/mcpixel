@@ -637,7 +637,7 @@
                 id: Date.now(),
                 avatar: avatar || './img/default-avatar.png',
                 username: username,
-                verified: false,
+                verified: checkUserVerification(username),
                 createdAt: new Date().toISOString()
             };
             
@@ -674,6 +674,11 @@
             }
         }
 
+        function checkUserVerification(username) {
+            const verifiedUsers = ['MCPixel', 'Matiss'];
+            return verifiedUsers.includes(username);
+        }
+
         function checkUserProfile() {
             const appContainer = document.getElementById('appContainer');
             const userProfile = localStorage.getItem('userProfile');
@@ -708,7 +713,7 @@
                     <div class="user-info">
                         <img src="${userProfile.avatar}" alt="Avatar" class="user-avatar" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(userProfile.username)}')">
                         <div class="user-details">
-                            <div class="user-name">${escapeHtml(userProfile.username)}</div>
+                            <div class="user-name">${escapeHtml(userProfile.username)} ${userProfile.verified ? '<i class="fas fa-check-circle" style="color: #10B981;"></i>' : ''}</div>
                             <div style="color: #94a3b8; font-size: 0.875rem;">Publicando como autor</div>
                         </div>
                     </div>
@@ -770,9 +775,9 @@
             } else {
                 appContainer.innerHTML = `
                     <div class="user-info">
-                        <img src="${userProfile.avatar}" alt="Avatar" class="user-avatar" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(userProfile.username)}')">
+                        <img src="${userProfile.avatar}" alt="Avatar" class="user-avatar" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI5MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(userProfile.username)}')">
                         <div class="user-details">
-                            <div class="user-name">${escapeHtml(userProfile.username)}</div>
+                            <div class="user-name">${escapeHtml(userProfile.username)} ${userProfile.verified ? '<i class="fas fa-check-circle" style="color: #10B981;"></i>' : ''}</div>
                             <div style="color: #94a3b8; font-size: 0.875rem;">Autor registrado</div>
                         </div>
                     </div>
@@ -839,7 +844,7 @@
                 cover_image: coverImage,
                 author: userProfile.username,
                 author_avatar: userProfile.avatar,
-                author_verified: false,
+                author_verified: userProfile.verified,
                 verified: false,
                 rating: 0,
                 review_count: 0,
