@@ -465,7 +465,7 @@
             const addonContent = document.getElementById('addonContent');
             addonContent.innerHTML = `
                 <div class="addon-header">
-                    <img src="${addon.cover_image || addon.image || './img/default-cover.jpg'}" alt="Portada del addon" class="addon-cover" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMUUyOTNCIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5U9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk0QTNCOCI+QWRkb24gSW1hZ2VuPC90ZXh0Pjwvc3ZnPg=='">
+                    <img src="${addon.cover_image || addon.image || './img/default-cover.jpg'}" alt="Portada del addon" class="addon-cover" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMUUyOTNCIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5NEEzQjgiPkFkZG9uIEltYWdlbjwvdGV4dD48L3N2Zz4='">
                     <h1 class="addon-title">${escapeHtml(addon.title || addon.name || 'Sin título')}</h1>
                     
                     <div class="addon-author">
@@ -491,7 +491,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            <span>Publicado: ${new Date(addon.created_at || Date.now()).toLocaleDateString()}</span>
+                            <span>Publicado: ${new Date(addon.created_at || addon.createdAt || addon.date || Date.now()).toLocaleDateString()}</span>
                         </div>
                     </div>
                     
@@ -505,7 +505,7 @@
                     
                     <p class="addon-description">${escapeHtml(addon.description || 'Sin descripción disponible')}</p>
                     
-                    <a href="${escapeHtml(addon.download_link || '#')}" class="download-btn" target="_blank" rel="noopener noreferrer">
+                    <a href="${escapeHtml(addon.download_link || addon.downloadLink || '#')}" class="download-btn" target="_blank" rel="noopener noreferrer">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
