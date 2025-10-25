@@ -643,7 +643,7 @@
             
             if (cachedData) {
                 // Usar datos del cache
-                allAddons = cachedData;
+                allAddons = sortAddonsByDate(cachedData);
                 displayAddons(allAddons);
                 
                 // Actualizar en segundo plano si el cache es viejo
@@ -654,6 +654,34 @@
                 // Cargar desde la API
                 await fetchAddonsFromAPI(false);
             }
+        }
+
+        // Función para ordenar addons por fecha (más recientes primero)
+        function sortAddonsByDate(addons) {
+            return addons.sort((a, b) => {
+                // Obtener las fechas de creación
+                const dateA = getAddonDate(a);
+                const dateB = getAddonDate(b);
+                
+                // Ordenar de más reciente a más antiguo
+                return dateB - dateA;
+            });
+        }
+
+        // Función para obtener la fecha de un addon
+        function getAddonDate(addon) {
+            // Intentar diferentes campos de fecha
+            if (addon.created_at) {
+                return new Date(addon.created_at).getTime();
+            }
+            if (addon.createdAt) {
+                return new Date(addon.createdAt).getTime();
+            }
+            if (addon.date) {
+                return new Date(addon.date).getTime();
+            }
+            // Si no hay fecha, usar el ID (asumiendo que IDs más altos son más recientes)
+            return addon.id || 0;
         }
 
         // Función para obtener addons desde el cache
@@ -754,7 +782,8 @@
                     
                     // Actualizar solo si hay cambios o es la primera carga
                     if (dataChanged || allAddons.length === 0) {
-                        allAddons = newAddons;
+                        // Ordenar los addons por fecha antes de guardar
+                        allAddons = sortAddonsByDate(newAddons);
                         
                         // Guardar en cache
                         saveAddonsToCache(allAddons);
