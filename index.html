@@ -524,6 +524,29 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Cache indicator */
+        .cache-indicator {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background-color: var(--success-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--rounded);
+            font-size: 0.875rem;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(1rem);
+            transition: var(--transition);
+        }
+
+        .cache-indicator.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 0 1rem 1rem;
@@ -539,6 +562,13 @@
             
             .search-section {
                 padding: 1.5rem 1rem;
+            }
+            
+            .cache-indicator {
+                bottom: 0.5rem;
+                right: 0.5rem;
+                left: 0.5rem;
+                text-align: center;
             }
         }
     </style>
@@ -579,6 +609,9 @@
         </div>
     </div>
 
+    <!-- Indicador de cache -->
+    <div class="cache-indicator" id="cacheIndicator"></div>
+
     <script>
         // Configuración para JSONBin.io
         const config = {
@@ -592,9 +625,16 @@
         let searchTimeout = null;
         let isSearchActive = false;
 
+        // Configuración del cache
+        const CACHE_KEYS = {
+            ADDONS_DATA: 'mcpixel_addons_data',
+            ADDONS_TIMESTAMP: 'mcpixel_addons_timestamp'
+        };
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos en milisegundos
+
         // Cargar addons al iniciar
         document.addEventListener('DOMContentLoaded', function() {
-            fetchAddons();
+            loadAddonsWithCache();
             
             // Configurar búsqueda
             const searchInput = document.getElementById('searchInput');
@@ -629,9 +669,77 @@
             });
         });
 
-        // Función para obtener addons desde JSONBin.io
-        async function fetchAddons() {
+        // Función para cargar addons con sistema de cache
+        async function loadAddonsWithCache() {
+            const cachedData = getCachedAddons();
+            
+            if (cachedData) {
+                // Usar datos del cache
+                allAddons = cachedData;
+                displayAddons(allAddons);
+                showCacheIndicator('Datos cargados desde cache');
+                
+                // Actualizar en segundo plano si el cache es viejo
+                if (isCacheExpired()) {
+                    fetchAddonsFromAPI(true);
+                }
+            } else {
+                // Cargar desde la API
+                await fetchAddonsFromAPI(false);
+            }
+        }
+
+        // Función para obtener addons desde el cache
+        function getCachedAddons() {
             try {
+                const cachedData = localStorage.getItem(CACHE_KEYS.ADDONS_DATA);
+                const cachedTimestamp = localStorage.getItem(CACHE_KEYS.ADDONS_TIMESTAMP);
+                
+                if (cachedData && cachedTimestamp) {
+                    const timestamp = parseInt(cachedTimestamp);
+                    if (Date.now() - timestamp < CACHE_DURATION) {
+                        return JSON.parse(cachedData);
+                    }
+                }
+            } catch (error) {
+                console.error('Error al leer del cache:', error);
+            }
+            return null;
+        }
+
+        // Función para verificar si el cache está expirado
+        function isCacheExpired() {
+            try {
+                const cachedTimestamp = localStorage.getItem(CACHE_KEYS.ADDONS_TIMESTAMP);
+                if (cachedTimestamp) {
+                    const timestamp = parseInt(cachedTimestamp);
+                    return Date.now() - timestamp >= CACHE_DURATION;
+                }
+            } catch (error) {
+                console.error('Error al verificar cache:', error);
+            }
+            return true;
+        }
+
+        // Función para guardar addons en el cache
+        function saveAddonsToCache(addons) {
+            try {
+                localStorage.setItem(CACHE_KEYS.ADDONS_DATA, JSON.stringify(addons));
+                localStorage.setItem(CACHE_KEYS.ADDONS_TIMESTAMP, Date.now().toString());
+                return true;
+            } catch (error) {
+                console.error('Error al guardar en cache:', error);
+                return false;
+            }
+        }
+
+        // Función para obtener addons desde JSONBin.io
+        async function fetchAddonsFromAPI(silent = false) {
+            try {
+                if (!silent) {
+                    showCacheIndicator('Cargando datos...');
+                }
+                
                 const response = await fetch(`https://api.jsonbin.io/v3/b/${config.addonsBinId}/latest`, {
                     headers: {
                         'X-Master-Key': config.apiKey
@@ -658,18 +766,50 @@
                         throw new Error('Estructura de datos inesperada');
                     }
                     
+                    // Guardar en cache
+                    saveAddonsToCache(allAddons);
+                    
                     if (allAddons.length === 0) {
                         showNoAddonsMessage('No hay addons disponibles');
                     } else {
                         displayAddons(allAddons);
+                        if (!silent) {
+                            showCacheIndicator('Datos actualizados correctamente', 'success');
+                        }
                     }
                 } else {
                     throw new Error('No se encontraron datos');
                 }
             } catch (error) {
                 console.error('Error fetching addons:', error);
-                showNoAddonsMessage('Error al cargar los addons');
+                if (!silent) {
+                    showNoAddonsMessage('Error al cargar los addons');
+                    showCacheIndicator('Error al cargar datos', 'error');
+                }
             }
+        }
+
+        // Función para mostrar indicador de cache
+        function showCacheIndicator(message, type = 'info') {
+            const indicator = document.getElementById('cacheIndicator');
+            if (!indicator) return;
+            
+            indicator.textContent = message;
+            indicator.className = 'cache-indicator';
+            
+            if (type === 'success') {
+                indicator.style.backgroundColor = 'var(--success-color)';
+            } else if (type === 'error') {
+                indicator.style.backgroundColor = 'var(--error-color)';
+            } else {
+                indicator.style.backgroundColor = 'var(--primary-color)';
+            }
+            
+            indicator.classList.add('show');
+            
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 3000);
         }
 
         // Función para mostrar addons en la cuadrícula
@@ -693,7 +833,7 @@
                             <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                         </svg>
                     </button>
-                    <img src="${addon.cover_image || addon.image || './img/default-cover.jpg'}" alt="Portada del addon" class="addon-cover" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMUUyOTNCIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UsIHNhbnMtc2VyaWYiIGZvbnQtc2l6PSIyNCIgZmlsbD0iIzk0QTNCOCI+QWRkb24gSW1hZ2VuPC90ZXh0Pjwvc3ZnPg=='">
+                    <img src="${addon.cover_image || addon.image || './img/default-cover.jpg'}" alt="Portada del addon" class="addon-cover" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMUUyOTNCIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5NEEzQjgiPkFkZG9uIEltYWdlbjwvdGV4dD48L3N2Zz4='">
                     <div class="addon-info">
                         <h3 class="addon-title">${escapeHtml(addon.title || addon.name || 'Sin título')}</h3>
                         <p class="addon-description">${escapeHtml(addon.description || 'Sin descripción disponible')}</p>
@@ -726,7 +866,7 @@
                     </div>
                     <h3 class="no-addons-text">${message}</h3>
                     <p class="no-addons-details">No hay addons disponibles en este momento.</p>
-                    <button class="clear-search" onclick="fetchAddons()">Reintentar</button>
+                    <button class="clear-search" onclick="fetchAddonsFromAPI()">Reintentar</button>
                 </div>
             `;
         }
