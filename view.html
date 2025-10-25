@@ -275,40 +275,6 @@
             border-radius: 0.25rem;
         }
 
-        .rating-container {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .average-rating {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--secondary-color);
-        }
-
-        .rating-count {
-            color: var(--dark-text);
-            font-size: 0.9rem;
-        }
-
-        .stars {
-            display: flex;
-            gap: 0.25rem;
-        }
-
-        .star {
-            color: var(--secondary-color);
-            font-size: 1.5rem;
-        }
-
-        .empty-star {
-            color: #94a3b8;
-            font-size: 1.5rem;
-        }
-
         .loader-container {
             display: flex;
             justify-content: center;
@@ -496,17 +462,11 @@
 
         // Función para mostrar addon
         function displayAddon(addon) {
-            // Calcular estrellas para la valoración
-            const avgRating = addon.rating || 0;
-            const starRating = getStarRating(avgRating);
-            
             const addonContent = document.getElementById('addonContent');
             addonContent.innerHTML = `
                 <div class="addon-header">
-                    <img src="${addon.cover_image || addon.image || './img/default-cover.jpg'}" alt="Portada del addon" class="addon-cover" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMUUyOTNCIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5NEEzQjgiPkFkZG9uIEltYWdlbjwvdGV4dD48L3N2Zz4='">
-                    <h1 class="addon-title">${escapeHtml(addon.title || addon.name || 'Sin título')}
-                        ${addon.verified ? '<span class="verified-icon" title="Addon verificado">✓</span>' : ''}
-                    </h1>
+                    <img src="${addon.cover_image || addon.image || './img/default-cover.jpg'}" alt="Portada del addon" class="addon-cover" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMUUyOTNCIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5U9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk0QTNCOCI+QWRkb24gSW1hZ2VuPC90ZXh0Pjwvc3ZnPg=='">
+                    <h1 class="addon-title">${escapeHtml(addon.title || addon.name || 'Sin título')}</h1>
                     
                     <div class="addon-author">
                         <img src="${addon.author_avatar || addon.avatar || './img/default-avatar.png'}" alt="Autor" class="author-pic" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(addon.author || addon.creator || 'U')}')">
@@ -555,14 +515,6 @@
                 
                 <h2 class="section-title">Información del Addon</h2>
                 
-                <div class="rating-container">
-                    <div class="average-rating">${parseFloat(avgRating).toFixed(1)}</div>
-                    <div class="stars">
-                        ${starRating}
-                    </div>
-                    <div class="rating-count">(${addon.review_count || 0} valoraciones)</div>
-                </div>
-                
                 <div style="margin-top: 1.5rem;">
                     <p style="color: #94a3b8; line-height: 1.6;">
                         Este addon ha sido publicado por la comunidad de MCPixel. 
@@ -570,28 +522,6 @@
                     </p>
                 </div>
             `;
-        }
-
-        // Función auxiliar para generar estrellas de valoración
-        function getStarRating(rating) {
-            let stars = '';
-            const fullStars = Math.floor(rating);
-            const hasHalfStar = rating % 1 >= 0.5;
-            
-            for (let i = 0; i < fullStars; i++) {
-                stars += '<span class="star">★</span>';
-            }
-            
-            if (hasHalfStar) {
-                stars += '<span class="star">★</span>';
-            }
-            
-            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-            for (let i = 0; i < emptyStars; i++) {
-                stars += '<span class="empty-star">☆</span>';
-            }
-            
-            return stars;
         }
 
         // Función para mostrar errores
