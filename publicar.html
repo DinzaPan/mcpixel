@@ -44,7 +44,6 @@
             transition: var(--transition);
         }
 
-        /* Barra de navegación */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -100,7 +99,6 @@
             background-color: rgba(59, 130, 246, 0.1);
         }
 
-        /* Modal de ajustes */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -175,7 +173,6 @@
             transform: rotate(90deg);
         }
 
-        /* Contenedor principal */
         .container {
             padding: 2rem;
             max-width: 50rem;
@@ -204,7 +201,6 @@
             border-radius: 0.25rem;
         }
 
-        /* Formularios */
         .form-container {
             background-color: var(--dark-card);
             border-radius: var(--rounded-lg);
@@ -301,7 +297,6 @@
             transform: translateY(-2px);
         }
 
-        /* Botón de publicar */
         .publish-section {
             text-align: center;
             margin: 2rem 0;
@@ -329,7 +324,6 @@
             box-shadow: var(--shadow);
         }
 
-        /* Mensajes */
         .message {
             padding: 1rem;
             border-radius: var(--rounded);
@@ -349,7 +343,6 @@
             color: var(--error-color);
         }
 
-        /* Addons del usuario */
         .user-addon {
             background-color: var(--dark-card);
             border-radius: var(--rounded);
@@ -389,7 +382,6 @@
             color: #94a3b8;
         }
 
-        /* Info de usuario */
         .user-info {
             display: flex;
             align-items: center;
@@ -418,6 +410,23 @@
             color: var(--dark-text);
         }
 
+        .cover-preview-container {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .cover-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: var(--rounded);
+            border: 2px solid var(--dark-border);
+            display: none;
+        }
+
+        .cover-preview.visible {
+            display: inline-block;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
@@ -444,7 +453,6 @@
     </style>
 </head>
 <body>
-    <!-- Barra de navegación -->
     <nav class="navbar">
         <div class="logo-container">
             <img src="./img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPk08L3RleHQ+PC9zdmc+'">
@@ -457,7 +465,6 @@
         </button>
     </nav>
 
-    <!-- Modal de ajustes -->
     <div class="modal-overlay" id="settingsModal">
         <div class="modal">
             <div class="modal-header">
@@ -492,35 +499,29 @@
         </div>
     </div>
 
-    <!-- Contenedor principal -->
     <div class="container">
         <h1 class="page-title">Publicar Addon</h1>
         
         <div id="appContainer">
-            <!-- Aquí se cargará la interfaz según el estado -->
         </div>
     </div>
 
     <script>
-        // Configuración para JSONBin.io
         const config = {
             usersBinId: "68f71bd3ae596e708f20d079",
             addonsBinId: "68f71bc0ae596e708f20d03f",
             apiKey: "$2a$10$O6gu6e1czFdZyjnMnHi5zudC/01BsP1Vng3V2xk/jyXexqovnDOwa"
         };
 
-        // Variables globales
         let addons = [];
         let users = [];
         let showPublishForm = false;
 
-        // Inicializar la aplicación
         document.addEventListener('DOMContentLoaded', async function() {
             await loadUsers();
             await loadAddons();
             checkUserProfile();
             
-            // Configurar modal de ajustes
             const settingsButton = document.getElementById('settingsButton');
             const settingsModal = document.getElementById('settingsModal');
             const closeSettingsModal = document.getElementById('closeSettingsModal');
@@ -540,7 +541,6 @@
                 saveUserProfile();
             });
             
-            // Cerrar modal al hacer clic fuera
             settingsModal.addEventListener('click', function(e) {
                 if (e.target === settingsModal) {
                     settingsModal.classList.remove('show');
@@ -548,7 +548,6 @@
             });
         });
 
-        // Cargar usuarios desde JSONBin.io
         async function loadUsers() {
             try {
                 const response = await fetch(`https://api.jsonbin.io/v3/b/${config.usersBinId}/latest`, {
@@ -563,7 +562,6 @@
                 
                 const data = await response.json();
                 
-                // Manejar diferentes estructuras de datos
                 if (data && data.record) {
                     if (Array.isArray(data.record.users)) {
                         users = data.record.users;
@@ -575,14 +573,12 @@
                 } else {
                     users = [];
                 }
-                console.log('Usuarios cargados:', users);
             } catch (error) {
                 console.error('Error loading users:', error);
                 users = [];
             }
         }
 
-        // Cargar addons desde JSONBin.io
         async function loadAddons() {
             try {
                 const response = await fetch(`https://api.jsonbin.io/v3/b/${config.addonsBinId}/latest`, {
@@ -597,14 +593,12 @@
                 
                 const data = await response.json();
                 
-                // Manejar diferentes estructuras de datos
                 if (data && data.record) {
                     if (Array.isArray(data.record.addons)) {
                         addons = data.record.addons;
                     } else if (Array.isArray(data.record)) {
                         addons = data.record;
                     } else if (typeof data.record === 'object') {
-                        // Si es un objeto, convertirlo a array
                         addons = Object.values(data.record);
                     } else {
                         addons = [];
@@ -612,14 +606,12 @@
                 } else {
                     addons = [];
                 }
-                console.log('Addons cargados:', addons);
             } catch (error) {
                 console.error('Error loading addons:', error);
                 addons = [];
             }
         }
 
-        // Cargar datos en el formulario de perfil
         function loadProfileForm() {
             const userProfile = localStorage.getItem('userProfile');
             if (userProfile) {
@@ -632,7 +624,6 @@
             }
         }
 
-        // Guardar perfil de usuario
         async function saveUserProfile() {
             const avatar = document.getElementById('profileAvatar').value.trim();
             const username = document.getElementById('profileUsername').value.trim();
@@ -650,12 +641,9 @@
                 createdAt: new Date().toISOString()
             };
             
-            // Guardar en localStorage
             localStorage.setItem('userProfile', JSON.stringify(userProfile));
             
-            // Guardar en JSONBin.io
             try {
-                // Verificar si el usuario ya existe
                 const existingUserIndex = users.findIndex(u => u.username === username);
                 
                 if (existingUserIndex !== -1) {
@@ -686,13 +674,11 @@
             }
         }
 
-        // Verificar perfil de usuario
         function checkUserProfile() {
             const appContainer = document.getElementById('appContainer');
             const userProfile = localStorage.getItem('userProfile');
             
             if (!userProfile) {
-                // Mostrar interfaz para configurar perfil primero
                 appContainer.innerHTML = `
                     <div class="form-container">
                         <div style="text-align: center; margin-bottom: 2rem;">
@@ -709,18 +695,15 @@
                     </div>
                 `;
             } else {
-                // Mostrar interfaz principal
                 showMainInterface();
             }
         }
 
-        // Mostrar interfaz principal
         function showMainInterface() {
             const userProfile = JSON.parse(localStorage.getItem('userProfile'));
             const appContainer = document.getElementById('appContainer');
             
             if (showPublishForm) {
-                // Mostrar formulario de publicación
                 appContainer.innerHTML = `
                     <div class="user-info">
                         <img src="${userProfile.avatar}" alt="Avatar" class="user-avatar" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(userProfile.username)}')">
@@ -735,8 +718,11 @@
                         <form id="publishForm">
                             <div class="form-group">
                                 <label class="form-label" for="coverImage">URL de Foto de Portada</label>
-                                <input type="url" class="form-input" id="coverImage" required placeholder="https://ejemplo.com/portada.jpg">
+                                <input type="url" class="form-input" id="coverImage" required placeholder="https://ejemplo.com/portada.jpg" oninput="updateCoverPreview(this.value)">
                                 <p class="form-help">Imagen que representará tu addon en la lista</p>
+                                <div class="cover-preview-container">
+                                    <img id="coverPreview" class="cover-preview" alt="Vista previa de la portada">
+                                </div>
                             </div>
                             
                             <div class="form-group">
@@ -782,7 +768,6 @@
 
                 document.getElementById('publishForm').addEventListener('submit', handlePublish);
             } else {
-                // Mostrar interfaz principal con botón de publicar
                 appContainer.innerHTML = `
                     <div class="user-info">
                         <img src="${userProfile.avatar}" alt="Avatar" class="user-avatar" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(userProfile.username)}')">
@@ -809,7 +794,25 @@
             }
         }
 
-        // Manejar publicación de addon
+        function updateCoverPreview(url) {
+            const preview = document.getElementById('coverPreview');
+            if (url && isValidUrl(url)) {
+                preview.src = url;
+                preview.classList.add('visible');
+            } else {
+                preview.classList.remove('visible');
+            }
+        }
+
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
         async function handlePublish(e) {
             e.preventDefault();
             
@@ -846,7 +849,6 @@
             
             addons.push(newAddon);
             
-            // Guardar en JSONBin.io
             try {
                 const response = await fetch(`https://api.jsonbin.io/v3/b/${config.addonsBinId}`, {
                     method: 'PUT',
@@ -872,7 +874,6 @@
             }
         }
 
-        // Cargar addons del usuario
         function loadUserAddons() {
             const userProfile = JSON.parse(localStorage.getItem('userProfile'));
             const userAddonsList = document.getElementById('userAddonsList');
@@ -916,7 +917,6 @@
             `).join('');
         }
 
-        // Editar addon
         async function editAddon(addonId) {
             const addon = addons.find(a => a.id === addonId);
             if (!addon) return;
@@ -956,7 +956,6 @@
             }
         }
 
-        // Eliminar addon
         async function deleteAddon(addonId) {
             if (!confirm('¿Estás seguro de que quieres eliminar este addon? Esta acción no se puede deshacer.')) {
                 return;
@@ -986,30 +985,27 @@
             }
         }
 
-        // Mostrar mensaje
         function showMessage(message, type) {
             const appContainer = document.getElementById('appContainer');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message message-${type}`;
-            messageDiv.textContent = message;
+            const messageEl = document.createElement('div');
+            messageEl.className = `message message-${type}`;
+            messageEl.textContent = message;
             
-            appContainer.insertBefore(messageDiv, appContainer.firstChild);
+            appContainer.insertBefore(messageEl, appContainer.firstChild);
             
             setTimeout(() => {
-                messageDiv.remove();
-            }, 5000);
+                messageEl.remove();
+            }, 3000);
         }
 
-        // Función auxiliar para obtener iniciales
-        function getInitials(name) {
-            return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
-        }
-
-        // Función auxiliar para escapar HTML
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+
+        function getInitials(username) {
+            return username.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
         }
     </script>
 </body>
