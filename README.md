@@ -69,7 +69,7 @@ Simplemente visita [https://mcpixel.vercel.app/](https://mcpixel.vercel.app/) pa
 ```bash
 git clone https://github.com/DinzaPan/mcpixel.git# mcpixel
 ```
-```
+```bash
 // 📍 ARCHIVOS: index.html, publicar.html, view.html
 // 📝 BUSCAR Y MODIFICAR ESTA CONFIGURACIÓN:
 
