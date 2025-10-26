@@ -68,6 +68,7 @@ Simplemente visita [https://mcpixel.vercel.app/](https://mcpixel.vercel.app/) pa
 1. Clona el repositorio:
 ```bash
 git clone https://github.com/DinzaPan/mcpixel.git# mcpixel
+```
 
 // 📍 ARCHIVOS: index.html, publicar.html, view.html
 // 📝 BUSCAR Y MODIFICAR ESTA CONFIGURACIÓN:
