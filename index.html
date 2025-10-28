@@ -82,53 +82,6 @@
             letter-spacing: -0.5px;
         }
 
-        /* Menú de navegación */
-        .nav-menu {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .nav-item {
-            position: relative;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            color: var(--dark-text);
-            text-decoration: none;
-            border-radius: var(--rounded);
-            transition: var(--transition);
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
-        .nav-link:hover {
-            background-color: rgba(59, 130, 246, 0.1);
-            color: var(--primary-color);
-        }
-
-        .nav-link i {
-            font-size: 1rem;
-        }
-
-        .nav-link.active {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .mobile-menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--dark-text);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
         /* Sección del buscador */
         .search-section {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
@@ -587,52 +540,6 @@
             .search-section {
                 padding: 1.5rem 1rem;
             }
-            
-            .mobile-menu-toggle {
-                display: block;
-            }
-            
-            .nav-menu {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 80%;
-                max-width: 300px;
-                height: 100vh;
-                background-color: var(--dark-card);
-                flex-direction: column;
-                padding: 2rem 1rem;
-                transition: var(--transition);
-                z-index: 1001;
-                box-shadow: var(--shadow-lg);
-                justify-content: flex-start;
-                gap: 1rem;
-            }
-            
-            .nav-menu.active {
-                right: 0;
-            }
-            
-            .nav-link {
-                width: 100%;
-                justify-content: flex-start;
-                padding: 1rem;
-            }
-            
-            .nav-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-                z-index: 1000;
-                display: none;
-            }
-            
-            .nav-overlay.active {
-                display: block;
-            }
         }
     </style>
 </head>
@@ -643,44 +550,6 @@
             <img src="./img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPk08L3RleHQ+PC9zdmc+'">
             <h1 class="site-title">MCPixel</h1>
         </div>
-        
-        <!-- Menú de navegación -->
-        <button class="mobile-menu-toggle" id="mobileMenuToggle">
-            <i class="fas fa-bars"></i>
-        </button>
-        <div class="nav-menu" id="navMenu">
-            <div class="nav-item">
-                <a href="#" class="nav-link" id="homeLink">
-                    <i class="fas fa-home"></i>
-                    <span>Inicio</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="./sc/updates.html" class="nav-link" id="updatesLink">
-                    <i class="fas fa-sync-alt"></i>
-                    <span>Updates</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="https://github.com/DinzaPan/mcpixel" class="nav-link" target="_blank">
-                    <i class="fab fa-github"></i>
-                    <span>GitHub</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="https://discord.gg/9EkhYdV325" class="nav-link" target="_blank">
-                    <i class="fab fa-discord"></i>
-                    <span>MCPixel</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="#" class="nav-link" id="reloadLink">
-                    <i class="fas fa-redo-alt"></i>
-                    <span>Recargar Add-ons</span>
-                </a>
-            </div>
-        </div>
-        <div class="nav-overlay" id="navOverlay"></div>
     </nav>
 
     <!-- Sección del buscador -->
@@ -769,113 +638,9 @@
                 }
             });
 
-            // Configurar menú móvil
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const navMenu = document.getElementById('navMenu');
-            const navOverlay = document.getElementById('navOverlay');
-            
-            mobileMenuToggle.addEventListener('click', function() {
-                navMenu.classList.toggle('active');
-                navOverlay.classList.toggle('active');
-            });
-            
-            navOverlay.addEventListener('click', function() {
-                navMenu.classList.remove('active');
-                navOverlay.classList.remove('active');
-            });
-
-            // Configurar enlaces del menú
-            const homeLink = document.getElementById('homeLink');
-            const updatesLink = document.getElementById('updatesLink');
-            const reloadLink = document.getElementById('reloadLink');
-            
-            homeLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                // Si el enlace es "#", redirigir a error 404
-                if (this.getAttribute('href') === '#') {
-                    window.location.href = './error/404.html';
-                } else {
-                    window.location.href = this.getAttribute('href');
-                }
-            });
-            
-            updatesLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                // Si el enlace es "#", redirigir a error 404
-                if (this.getAttribute('href') === '#') {
-                    window.location.href = './error/404.html';
-                } else {
-                    window.location.href = this.getAttribute('href');
-                }
-            });
-            
-            reloadLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                reloadAddons();
-            });
-
             // Iniciar intervalo de actualización automática
             startAutoRefresh();
         });
-
-        // Función para recargar addons
-        function reloadAddons() {
-            // Mostrar indicador de carga
-            const addonsGrid = document.getElementById('addonsGrid');
-            addonsGrid.innerHTML = `
-                <div class="loader-container">
-                    <div class="loader"></div>
-                </div>
-            `;
-            
-            // Forzar recarga desde la API
-            fetchAddonsFromAPI(false).then(() => {
-                // Mostrar mensaje de éxito
-                showNotification('Addons recargados correctamente', 'success');
-            }).catch(error => {
-                console.error('Error al recargar addons:', error);
-                showNotification('Error al recargar addons', 'error');
-            });
-        }
-
-        // Función para mostrar notificaciones
-        function showNotification(message, type = 'info') {
-            // Crear elemento de notificación
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.style.cssText = `
-                position: fixed;
-                top: 100px;
-                right: 20px;
-                padding: 1rem 1.5rem;
-                border-radius: var(--rounded);
-                background-color: ${type === 'success' ? 'var(--success-color)' : type === 'error' ? 'var(--error-color)' : 'var(--primary-color)'};
-                color: white;
-                box-shadow: var(--shadow-lg);
-                z-index: 1002;
-                max-width: 300px;
-                animation: slideIn 0.3s ease-out;
-            `;
-            
-            notification.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-                    <span>${message}</span>
-                </div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Eliminar notificación después de 3 segundos
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease-in';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
-            }, 3000);
-        }
 
         // Función para iniciar la actualización automática
         function startAutoRefresh() {
@@ -1079,262 +844,165 @@
                 return;
             }
             
-            addonsGrid.innerHTML = '';
-            
-            addons.forEach(addon => {
-                const addonCard = createAddonCard(addon);
-                addonsGrid.appendChild(addonCard);
-            });
-        }
-
-        // Función para crear una tarjeta de addon
-        function createAddonCard(addon) {
-            const card = document.createElement('div');
-            card.className = 'addon-card';
-            
-            // Crear contenido de la tarjeta
-            card.innerHTML = `
-                <img src="${addon.cover_image || './img/default-cover.png'}" alt="${addon.title || 'Addon'}" class="addon-cover" onerror="this.src='./img/default-cover.png'">
-                <button class="share-button" title="Compartir addon">
-                    <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                        <polyline points="16 6 12 2 8 6"></polyline>
-                        <line x1="12" y1="2" x2="12" y2="15"></line>
-                    </svg>
-                </button>
-                <div class="addon-info">
-                    <h3 class="addon-title">${addon.title || 'Sin título'}</h3>
-                    <p class="addon-description">${addon.description || 'Sin descripción disponible.'}</p>
-                    <div class="addon-footer">
-                        <div class="addon-author">
-                            <img src="${addon.author_pic || './img/default-avatar.png'}" alt="${addon.author || 'Autor'}" class="author-pic" onerror="this.src='./img/default-avatar.png'">
-                            <a href="#" class="author-name">
-                                ${addon.author || 'Anónimo'}
-                                ${addon.verified ? '<i class="fas fa-check-circle verified-user-icon"></i>' : ''}
-                            </a>
+            addonsGrid.innerHTML = addons.map(addon => `
+                <div class="addon-card" onclick="viewAddon(${addon.id || 0})">
+                    <button class="share-button" onclick="event.stopPropagation(); openShareModal(${addon.id || 0})">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                    </button>
+                    <img src="${addon.cover_image || addon.image || './img/default-cover.jpg'}" alt="Portada del addon" class="addon-cover" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMUUyOTNCIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5NEEzQjgiPkFkZG9uIEltYWdlbjwvdGV4dD48L3N2Zz4='">
+                    <div class="addon-info">
+                        <h3 class="addon-title">${escapeHtml(addon.title || addon.name || 'Sin título')}</h3>
+                        <p class="addon-description">${escapeHtml(addon.description || 'Sin descripción disponible')}</p>
+                        
+                        <div class="addon-footer">
+                            <div class="addon-author">
+                                <img src="${addon.author_avatar || addon.avatar || './img/default-avatar.png'}" alt="Autor" class="author-pic" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(addon.author || addon.creator || 'U')}')">
+                                <span class="author-name">${escapeHtml(addon.author || addon.creator || 'Usuario')}
+                                    ${addon.author_verified ? `
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="verified-user-icon" width="16" height="16">
+                                        <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                                    </svg>
+                                    ` : ''}
+                                </span>
+                            </div>
+                            <span class="addon-version">${escapeHtml(addon.version || '1.0.0')}</span>
                         </div>
-                        <span class="addon-version">${addon.version || '1.0'}</span>
                     </div>
                 </div>
-            `;
-            
-            // Añadir funcionalidad de compartir
-            const shareButton = card.querySelector('.share-button');
-            shareButton.addEventListener('click', function(e) {
-                e.stopPropagation();
-                shareAddon(addon);
-            });
-            
-            // Añadir funcionalidad de clic en la tarjeta
-            card.addEventListener('click', function() {
-                viewAddon(addon);
-            });
-            
-            return card;
+            `).join('');
         }
 
-        // Función para compartir un addon
-        function shareAddon(addon) {
-            if (navigator.share) {
-                navigator.share({
-                    title: addon.title || 'Addon MCPixel',
-                    text: addon.description || 'Echa un vistazo a este addon para Minecraft',
-                    url: window.location.href
-                }).catch(error => {
-                    console.log('Error al compartir:', error);
-                });
-            } else {
-                // Fallback para navegadores que no soportan Web Share API
-                const shareUrl = window.location.href;
-                navigator.clipboard.writeText(shareUrl).then(() => {
-                    showNotification('Enlace copiado al portapapeles');
-                }).catch(() => {
-                    // Fallback adicional
-                    prompt('Comparte este enlace:', shareUrl);
-                });
-            }
-        }
-
-        // Función para ver un addon (simulada)
-        function viewAddon(addon) {
-            // En una implementación real, esto redirigiría a la página del addon
-            showNotification(`Viendo: ${addon.title || 'Addon'}`, 'info');
-        }
-
-        // Función para mostrar mensaje cuando no hay addons
-        function showNoAddonsMessage(message) {
+        // Función para mostrar mensaje de no hay addons
+        function showNoAddonsMessage(message = 'No se encontró ningún addon') {
             const addonsGrid = document.getElementById('addonsGrid');
             addonsGrid.innerHTML = `
                 <div class="no-addons-message">
                     <div class="no-addons-icon">
-                        <img src="./img/logo.png" alt="MCPixel Logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPk08L3RleHQ+PC9zdmc+'">
+                        <img src="./img/error.gif" alt="No se encontraron addons" onerror="this.innerHTML='<i class=\"fas fa-exclamation-circle\" style=\"font-size: 3rem; color: #EF4444;\"></i>';">
                     </div>
-                    <h2 class="no-addons-text">${message}</h2>
-                    <p class="no-addons-details">Intenta recargar los addons o verificar tu conexión a internet.</p>
-                    <button class="clear-search" onclick="reloadAddons()">
-                        <i class="fas fa-redo-alt"></i> Recargar Addons
-                    </button>
+                    <h3 class="no-addons-text">${message}</h3>
+                    <p class="no-addons-details">No hay addons disponibles en este momento.</p>
+                    <button class="clear-search" onclick="fetchAddonsFromAPI()">Reintentar</button>
                 </div>
             `;
         }
 
-        // Función para filtrar addons según la búsqueda
-        function filterAddons(query, isFormSubmit = false) {
-            if (!query || query.length < 2) {
+        // Función para filtrar addons según búsqueda
+        function filterAddons(query, updateURL = false) {
+            isSearchActive = true;
+            
+            // Verificar que allAddons es un array
+            if (!allAddons || !Array.isArray(allAddons)) {
+                console.error('allAddons no es un array válido');
                 return;
             }
             
             const filteredAddons = allAddons.filter(addon => {
-                const title = (addon.title || '').toLowerCase();
-                const author = (addon.author || '').toLowerCase();
-                const description = (addon.description || '').toLowerCase();
-                const searchTerm = query.toLowerCase();
+                const title = addon.title || addon.name || '';
+                const author = addon.author || addon.creator || '';
+                const description = addon.description || '';
+                const tags = addon.tags || '';
                 
-                return title.includes(searchTerm) || 
-                       author.includes(searchTerm) || 
-                       description.includes(searchTerm);
+                return title.toLowerCase().includes(query.toLowerCase()) || 
+                       author.toLowerCase().includes(query.toLowerCase()) ||
+                       description.toLowerCase().includes(query.toLowerCase()) ||
+                       tags.toLowerCase().includes(query.toLowerCase());
             });
             
-            if (isFormSubmit) {
-                // Si es un envío de formulario, mostrar resultados en la página principal
-                displaySearchResults(filteredAddons, query);
-            } else {
-                // Si es búsqueda en tiempo real, mostrar en el dropdown
-                displaySearchResultsDropdown(filteredAddons, query);
-            }
-        }
-
-        // Función para mostrar resultados de búsqueda en el dropdown
-        function displaySearchResultsDropdown(addons, query) {
-            const searchResults = document.getElementById('searchResults');
-            
-            if (addons.length === 0) {
-                searchResults.innerHTML = `<div class="no-results">No se encontraron addons para "${query}"</div>`;
-                searchResults.style.display = 'block';
-                return;
-            }
-            
-            let resultsHTML = '';
-            
-            // Limitar a 5 resultados en el dropdown
-            const limitedResults = addons.slice(0, 5);
-            
-            limitedResults.forEach(addon => {
-                resultsHTML += `
-                    <div class="search-result-item" data-addon-id="${addon.id || ''}">
-                        <img src="${addon.cover_image || './img/default-cover.png'}" alt="${addon.title || 'Addon'}" onerror="this.src='./img/default-cover.png'">
-                        <div class="search-result-info">
-                            <div class="search-result-title">${addon.title || 'Sin título'}</div>
-                            <div class="search-result-author">
-                                <img src="${addon.author_pic || './img/default-avatar.png'}" alt="${addon.author || 'Autor'}" onerror="this.src='./img/default-avatar.png'">
-                                ${addon.author || 'Anónimo'}
-                            </div>
-                        </div>
-                    </div>
+            if (updateURL) {
+                // Actualizar URL con parámetro de búsqueda (without recargar la página)
+                window.history.pushState({}, '', `?search=${encodeURIComponent(query)}`);
+                
+                // Actualizar título
+                document.querySelector('.page-title').textContent = 'Resultados de Búsqueda';
+                
+                // Mostrar información de resultados
+                const searchHeader = document.createElement('div');
+                searchHeader.className = 'search-header';
+                searchHeader.innerHTML = `
+                    <h2 class="search-results-title">Resultados Encontrados</h2>
+                    <span class="search-results-count">${filteredAddons.length} resultado${filteredAddons.length !== 1 ? 's' : ''} para "${query}"</span>
+                    <button class="clear-search" onclick="clearSearch()">Limpiar búsqueda</button>
                 `;
-            });
-            
-            searchResults.innerHTML = resultsHTML;
-            searchResults.style.display = 'block';
-            
-            // Añadir eventos a los resultados
-            const resultItems = searchResults.querySelectorAll('.search-result-item');
-            resultItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    const addonId = this.getAttribute('data-addon-id');
-                    const addon = allAddons.find(a => (a.id || '') === addonId);
-                    if (addon) {
-                        viewAddon(addon);
-                        searchResults.style.display = 'none';
-                        document.getElementById('searchInput').value = '';
-                    }
-                });
-            });
-        }
-
-        // Función para mostrar resultados de búsqueda en la página principal
-        function displaySearchResults(addons, query) {
-            const container = document.querySelector('.container');
-            const searchSection = document.querySelector('.search-section');
-            
-            // Actualizar título de la página
-            const pageTitle = document.querySelector('.page-title');
-            pageTitle.textContent = `Resultados de búsqueda: "${query}"`;
-            
-            // Añadir información de resultados
-            const resultsInfo = document.createElement('div');
-            resultsInfo.className = 'search-header';
-            resultsInfo.innerHTML = `
-                <h2 class="search-results-title">Resultados de búsqueda para: "${query}"</h2>
-                <p class="search-results-count">Se encontraron ${addons.length} addon${addons.length !== 1 ? 's' : ''}</p>
-                <a href="#" class="clear-search" id="clearSearchButton">
-                    <i class="fas fa-times"></i> Limpiar búsqueda
-                </a>
-            `;
-            
-            // Reemplazar contenido existente
-            const existingHeader = document.querySelector('.search-header');
-            if (existingHeader) {
-                existingHeader.remove();
+                
+                const container = document.querySelector('.container');
+                const pageTitle = document.querySelector('.pageTitle');
+                if (!document.querySelector('.search-header')) {
+                    container.insertBefore(searchHeader, pageTitle.nextSibling);
+                } else {
+                    document.querySelector('.search-header').innerHTML = searchHeader.innerHTML;
+                }
             }
             
-            container.insertBefore(resultsInfo, document.getElementById('addonsGrid'));
-            
-            // Mostrar addons filtrados
-            displayAddons(addons);
-            
-            // Añadir evento al botón de limpiar búsqueda
-            document.getElementById('clearSearchButton').addEventListener('click', function(e) {
-                e.preventDefault();
-                clearSearch();
-            });
-            
-            // Ocultar dropdown de búsqueda
-            document.getElementById('searchResults').style.display = 'none';
-            
-            // Marcar que estamos en modo búsqueda
-            isSearchActive = true;
+            if (filteredAddons.length === 0) {
+                showNoAddonsMessage('No se encontraron resultados para tu búsqueda');
+            } else {
+                displayAddons(filteredAddons);
+            }
         }
 
-        // Función para limpiar la búsqueda
+        // Función para limpiar búsqueda
         function clearSearch() {
-            // Restaurar título original
-            const pageTitle = document.querySelector('.page-title');
-            pageTitle.textContent = 'Últimos Addons';
+            isSearchActive = false;
+            document.getElementById('searchInput').value = '';
+            window.history.pushState({}, '', window.location.pathname);
+            document.querySelector('.page-title').textContent = 'Últimos Addons';
             
-            // Eliminar información de resultados de búsqueda
             const searchHeader = document.querySelector('.search-header');
             if (searchHeader) {
                 searchHeader.remove();
             }
             
-            // Limpiar campo de búsqueda
-            document.getElementById('searchInput').value = '';
-            
-            // Ocultar dropdown de resultados
-            document.getElementById('searchResults').style.display = 'none';
-            
-            // Mostrar todos los addons
             displayAddons(allAddons);
-            
-            // Marcar que ya no estamos en modo búsqueda
-            isSearchActive = false;
         }
 
-        // Añadir estilos CSS para las animaciones
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
+        // Función para ver un addon específico
+        function viewAddon(id) {
+            window.location.href = `view.html?id=${id}`;
+        }
+
+        // Función para abrir modal de compartir
+        function openShareModal(id) {
+            const addon = allAddons.find(a => a.id === id);
+            if (addon) {
+                const shareUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}view.html?id=${id}`;
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    alert('Enlace copiado al portapapeles');
+                });
             }
-            
-            @keyframes slideOut {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(100%); opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
+        }
+
+        // Función auxiliar para obtener iniciales
+        function getInitials(name) {
+            return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+        }
+
+        // Función auxiliar para escapar HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Comprobar si hay parámetros de búsqueda en la URL al cargar
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchParam = urlParams.get('search');
+        if (searchParam) {
+            document.getElementById('searchInput').value = searchParam;
+            // Esperar a que los addons se carguen antes de filtrar
+            const checkAddonsLoaded = setInterval(() => {
+                if (allAddons && allAddons.length > 0) {
+                    clearInterval(checkAddonsLoaded);
+                    filterAddons(searchParam, true);
+                }
+            }, 100);
+        }
     </script>
 </body>
 </html>
