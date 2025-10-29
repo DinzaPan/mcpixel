@@ -589,6 +589,10 @@
                 <i class="fas fa-sync-alt"></i>
                 <span>Updates</span>
             </a>
+            <a href="publicar.html" class="menu-item">
+                <i class="fas fa-edit"></i>
+                <span>Publicar Addon</span>
+            </a>
             <a href="https://github.com/DinzaPan/mcpixel" class="menu-item" target="_blank">
                 <i class="fab fa-github"></i>
                 <span>GitHub</span>
@@ -1009,106 +1013,135 @@
                         
                         <div class="addon-footer">
                             <div class="addon-author">
-                                <img src="${addon.author_avatar || addon.avatar || './img/default-avatar.png'}" alt="Autor" class="author-pic" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(addon.author || addon.creator || 'U')}')">
-                                <span class="author-name">${escapeHtml(addon.author || addon.creator || 'Usuario')}</span>
+                                <img src="${addon.author_avatar || addon.avatar || './img/default-avatar.png'}" alt="Avatar del autor" class="author-pic" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMzQjgyRjYiLz48Y2lyY2xlIGN4PSIxNiIgY3k9IjEyIiByPSI1IiBmaWxsPSJ3aGl0ZSIvPjxwYXRoIGQ9Ik0xNiAyMmMtMyAwLTYgMi02IDVoMTJjMC0zLTMtNS02LTV6IiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg=='">
+                                <span class="author-name">${escapeHtml(addon.author || addon.creator || 'Autor desconocido')}</span>
                             </div>
-                            <span class="addon-version">${escapeHtml(addon.version || '1.0.0')}</span>
+                            <span class="addon-version">${escapeHtml(addon.version || 'v1.0')}</span>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Función para mostrar mensaje de no hay addons
-        function showNoAddonsMessage(message = 'No se encontró ningún addon') {
+        // Función para mostrar mensaje cuando no hay addons
+        function showNoAddonsMessage(message) {
             const addonsGrid = document.getElementById('addonsGrid');
             addonsGrid.innerHTML = `
                 <div class="no-addons-message">
                     <div class="no-addons-icon">
-                        <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #EF4444;"></i>
+                        <i class="fas fa-box-open" style="font-size: 3rem; color: #3B82F6;"></i>
                     </div>
-                    <h3 class="no-addons-text">${message}</h3>
-                    <p class="no-addons-details">No hay addons disponibles en este momento.</p>
-                    <button class="clear-search" onclick="fetchAddonsFromAPI()">Reintentar</button>
+                    <h2 class="no-addons-text">${message}</h2>
+                    <p class="no-addons-details">No se encontraron addons para mostrar. Esto puede deberse a un error de conexión o que no hay addons disponibles en este momento.</p>
+                    <button onclick="reloadAddons()" style="background-color: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: var(--rounded); cursor: pointer; font-weight: 600; transition: var(--transition);">
+                        <i class="fas fa-redo-alt"></i> Reintentar
+                    </button>
                 </div>
             `;
         }
 
-        // Función para filtrar addons según búsqueda
-        function filterAddons(query, updateURL = false) {
-            isSearchActive = true;
+        // Función para filtrar addons
+        function filterAddons(query, isFormSubmit = false) {
+            const searchResults = document.getElementById('searchResults');
             
-            // Verificar que allAddons es un array
-            if (!allAddons || !Array.isArray(allAddons)) {
-                console.error('allAddons no es un array válido');
+            if (!query || query.length < 2) {
+                searchResults.style.display = 'none';
                 return;
             }
             
             const filteredAddons = allAddons.filter(addon => {
-                const title = addon.title || addon.name || '';
-                const author = addon.author || addon.creator || '';
-                const description = addon.description || '';
-                const tags = addon.tags || '';
+                const title = (addon.title || addon.name || '').toLowerCase();
+                const author = (addon.author || addon.creator || '').toLowerCase();
+                const description = (addon.description || '').toLowerCase();
+                const searchTerm = query.toLowerCase();
                 
-                return title.toLowerCase().includes(query.toLowerCase()) || 
-                       author.toLowerCase().includes(query.toLowerCase()) ||
-                       description.toLowerCase().includes(query.toLowerCase()) ||
-                       tags.toLowerCase().includes(query.toLowerCase());
+                return title.includes(searchTerm) || 
+                       author.includes(searchTerm) || 
+                       description.includes(searchTerm);
             });
             
-            if (updateURL) {
-                // Actualizar URL con parámetro de búsqueda
-                window.history.pushState({}, '', `?search=${encodeURIComponent(query)}`);
+            if (filteredAddons.length > 0) {
+                searchResults.innerHTML = filteredAddons.slice(0, 5).map(addon => `
+                    <div class="search-result-item" onclick="selectSearchResult(${addon.id || 0})">
+                        <img src="${addon.cover_image || addon.image || './img/default-cover.jpg'}" alt="Portada del addon" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzFFMjkzQiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ibW9ub3NwYWNlLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTRBM0I4Ij5BPC90ZXh0Pjwvc3ZnPg=='">
+                        <div class="search-result-info">
+                            <div class="search-result-title">${escapeHtml(addon.title || addon.name || 'Sin título')}</div>
+                            <div class="search-result-author">
+                                <i class="fas fa-user"></i>
+                                ${escapeHtml(addon.author || addon.creator || 'Autor desconocido')}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
                 
-                // Actualizar título
-                document.querySelector('.page-title').textContent = 'Resultados de Búsqueda';
+                if (filteredAddons.length > 5) {
+                    searchResults.innerHTML += `
+                        <div class="search-result-item" style="justify-content: center; font-weight: 600; color: var(--primary-color);">
+                            <i class="fas fa-search"></i>
+                            Ver todos los resultados (${filteredAddons.length})
+                        </div>
+                    `;
+                }
+                
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search" style="margin-bottom: 0.5rem; display: block; font-size: 1.5rem; color: #94a3b8;"></i>
+                        No se encontraron resultados para "${escapeHtml(query)}"
+                    </div>
+                `;
+                searchResults.style.display = 'block';
             }
             
-            if (filteredAddons.length === 0) {
-                showNoAddonsMessage('No se encontraron resultados para tu búsqueda');
-            } else {
+            // Si es un envío de formulario, mostrar todos los resultados
+            if (isFormSubmit) {
                 displayAddons(filteredAddons);
+                searchResults.style.display = 'none';
+                document.getElementById('searchInput').blur();
+                isSearchActive = true;
             }
         }
 
-        // Función para limpiar búsqueda
+        // Función para limpiar la búsqueda
         function clearSearch() {
-            isSearchActive = false;
+            document.getElementById('searchResults').style.display = 'none';
             document.getElementById('searchInput').value = '';
-            window.history.pushState({}, '', window.location.pathname);
-            document.querySelector('.page-title').textContent = 'Últimos Addons';
-            displayAddons(allAddons);
+            
+            if (isSearchActive) {
+                displayAddons(allAddons);
+                isSearchActive = false;
+            }
         }
 
-        // Función para ver un addon específico
-        function viewAddon(id) {
-            window.location.href = `view.html?id=${id}`;
+        // Función para seleccionar un resultado de búsqueda
+        function selectSearchResult(addonId) {
+            const addon = allAddons.find(a => a.id === addonId);
+            if (addon) {
+                viewAddon(addonId);
+            } else {
+                // Si se hace clic en "Ver todos los resultados"
+                const query = document.getElementById('searchInput').value;
+                filterAddons(query, true);
+            }
         }
 
-        // Función auxiliar para obtener iniciales
-        function getInitials(name) {
-            return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+        // Función para ver un addon (placeholder)
+        function viewAddon(addonId) {
+            // Aquí puedes implementar la navegación a la página del addon
+            console.log('Ver addon:', addonId);
+            // Por ejemplo: window.location.href = `addon.html?id=${addonId}`;
         }
 
-        // Función auxiliar para escapar HTML
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Comprobar si hay parámetros de búsqueda en la URL al cargar
-        const urlParams = new URLSearchParams(window.location.search);
-        const searchParam = urlParams.get('search');
-        if (searchParam) {
-            document.getElementById('searchInput').value = searchParam;
-            // Esperar a que los addons se carguen antes de filtrar
-            const checkAddonsLoaded = setInterval(() => {
-                if (allAddons && allAddons.length > 0) {
-                    clearInterval(checkAddonsLoaded);
-                    filterAddons(searchParam, true);
-                }
-            }, 100);
+        // Función para escapar HTML (seguridad)
+        function escapeHtml(unsafe) {
+            if (typeof unsafe !== 'string') return '';
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
         }
     </script>
 </body>
