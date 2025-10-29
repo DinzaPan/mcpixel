@@ -82,6 +82,107 @@
             letter-spacing: -0.5px;
         }
 
+        /* Menú flotante - Solo las tres rayas */
+        .floating-menu {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 1001;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--dark-text);
+            cursor: pointer;
+            padding: 0.75rem;
+            transition: var(--transition);
+            z-index: 1002;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            border-radius: 4px;
+        }
+
+        .menu-toggle:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .menu-toggle .bar {
+            width: 28px;
+            height: 3px;
+            background-color: currentColor;
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        .menu-toggle.active .bar:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .menu-toggle.active .bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active .bar:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        .menu-items {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--dark-card);
+            border-radius: var(--rounded-lg);
+            box-shadow: var(--shadow-lg);
+            padding: 0.75rem;
+            min-width: 220px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+            z-index: 1001;
+            border: 1px solid var(--dark-border);
+            margin-top: 0.5rem;
+        }
+
+        .menu-items.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            color: var(--dark-text);
+            text-decoration: none;
+            border-radius: var(--rounded);
+            transition: var(--transition);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--primary-color);
+        }
+
+        .menu-item i {
+            width: 1.25rem;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .menu-divider {
+            height: 1px;
+            background-color: var(--dark-border);
+            margin: 0.5rem 0;
+        }
+
         /* Sección del buscador */
         .search-section {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
@@ -194,10 +295,6 @@
             font-weight: 600;
             margin-bottom: 0.25rem;
             color: var(--dark-text);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 200px;
         }
 
         .search-result-author {
@@ -206,16 +303,6 @@
             display: flex;
             align-items: center;
             gap: 0.25rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 200px;
-        }
-
-        .search-result-author img {
-            width: 1.25rem;
-            height: 1.25rem;
-            border-radius: 50%;
         }
 
         .no-results {
@@ -232,48 +319,157 @@
             margin: 0 auto;
         }
 
-        .search-header {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .search-results-title {
-            font-size: 1.75rem;
+        .page-title {
+            font-size: 2rem;
             font-weight: 700;
+            margin-bottom: 2rem;
             color: var(--dark-text);
-            background: linear-gradient(90deg, #3B82F6, #10B981);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: inline-block;
-        }
-        
-        .search-results-count {
-            font-size: 0.9rem;
-            color: #94a3b8;
-        }
-        
-        .clear-search {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0.5rem 1.25rem;
-            border-radius: 2rem;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: var(--transition);
-            text-decoration: none;
-            align-self: flex-start;
-            margin-top: 1rem;
-            box-shadow: var(--shadow);
-        }
-        
-        .clear-search:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-2px);
+            position: relative;
+            padding-bottom: 0.75rem;
         }
 
+        .page-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 4rem;
+            height: 0.25rem;
+            background: linear-gradient(90deg, #3B82F6, #10B981);
+            border-radius: 0.25rem;
+        }
+
+        /* Grid de addons */
+        .addons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .addon-card {
+            background-color: var(--dark-card);
+            border-radius: var(--rounded-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--dark-border);
+            cursor: pointer;
+            height: 100%;
+        }
+
+        .addon-card:hover {
+            transform: translateY(-0.5rem);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+
+        .addon-cover {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--dark-border);
+        }
+
+        .addon-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .addon-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 0.75rem 0;
+            color: var(--dark-text);
+            line-height: 1.3;
+        }
+
+        .addon-description {
+            font-size: 0.9375rem;
+            color: #94a3b8;
+            margin: 0 0 1rem 0;
+            flex-grow: 1;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .addon-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            color: #94a3b8;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--dark-border);
+        }
+
+        .addon-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .author-pic {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .author-name {
+            text-decoration: none;
+            color: inherit;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .addon-version {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        /* Loader */
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            grid-column: 1 / -1;
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid rgba(59, 130, 246, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Mensaje de no addons */
         .no-addons-message {
             display: flex;
             flex-direction: column;
@@ -300,12 +496,6 @@
             overflow: hidden;
         }
         
-        .no-addons-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        
         .no-addons-text {
             font-size: 1.5rem;
             margin-bottom: 0.75rem;
@@ -321,207 +511,33 @@
             line-height: 1.5;
         }
 
-        .page-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            color: var(--dark-text);
-            position: relative;
-            padding-bottom: 0.75rem;
-        }
-
-        .page-title:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 4rem;
-            height: 0.25rem;
-            background: linear-gradient(90deg, #3B82F6, #10B981);
-            border-radius: 0.25rem;
-        }
-
-        /* Grid de addons */
-        .addons-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
-            gap: 2rem;
-            margin-top: 1.5rem;
-        }
-
-        .addon-card {
-            background-color: var(--dark-card);
-            border-radius: var(--rounded-lg);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            text-decoration: none;
-            color: inherit;
-            position: relative;
-            border: 1px solid var(--dark-border);
-            cursor: pointer;
-        }
-
-        .addon-card:hover {
-            transform: translateY(-0.5rem);
+        /* Notificaciones */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: var(--rounded);
+            background-color: var(--success-color);
+            color: white;
             box-shadow: var(--shadow-lg);
-            border-color: var(--primary-color);
+            z-index: 1002;
+            max-width: 300px;
+            animation: slideIn 0.3s ease-out;
         }
 
-        .addon-cover {
-            width: 100%;
-            height: 12rem;
-            object-fit: cover;
-            border-bottom: 1px solid var(--dark-border);
+        .notification.error {
+            background-color: var(--error-color);
         }
 
-        .addon-info {
-            padding: 1.5rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
-        .addon-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin: 0 0 0.75rem 0;
-            color: var(--dark-text);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .addon-description {
-            font-size: 0.9375rem;
-            color: #94a3b8;
-            margin: 0 0 1rem 0;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            flex-grow: 1;
-            line-height: 1.5;
-        }
-
-        .addon-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.875rem;
-            color: #94a3b8;
-            margin-top: auto;
-            padding-top: 1rem;
-            border-top: 1px solid var(--dark-border);
-        }
-
-        .addon-author {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            max-width: 70%;
-            overflow: hidden;
-        }
-
-        .author-pic {
-            width: 2rem;
-            height: 2rem;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--primary-color);
-            flex-shrink: 0;
-        }
-
-        .author-name {
-            text-decoration: none;
-            color: inherit;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.15rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .addon-version {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 2rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        .verified-user-icon {
-            color: #94a3b8;
-            margin-left: 0.15rem;
-            font-size: 1rem;
-            vertical-align: middle;
-            width: 1rem;
-            height: 1rem;
-            flex-shrink: 0;
-        }
-
-        /* Botón de compartir en tarjeta - Solo visible al pasar el ratón */
-        .share-button {
-            position: absolute;
-            top: 0.75rem;
-            right: 0.75rem;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 2.25rem;
-            height: 2.25rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-            z-index: 10;
-            opacity: 0;
-            transform: scale(0.8);
-        }
-
-        .addon-card:hover .share-button {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .share-button:hover {
-            background-color: var(--primary-color);
-            transform: scale(1.1) !important;
-        }
-
-        .share-icon {
-            width: 1.25rem;
-            height: 1.25rem;
-        }
-
-        /* Loader */
-        .loader-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 3rem;
-            grid-column: 1 / -1;
-        }
-
-        .loader {
-            width: 48px;
-            height: 48px;
-            border: 5px solid rgba(59, 130, 246, 0.2);
-            border-radius: 50%;
-            border-top-color: var(--primary-color);
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
         }
 
         @media (max-width: 768px) {
@@ -540,6 +556,11 @@
             .search-section {
                 padding: 1.5rem 1rem;
             }
+            
+            .floating-menu {
+                top: 1rem;
+                right: 1rem;
+            }
         }
     </style>
 </head>
@@ -551,6 +572,38 @@
             <h1 class="site-title">MCPixel</h1>
         </div>
     </nav>
+
+    <!-- Menú flotante - Solo tres rayas -->
+    <div class="floating-menu">
+        <button class="menu-toggle" id="menuToggle">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </button>
+        <div class="menu-items" id="menuItems">
+            <a href="index.html" class="menu-item" id="homeLink">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="#" class="menu-item" id="updatesLink">
+                <i class="fas fa-sync-alt"></i>
+                <span>Updates</span>
+            </a>
+            <a href="https://github.com/DinzaPan/mcpixel" class="menu-item" target="_blank">
+                <i class="fab fa-github"></i>
+                <span>GitHub</span>
+            </a>
+            <a href="https://discord.gg/9EkhYdV325" class="menu-item" target="_blank">
+                <i class="fab fa-discord"></i>
+                <span>MCPixel</span>
+            </a>
+            <div class="menu-divider"></div>
+            <a href="#" class="menu-item" id="reloadLink">
+                <i class="fas fa-redo-alt"></i>
+                <span>Recargar Add-ons</span>
+            </a>
+        </div>
+    </div>
 
     <!-- Sección del buscador -->
     <section class="search-section">
@@ -638,9 +691,112 @@
                 }
             });
 
+            // Configurar menú flotante
+            const menuToggle = document.getElementById('menuToggle');
+            const menuItems = document.getElementById('menuItems');
+            
+            menuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                menuToggle.classList.toggle('active');
+                menuItems.classList.toggle('active');
+            });
+            
+            // Cerrar menú al hacer clic fuera
+            document.addEventListener('click', function() {
+                menuToggle.classList.remove('active');
+                menuItems.classList.remove('active');
+            });
+            
+            // Configurar enlaces del menú
+            const homeLink = document.getElementById('homeLink');
+            const updatesLink = document.getElementById('updatesLink');
+            const reloadLink = document.getElementById('reloadLink');
+            
+            homeLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Si el enlace es "#", redirigir a error 404
+                if (this.getAttribute('href') === '#') {
+                    window.location.href = './error/404.html';
+                } else {
+                    window.location.href = this.getAttribute('href');
+                }
+                closeMenu();
+            });
+            
+            updatesLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Si el enlace es "#", redirigir a error 404
+                if (this.getAttribute('href') === '#') {
+                    window.location.href = './error/404.html';
+                } else {
+                    window.location.href = this.getAttribute('href');
+                }
+                closeMenu();
+            });
+            
+            reloadLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                reloadAddons();
+                closeMenu();
+            });
+
             // Iniciar intervalo de actualización automática
             startAutoRefresh();
         });
+
+        // Función para cerrar el menú
+        function closeMenu() {
+            const menuToggle = document.getElementById('menuToggle');
+            const menuItems = document.getElementById('menuItems');
+            
+            menuToggle.classList.remove('active');
+            menuItems.classList.remove('active');
+        }
+
+        // Función para recargar addons
+        function reloadAddons() {
+            // Mostrar indicador de carga
+            const addonsGrid = document.getElementById('addonsGrid');
+            addonsGrid.innerHTML = `
+                <div class="loader-container">
+                    <div class="loader"></div>
+                </div>
+            `;
+            
+            // Forzar recarga desde la API
+            fetchAddonsFromAPI(false).then(() => {
+                // Mostrar mensaje de éxito
+                showNotification('Addons recargados correctamente', 'success');
+            }).catch(error => {
+                console.error('Error al recargar addons:', error);
+                showNotification('Error al recargar addons', 'error');
+            });
+        }
+
+        // Función para mostrar notificaciones
+        function showNotification(message, type = 'info') {
+            // Crear elemento de notificación
+            const notification = document.createElement('div');
+            notification.className = `notification ${type === 'error' ? 'error' : ''}`;
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Eliminar notificación después de 3 segundos
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
 
         // Función para iniciar la actualización automática
         function startAutoRefresh() {
@@ -846,16 +1002,7 @@
             
             addonsGrid.innerHTML = addons.map(addon => `
                 <div class="addon-card" onclick="viewAddon(${addon.id || 0})">
-                    <button class="share-button" onclick="event.stopPropagation(); openShareModal(${addon.id || 0})">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="18" cy="5" r="3"></circle>
-                            <circle cx="6" cy="12" r="3"></circle>
-                            <circle cx="18" cy="19" r="3"></circle>
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                        </svg>
-                    </button>
-                    <img src="${addon.cover_image || addon.image || './img/default-cover.jpg'}" alt="Portada del addon" class="addon-cover" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMUUyOTNCIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5NEEzQjgiPkFkZG9uIEltYWdlbjwvdGV4dD48L3N2Zz4='">
+                    <img src="${addon.cover_image || addon.image || './img/default-cover.jpg'}" alt="Portada del addon" class="addon-cover" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMUUyOTNCIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5uZSI9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk0QTNCOCI+QWRkb24gSW1hZ2VuPC90ZXh0Pjwvc3ZnPg=='">
                     <div class="addon-info">
                         <h3 class="addon-title">${escapeHtml(addon.title || addon.name || 'Sin título')}</h3>
                         <p class="addon-description">${escapeHtml(addon.description || 'Sin descripción disponible')}</p>
@@ -863,13 +1010,7 @@
                         <div class="addon-footer">
                             <div class="addon-author">
                                 <img src="${addon.author_avatar || addon.avatar || './img/default-avatar.png'}" alt="Autor" class="author-pic" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPiUxczwvdGV4dD48L3N2Zz4='.replace('%1s', '${getInitials(addon.author || addon.creator || 'U')}')">
-                                <span class="author-name">${escapeHtml(addon.author || addon.creator || 'Usuario')}
-                                    ${addon.author_verified ? `
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="verified-user-icon" width="16" height="16">
-                                        <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
-                                    </svg>
-                                    ` : ''}
-                                </span>
+                                <span class="author-name">${escapeHtml(addon.author || addon.creator || 'Usuario')}</span>
                             </div>
                             <span class="addon-version">${escapeHtml(addon.version || '1.0.0')}</span>
                         </div>
@@ -884,7 +1025,7 @@
             addonsGrid.innerHTML = `
                 <div class="no-addons-message">
                     <div class="no-addons-icon">
-                        <img src="./img/error.gif" alt="No se encontraron addons" onerror="this.innerHTML='<i class=\"fas fa-exclamation-circle\" style=\"font-size: 3rem; color: #EF4444;\"></i>';">
+                        <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #EF4444;"></i>
                     </div>
                     <h3 class="no-addons-text">${message}</h3>
                     <p class="no-addons-details">No hay addons disponibles en este momento.</p>
@@ -916,28 +1057,11 @@
             });
             
             if (updateURL) {
-                // Actualizar URL con parámetro de búsqueda (without recargar la página)
+                // Actualizar URL con parámetro de búsqueda
                 window.history.pushState({}, '', `?search=${encodeURIComponent(query)}`);
                 
                 // Actualizar título
                 document.querySelector('.page-title').textContent = 'Resultados de Búsqueda';
-                
-                // Mostrar información de resultados
-                const searchHeader = document.createElement('div');
-                searchHeader.className = 'search-header';
-                searchHeader.innerHTML = `
-                    <h2 class="search-results-title">Resultados Encontrados</h2>
-                    <span class="search-results-count">${filteredAddons.length} resultado${filteredAddons.length !== 1 ? 's' : ''} para "${query}"</span>
-                    <button class="clear-search" onclick="clearSearch()">Limpiar búsqueda</button>
-                `;
-                
-                const container = document.querySelector('.container');
-                const pageTitle = document.querySelector('.pageTitle');
-                if (!document.querySelector('.search-header')) {
-                    container.insertBefore(searchHeader, pageTitle.nextSibling);
-                } else {
-                    document.querySelector('.search-header').innerHTML = searchHeader.innerHTML;
-                }
             }
             
             if (filteredAddons.length === 0) {
@@ -953,29 +1077,12 @@
             document.getElementById('searchInput').value = '';
             window.history.pushState({}, '', window.location.pathname);
             document.querySelector('.page-title').textContent = 'Últimos Addons';
-            
-            const searchHeader = document.querySelector('.search-header');
-            if (searchHeader) {
-                searchHeader.remove();
-            }
-            
             displayAddons(allAddons);
         }
 
         // Función para ver un addon específico
         function viewAddon(id) {
             window.location.href = `view.html?id=${id}`;
-        }
-
-        // Función para abrir modal de compartir
-        function openShareModal(id) {
-            const addon = allAddons.find(a => a.id === id);
-            if (addon) {
-                const shareUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}view.html?id=${id}`;
-                navigator.clipboard.writeText(shareUrl).then(() => {
-                    alert('Enlace copiado al portapapeles');
-                });
-            }
         }
 
         // Función auxiliar para obtener iniciales
