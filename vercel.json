@@ -1,34 +1,24 @@
 {
   "version": 2,
+  "builds": [
+    {
+      "src": "**/*.html",
+      "use": "@vercel/static"
+    }
+  ],
   "routes": [
     {
-      "src": "/(.*\\.(png|jpg|jpeg|gif|svg|ico|css|js|webp|avif))",
-      "dest": "/$1",
-      "headers": {
-        "cache-control": "public, max-age=31536000, immutable"
-      }
-    },
-    {
       "src": "/img/(.*)",
-      "dest": "/img/$1",
-      "headers": {
-        "cache-control": "public, max-age=31536000, immutable"
-      }
+      "dest": "/img/$1"
     },
     {
-      "src": "/error/404/null\\.html",
+      "src": "/error/404/null.html",
       "dest": "/error/404/null.html"
     },
     {
       "src": "/(.*)",
       "dest": "/error/404/null.html",
       "status": 404
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/error/404/null.html"
     }
   ]
 }
