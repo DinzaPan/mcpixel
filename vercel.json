@@ -2,15 +2,14 @@
   "version": 2,
   "routes": [
     {
+      "src": "/",
+      "dest": "/error/404/null.html",
+      "status": 404
+    },
+    {
       "src": "/(.*)",
       "dest": "/error/404/null.html",
       "status": 404
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/error/404/null.html"
     }
   ]
 }
