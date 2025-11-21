@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favoritos - MCPixel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        .primary-btn {
+            background: var(--gradient);
+            color: var(--text-primary);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3);
+            margin-top: 20px;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.4);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .no-results-icon {
+            font-size: 4rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .no-results h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .no-results p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 5px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="logo-container">
+            <img src="../img/logo.png" alt="MCPixel Logo" class="logo">
+            <h1 class="title">MCPixel</h1>
+        </div>
+        
+        <div class="header-actions">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="floating-menu" id="floatingMenu">
+                <a href="../index.html" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    Inicio
+                </a>
+                <a href="favorites.html" class="menu-item">
+                    <i class="fas fa-heart"></i>
+                    Favoritos
+                </a>
+                <a href="notifications.html" class="menu-item">
+                    <i class="fas fa-bell"></i>
+                    Notificaciones
+                </a>
+                <a href="help.html" class="menu-item">
+                    <i class="fas fa-hands-helping"></i>
+                    Ayuda
+                </a>
+                <a href="../post.html" class="menu-item">
+                    <i class="fas fa-edit"></i>
+                    Publicar
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="search-bar">
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Buscar en favoritos...">
+            </div>
+        </div>
+    </div>
+
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+
+    <main class="container">
+        <h2 class="section-title">
+            <i class="fas fa-heart"></i>
+            Mis Favoritos
+        </h2>
+        
+        <div class="cards-grid" id="cards-container">
+            <!-- Los addons favoritos se cargarán dinámicamente -->
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Inicializar Supabase globalmente
+        const SUPABASE_URL = 'https://dgmsyuzxsvjfkjdyecer.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnbXN5dXp4c3ZqZmtqZHllY2VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NjI5OTUsImV4cCI6MjA3OTEzODk5NX0._SQAuzRejAi-tghTh8hTk_dvaZooEMZBbHAQw4hyA3I';
+        window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Gestor de favoritos
+        const favoritesManager = {
+            getFavorites: () => {
+                const favorites = localStorage.getItem('favorites');
+                return favorites ? JSON.parse(favorites) : [];
+            },
+            
+            isFavorite: (addonId) => {
+                const favorites = favoritesManager.getFavorites();
+                return favorites.includes(addonId);
+            }
+        };
+
+        let allFavoriteAddons = [];
+
+        // Inicializar página de favoritos
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadFavoriteAddons();
+            setupMenu();
+            setupSearch();
+        });
+
+        // Cargar addons favoritos
+        async function loadFavoriteAddons() {
+            try {
+                const favoriteIds = favoritesManager.getFavorites();
+                
+                if (favoriteIds.length === 0) {
+                    showNoFavorites();
+                    return;
+                }
+
+                const { data: addons, error } = await window.supabase
+                    .from('addons')
+                    .select(`
+                        *,
+                        profiles:user_id (
+                            username,
+                            is_verified,
+                            avatar_url
+                        )
+                    `)
+                    .in('id', favoriteIds);
+
+                if (error) throw error;
+
+                allFavoriteAddons = addons || [];
+                renderAddons(allFavoriteAddons);
+            } catch (error) {
+                console.error('Error cargando favoritos:', error);
+                showNoFavorites();
+            }
+        }
+
+        // Renderizar addons
+        function renderAddons(addons) {
+            const container = document.getElementById('cards-container');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            if (addons.length === 0) {
+                showNoFavorites();
+                return;
+            }
+
+            addons.forEach((addon, index) => {
+                const isVerified = addon.profiles?.is_verified || false;
+                const creatorName = addon.profiles?.username || addon.creator || 'Anónimo';
+                const avatarUrl = addon.profiles?.avatar_url || '../img/default-avatar.png';
+                
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.innerHTML = `
+                    <div class="card-cover" style="background-image: url('${addon.image || '../img/default-addon.jpg'}')"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">${addon.title}</h3>
+                        <p class="card-description">${addon.description || 'Sin descripción disponible.'}</p>
+                        <div class="card-details">
+                            <div class="creator">
+                                <div class="creator-avatar">
+                                    <img src="${avatarUrl}" alt="${creatorName}" class="avatar-img">
+                                </div>
+                                <div class="creator-info">
+                                    <span class="creator-name">${creatorName}</span>
+                                    ${isVerified ? `
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="verified-user-icon" width="16" height="16">
+                                            <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                                        </svg>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            <div class="version">
+                                <i class="fas fa-code-branch"></i>
+                                v${addon.version || '1.0.0'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                card.addEventListener('click', () => {
+                    // Redirigir a view.html con el ID del addon
+                    window.location.href = `view.html?id=${addon.id}`;
+                });
+
+                container.appendChild(card);
+            });
+        }
+
+        // Mostrar mensaje sin favoritos
+        function showNoFavorites() {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = `
+                <div class="no-results">
+                    <div class="no-results-icon">
+                        <i class="fas fa-heart-broken"></i>
+                    </div>
+                    <h3>No tienes favoritos</h3>
+                    <p>Los addons que marques como favoritos aparecerán aquí.</p>
+                    <p>Ve a la página principal y haz clic en el corazón en los detalles de un addon.</p>
+                    <a href="../index.html" class="primary-btn">
+                        <i class="fas fa-home"></i>
+                        Ir a la página principal
+                    </a>
+                </div>
+            `;
+        }
+
+        // Configurar búsqueda
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            if (!searchInput) return;
+
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                
+                if (searchTerm === '') {
+                    renderAddons(allFavoriteAddons);
+                    return;
+                }
+
+                const filtered = allFavoriteAddons.filter(addon => 
+                    addon.title?.toLowerCase().includes(searchTerm) ||
+                    addon.description?.toLowerCase().includes(searchTerm) ||
+                    addon.profiles?.username?.toLowerCase().includes(searchTerm)
+                );
+
+                renderAddons(filtered);
+            });
+        }
+
+        // Configurar menú
+        function setupMenu() {
+            const menuToggle = document.getElementById('menuToggle');
+            const floatingMenu = document.getElementById('floatingMenu');
+
+            if (!menuToggle || !floatingMenu) return;
+
+            menuToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                menuToggle.classList.toggle('active');
+                floatingMenu.classList.toggle('active');
+            });
+
+            document.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                floatingMenu.classList.remove('active');
+            });
+
+            floatingMenu.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
+    </script>
+</body>
+</html>

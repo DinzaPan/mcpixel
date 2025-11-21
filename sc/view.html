@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Addon - MCPixel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/view.css">
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <header class="top-bar">
+        <div class="logo-container">
+            <img src="../img/logo.png" alt="MCPixel Logo" class="logo">
+            <h1 class="title">MCPixel</h1>
+        </div>
+        <div class="header-actions">
+            <button class="back-btn" id="backBtn">
+                <i class="fas fa-arrow-left"></i>
+                Volver
+            </button>
+        </div>
+    </header>
+
+    <main class="detail-container">
+        <div id="addon-details">
+            <!-- El contenido se carga dinámicamente -->
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Inicializar Supabase
+        const SUPABASE_URL = 'https://dgmsyuzxsvjfkjdyecer.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnbXN5dXp4c3ZqZmtqZHllY2VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NjI5OTUsImV4cCI6MjA3OTEzODk5NX0._SQAuzRejAi-tghTh8hTk_dvaZooEMZBbHAQw4hyA3I';
+        window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+    <script src="../js/view.js"></script>
+</body>
+</html>

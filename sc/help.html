@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayuda - MCPixel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        .help-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 5%;
+        }
+        
+        .help-title {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .help-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 4px;
+        }
+        
+        .help-title i {
+            color: var(--accent);
+        }
+        
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        
+        .step {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .step-number {
+            background: var(--gradient);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(26, 115, 232, 0.4);
+        }
+        
+        .step-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .step-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+        
+        .step-image {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+        }
+        
+        .step-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .help-title {
+                font-size: 1.8rem;
+            }
+            
+            .step {
+                padding: 20px;
+            }
+            
+            .step-title {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="logo-container">
+            <img src="../img/logo.png" alt="MCPixel Logo" class="logo">
+            <h1 class="title">MCPixel</h1>
+        </div>
+        
+        <div class="header-actions">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="floating-menu" id="floatingMenu">
+                <a href="../index.html" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    Inicio
+                </a>
+                <a href="favorites.html" class="menu-item">
+                    <i class="fas fa-heart"></i>
+                    Favoritos
+                </a>
+                <a href="notifications.html" class="menu-item">
+                    <i class="fas fa-bell"></i>
+                    Notificaciones
+                </a>
+                <a href="help.html" class="menu-item">
+                    <i class="fas fa-hands-helping"></i>
+                    Ayuda
+                </a>
+                <a href="../post.html" class="menu-item">
+                    <i class="fas fa-edit"></i>
+                    Publicar
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+
+    <main class="help-container">
+        <h1 class="help-title">
+            <i class="fas fa-hands-helping"></i>
+            Guía de Instalación de Addons
+        </h1>
+        
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h2 class="step-title">Seleccionar el addon</h2>
+                </div>
+                <p class="step-description">
+                    Selecciona el addon que quieres instalar y asegúrate que sea la verificación correspondiente.
+                </p>
+                <div class="step-image">
+                    <img src="../img/help/ps1.jpg" alt="Seleccionar addon">
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h2 class="step-title">Descargar el addon</h2>
+                </div>
+                <p class="step-description">
+                    Descarga el addon que quieres dándole al botón de Download y te mandará a una URL de MediaFire u otros servicios de descarga.
+                </p>
+                <div class="step-image">
+                    <img src="../img/help/ps2.jpg" alt="Descargar addon">
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h2 class="step-title">Abrir administrador de archivos</h2>
+                </div>
+                <p class="step-description">
+                    Ve a tu administrador de archivos favorito (recomendación sugerida "Gestor de Archivos +").
+                </p>
+                <div class="step-image">
+                    <img src="../img/help/ps3.jpg" alt="Abrir administrador de archivos">
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <h2 class="step-title">Eliminar extensión .zip</h2>
+                </div>
+                <p class="step-description">
+                    Elimina el ".zip" del archivo si no tiene el ".zip" déjalo igual. Debe quedar como ".mcaddon" o ".mcpack" depende del archivo. Solo es eliminar el ".zip".
+                </p>
+                <div class="step-image">
+                    <img src="../img/help/ps4.jpg" alt="Eliminar extensión .zip">
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <h2 class="step-title">Abrir con Minecraft</h2>
+                </div>
+                <p class="step-description">
+                    Abre el archivo y escoge la opción de Minecraft.
+                </p>
+                <div class="step-image">
+                    <img src="../img/help/ps5.jpg" alt="Abrir con Minecraft">
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">6</div>
+                    <h2 class="step-title">Crear o seleccionar mundo</h2>
+                </div>
+                <p class="step-description">
+                    Crea un nuevo mundo de Minecraft o ve al mundo que quieres que tenga el Addon.
+                </p>
+                <div class="step-image">
+                    <img src="../img/help/ps6.jpg" alt="Crear o seleccionar mundo">
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">7</div>
+                    <h2 class="step-title">Añadir complemento</h2>
+                </div>
+                <p class="step-description">
+                    Da click en "Configuración del mundo" → "Complementos" y añade tu complemento.
+                </p>
+                <div class="step-image">
+                    <img src="../img/help/ps7.jpg" alt="Añadir complemento">
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">8</div>
+                    <h2 class="step-title">Activar modos experimentales</h2>
+                </div>
+                <p class="step-description">
+                    Activa los modos experimentales de tu mundo en "Configuración del mundo" → "Experimentos".
+                </p>
+                <div class="step-image">
+                    <img src="../img/help/ps8.jpg" alt="Activar modos experimentales">
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">9</div>
+                    <h2 class="step-title">Cargar el mundo</h2>
+                </div>
+                <p class="step-description">
+                    Dale a jugar y espera a que termine de cargar.
+                </p>
+                <div class="step-image">
+                    <img src="../img/help/ps9.jpg" alt="Cargar el mundo">
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">10</div>
+                    <h2 class="step-title">¡Listo!</h2>
+                </div>
+                <p class="step-description">
+                    Tu addon ya está disponible en tu mundo de Minecraft.
+                </p>
+                <div class="step-image">
+                    <img src="../img/help/ps10.jpg" alt="Addon disponible">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function setupMenu() {
+            const menuToggle = document.getElementById('menuToggle');
+            const floatingMenu = document.getElementById('floatingMenu');
+            const menuIcon = menuToggle.querySelector('i');
+            
+            function toggleMenu() {
+                floatingMenu.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+                
+                // Cambiar entre icono de hamburguesa y X
+                if (menuToggle.classList.contains('active')) {
+                    menuIcon.className = 'fas fa-times';
+                } else {
+                    menuIcon.className = 'fas fa-bars';
+                }
+            }
+            
+            function closeMenu() {
+                floatingMenu.classList.remove('active');
+                menuToggle.classList.remove('active');
+                menuIcon.className = 'fas fa-bars';
+            }
+            
+            menuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleMenu();
+            });
+            
+            document.addEventListener('click', function(e) {
+                if (!floatingMenu.contains(e.target) && e.target !== menuToggle) {
+                    closeMenu();
+                }
+            });
+            
+            const menuItems = floatingMenu.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', closeMenu);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setupMenu();
+        });
+    </script>
+</body>
+</html>
