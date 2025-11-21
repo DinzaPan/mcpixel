@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCPixel - Addons para Minecraft</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <header class="top-bar">
+        <div class="logo-container">
+            <img src="img/logo.png" alt="MCPixel Logo" class="logo">
+            <h1 class="title">MCPixel</h1>
+        </div>
+        
+        <div class="header-actions">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="floating-menu" id="floatingMenu">
+                <a href="index.html" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    Inicio
+                </a>
+                <a href="sc/favorites.html" class="menu-item">
+                    <i class="fas fa-heart"></i>
+                    Favoritos
+                </a>
+                <a href="sc/notifications.html" class="menu-item">
+                    <i class="fas fa-bell"></i>
+                    Notificaciones
+                </a>
+                <a href="sc/help.html" class="menu-item">
+                    <i class="fas fa-hands-helping"></i>
+                    Ayuda
+                </a>
+                <a href="post.html" class="menu-item">
+                    <i class="fas fa-edit"></i>
+                    Publicar
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="search-bar">
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Buscar addons por nombre, descripción o creador...">
+            </div>
+        </div>
+    </div>
+
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+
+    <main class="container">
+        <h2 class="section-title">
+            <i class="fas fa-cube"></i>
+            Addons Destacados
+        </h2>
+        
+        <div class="cards-grid" id="cards-container">
+            <!-- Los addons se cargarán dinámicamente -->
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Inicializar Supabase globalmente
+        const SUPABASE_URL = 'https://dgmsyuzxsvjfkjdyecer.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnbXN5dXp4c3ZqZmtqZHllY2VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NjI5OTUsImV4cCI6MjA3OTEzODk5NX0._SQAuzRejAi-tghTh8hTk_dvaZooEMZBbHAQw4hyA3I';
+        window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+    <script src="js/main.js"></script>
+</body>
+</html>
