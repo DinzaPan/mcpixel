@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPixel - Iniciar Sesión</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="./img/logo.png" type="image/png">
     <link rel="stylesheet" href="css/main.css">
     <style>
         /* Estilos específicos para la página de seguridad */
@@ -434,9 +433,12 @@
                 <div class="form-group">
                     <label for="registerAvatar">
                         <i class="fas fa-image"></i>
-                        Avatar URL (opcional)
+                        Avatar URL <span style="color: #f87171;">*</span>
                     </label>
-                    <input type="url" id="registerAvatar" placeholder="https://ejemplo.com/avatar.jpg">
+                    <input type="url" id="registerAvatar" placeholder="https://i.ibb.co/6Jyc8ZKv/profile10.jpg" required>
+                    <small style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 5px; display: block;">
+                        Ejemplo: https://i.ibb.co/6Jyc8ZKv/profile10.jpg
+                    </small>
                 </div>
                 
                 <button type="submit" class="btn-primary" id="registerBtn">
