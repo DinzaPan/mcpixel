@@ -1,15 +1,16 @@
 let allAddons = [];
+let allNotifications = [];
 
-// Inicializar página principal
 document.addEventListener('DOMContentLoaded', async function() {
     await checkAuth();
     await loadAddons();
+    await loadNotifications();
     setupMenu();
     setupSearch();
     createParticles();
+    updateNotificationBadge();
 });
 
-// Crear partículas de fondo
 function createParticles() {
     const particlesContainer = document.getElementById('particles');
     if (!particlesContainer) return;
@@ -36,17 +37,14 @@ function createParticles() {
     }
 }
 
-// Verificar autenticación y actualizar UI
 async function checkAuth() {
     try {
         const { data: { user } } = await window.supabase.auth.getUser();
-        // Aquí puedes agregar lógica de autenticación si es necesario
     } catch (error) {
         console.error('Error verificando autenticación:', error);
     }
 }
 
-// Cargar addons
 async function loadAddons() {
     try {
         const { data: addons, error } = await window.supabase
@@ -71,7 +69,6 @@ async function loadAddons() {
     }
 }
 
-// Renderizar addons
 function renderAddons(addons) {
     const container = document.getElementById('cards-container');
     if (!container) return;
@@ -119,7 +116,6 @@ function renderAddons(addons) {
         `;
 
         card.addEventListener('click', () => {
-            // Redirigir a view.html en la carpeta sc con el ID del addon
             window.location.href = `sc/view.html?id=${addon.id}`;
         });
 
@@ -127,7 +123,6 @@ function renderAddons(addons) {
     });
 }
 
-// Mostrar mensaje sin addons
 function showNoAddons() {
     const container = document.getElementById('cards-container');
     container.innerHTML = `
@@ -141,7 +136,6 @@ function showNoAddons() {
     `;
 }
 
-// Configurar búsqueda
 function setupSearch() {
     const searchInput = document.getElementById('searchInput');
     if (!searchInput) return;
@@ -164,7 +158,6 @@ function setupSearch() {
     });
 }
 
-// Configurar menú
 function setupMenu() {
     const menuToggle = document.getElementById('menuToggle');
     const floatingMenu = document.getElementById('floatingMenu');
@@ -186,3 +179,277 @@ function setupMenu() {
         e.stopPropagation();
     });
 }
+
+function deleteOldNotifications() {
+    try {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        
+        const savedNotifications = JSON.parse(localStorage.getItem('mcPixelNotifications') || '[]');
+        const filteredNotifications = savedNotifications.filter(notification => {
+            const notificationDate = new Date(notification.timestamp);
+            return notificationDate >= thirtyDaysAgo;
+        });
+        
+        if (filteredNotifications.length < savedNotifications.length) {
+            console.log(`Eliminadas ${savedNotifications.length - filteredNotifications.length} notificaciones antiguas`);
+            saveNotifications(filteredNotifications);
+        }
+        
+        return filteredNotifications;
+    } catch (error) {
+        console.error('Error eliminando notificaciones antiguas:', error);
+        return [];
+    }
+}
+
+function loadSavedNotifications() {
+    try {
+        const filteredNotifications = deleteOldNotifications();
+        const readNotifications = JSON.parse(localStorage.getItem('readNotifications') || '[]');
+        
+        filteredNotifications.forEach(notification => {
+            notification.read = readNotifications.includes(notification.id);
+        });
+        
+        return filteredNotifications;
+    } catch (error) {
+        console.error('Error cargando notificaciones guardadas:', error);
+        return [];
+    }
+}
+
+function saveNotifications(notifications) {
+    try {
+        localStorage.setItem('mcPixelNotifications', JSON.stringify(notifications));
+        
+        const readNotifications = notifications
+            .filter(n => n.read)
+            .map(n => n.id);
+        localStorage.setItem('readNotifications', JSON.stringify(readNotifications));
+        
+        console.log('Notificaciones guardadas:', notifications.length);
+    } catch (error) {
+        console.error('Error guardando notificaciones:', error);
+    }
+}
+
+function loadPreviousAddonsState() {
+    try {
+        return JSON.parse(localStorage.getItem('previousAddonsState') || '{}');
+    } catch (error) {
+        console.error('Error cargando estado anterior:', error);
+        return {};
+    }
+}
+
+function saveCurrentAddonsState(addons) {
+    try {
+        const currentState = {};
+        addons.forEach(addon => {
+            currentState[addon.id] = {
+                title: addon.title,
+                description: addon.description,
+                version: addon.version,
+                image: addon.image,
+                updated_at: addon.updated_at,
+                created_at: addon.created_at
+            };
+        });
+        localStorage.setItem('previousAddonsState', JSON.stringify(currentState));
+        console.log('Estado de addons guardado:', Object.keys(currentState).length);
+    } catch (error) {
+        console.error('Error guardando estado actual:', error);
+    }
+}
+
+async function loadNotifications() {
+    try {
+        console.log('=== INICIANDO CARGA DE NOTIFICACIONES ===');
+        
+        const savedNotifications = loadSavedNotifications();
+        console.log('Notificaciones guardadas encontradas:', savedNotifications.length);
+        
+        const { data: addons, error } = await window.supabase
+            .from('addons')
+            .select(`
+                *,
+                profiles:user_id (
+                    username,
+                    is_verified,
+                    avatar_url
+                )
+            `)
+            .order('updated_at', { ascending: false });
+
+        if (error) throw error;
+        console.log('Addons encontrados en BD:', addons.length);
+
+        const previousAddonsState = loadPreviousAddonsState();
+        console.log('Estado anterior cargado:', Object.keys(previousAddonsState).length);
+
+        const newNotifications = detectChangesAndCreateNotifications(addons, previousAddonsState);
+        console.log('Nuevas notificaciones detectadas:', newNotifications.length);
+
+        allNotifications = mergeNotifications(savedNotifications, newNotifications);
+        console.log('Total de notificaciones después de combinar:', allNotifications.length);
+
+        saveCurrentAddonsState(addons);
+
+        saveNotifications(allNotifications);
+
+        updateNotificationBadge();
+
+    } catch (error) {
+        console.error('Error cargando notificaciones:', error);
+        allNotifications = loadSavedNotifications();
+        console.log('Usando notificaciones guardadas por error:', allNotifications.length);
+        updateNotificationBadge();
+    }
+}
+
+function mergeNotifications(existing, newOnes) {
+    const merged = [...existing];
+    
+    newOnes.forEach(newNotif => {
+        const exists = existing.some(existingNotif => 
+            existingNotif.id === newNotif.id
+        );
+        
+        if (!exists) {
+            console.log('Agregando nueva notificación:', newNotif.title);
+            merged.push(newNotif);
+        } else {
+            console.log('Notificación ya existe:', newNotif.title);
+        }
+    });
+    
+    return merged.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+}
+
+function detectChangesAndCreateNotifications(currentAddons, previousAddonsState) {
+    const notifications = [];
+    
+    const isFirstTime = Object.keys(previousAddonsState).length === 0;
+    if (isFirstTime) {
+        console.log('Primera ejecución, no se crearán notificaciones de cambios');
+        return notifications;
+    }
+
+    for (const addon of currentAddons) {
+        const previousAddon = previousAddonsState[addon.id];
+        
+        if (!previousAddon) {
+            console.log('Addon nuevo detectado:', addon.title);
+            notifications.push({
+                id: `new-${addon.id}-${Date.now()}`,
+                type: 'new',
+                title: `Nuevo addon: ${addon.title}`,
+                content: `${addon.profiles?.username || 'Un usuario'} ha publicado un nuevo addon.`,
+                addonId: addon.id,
+                addonTitle: addon.title,
+                timestamp: addon.created_at,
+                read: false
+            });
+            continue;
+        }
+
+        if (addon.version !== previousAddon.version) {
+            console.log('Cambio de versión detectado:', addon.title, previousAddon.version, '→', addon.version);
+            notifications.push({
+                id: `version-${addon.id}-${Date.now()}`,
+                type: 'version',
+                title: `Nueva versión: ${addon.title} v${addon.version}`,
+                content: `${addon.profiles?.username || 'El creador'} ha actualizado a la versión ${addon.version}.`,
+                addonId: addon.id,
+                addonTitle: addon.title,
+                timestamp: addon.updated_at,
+                read: false
+            });
+        }
+
+        if (addon.title !== previousAddon.title) {
+            console.log('Cambio de título detectado:', previousAddon.title, '→', addon.title);
+            notifications.push({
+                id: `title-${addon.id}-${Date.now()}`,
+                type: 'content',
+                title: `Título actualizado: ${previousAddon.title} → ${addon.title}`,
+                content: `${addon.profiles?.username || 'El creador'} ha cambiado el título del addon.`,
+                addonId: addon.id,
+                addonTitle: addon.title,
+                timestamp: addon.updated_at,
+                read: false
+            });
+        }
+
+        if (addon.description !== previousAddon.description) {
+            console.log('Cambio de descripción detectado:', addon.title);
+            notifications.push({
+                id: `desc-${addon.id}-${Date.now()}`,
+                type: 'content',
+                title: `Descripción actualizada: ${addon.title}`,
+                content: `${addon.profiles?.username || 'El creador'} ha modificado la descripción del addon.`,
+                addonId: addon.id,
+                addonTitle: addon.title,
+                timestamp: addon.updated_at,
+                read: false
+            });
+        }
+
+        if (addon.image !== previousAddon.image) {
+            console.log('Cambio de imagen detectado:', addon.title);
+            notifications.push({
+                id: `image-${addon.id}-${Date.now()}`,
+                type: 'content',
+                title: `Imagen actualizada: ${addon.title}`,
+                content: `${addon.profiles?.username || 'El creador'} ha cambiado la imagen del addon.`,
+                addonId: addon.id,
+                addonTitle: addon.title,
+                timestamp: addon.updated_at,
+                read: false
+            });
+        }
+
+        if (addon.updated_at !== previousAddon.updated_at && 
+            addon.title === previousAddon.title &&
+            addon.description === previousAddon.description &&
+            addon.version === previousAddon.version &&
+            addon.image === previousAddon.image) {
+            
+            console.log('Actualización general detectada:', addon.title);
+            notifications.push({
+                id: `update-${addon.id}-${Date.now()}`,
+                type: 'update',
+                title: `Actualización: ${addon.title}`,
+                content: `${addon.profiles?.username || 'El creador'} ha actualizado este addon.`,
+                addonId: addon.id,
+                addonTitle: addon.title,
+                timestamp: addon.updated_at,
+                read: false
+            });
+        }
+    }
+
+    return notifications;
+}
+
+function updateNotificationBadge() {
+    const notificationBadge = document.getElementById('notificationBadge');
+    const unreadCount = allNotifications.filter(notification => !notification.read).length;
+    
+    if (notificationBadge) {
+        if (unreadCount > 0) {
+            notificationBadge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+            notificationBadge.style.display = 'flex';
+        } else {
+            notificationBadge.style.display = 'none';
+        }
+    }
+}
+
+async function refreshNotifications() {
+    console.log('=== ACTUALIZANDO NOTIFICACIONES ===');
+    await loadNotifications();
+}
+
+setInterval(refreshNotifications, 2 * 60 * 1000);
