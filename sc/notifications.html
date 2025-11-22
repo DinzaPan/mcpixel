@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notificaciones - MCPixel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="../img/logo.png" type="image/png">
     <link rel="stylesheet" href="../css/main.css">
     <style>
         .notifications-container {
@@ -242,13 +241,11 @@
         </div>
         
         <div class="notifications-container" id="notificationsContainer">
-            <!-- Las notificaciones se cargarán dinámicamente -->
         </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Inicializar Supabase globalmente
         const SUPABASE_URL = 'https://dgmsyuzxsvjfkjdyecer.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnbXN5dXp4c3ZqZmtqZHllY2VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NjI5OTUsImV4cCI6MjA3OTEzODk5NX0._SQAuzRejAi-tghTh8hTk_dvaZooEMZBbHAQw4hyA3I';
         window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -257,7 +254,6 @@
         let allNotifications = [];
         let currentFilter = 'all';
 
-        // Inicializar página de notificaciones
         document.addEventListener('DOMContentLoaded', async function() {
             await checkAuth();
             await loadNotifications();
@@ -266,7 +262,6 @@
             createParticles();
         });
 
-        // Configurar menú flotante
         function setupMenu() {
             const menuToggle = document.getElementById('menuToggle');
             const floatingMenu = document.getElementById('floatingMenu');
@@ -289,7 +284,6 @@
             });
         }
 
-        // Crear partículas de fondo
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
             if (!particlesContainer) return;
@@ -316,41 +310,57 @@
             }
         }
 
-        // Verificar autenticación
         async function checkAuth() {
             try {
                 const { data: { user } } = await window.supabase.auth.getUser();
-                // Aquí puedes agregar lógica de autenticación si es necesario
             } catch (error) {
                 console.error('Error verificando autenticación:', error);
             }
         }
 
-        // Cargar notificaciones guardadas
+        function deleteOldNotifications() {
+            try {
+                const thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                
+                const savedNotifications = JSON.parse(localStorage.getItem('mcPixelNotifications') || '[]');
+                const filteredNotifications = savedNotifications.filter(notification => {
+                    const notificationDate = new Date(notification.timestamp);
+                    return notificationDate >= thirtyDaysAgo;
+                });
+                
+                if (filteredNotifications.length < savedNotifications.length) {
+                    console.log(`Eliminadas ${savedNotifications.length - filteredNotifications.length} notificaciones antiguas`);
+                    saveNotifications(filteredNotifications);
+                }
+                
+                return filteredNotifications;
+            } catch (error) {
+                console.error('Error eliminando notificaciones antiguas:', error);
+                return [];
+            }
+        }
+
         function loadSavedNotifications() {
             try {
-                const savedNotifications = JSON.parse(localStorage.getItem('mcPixelNotifications') || '[]');
+                const filteredNotifications = deleteOldNotifications();
                 const readNotifications = JSON.parse(localStorage.getItem('readNotifications') || '[]');
                 
-                // Marcar notificaciones como leídas
-                savedNotifications.forEach(notification => {
+                filteredNotifications.forEach(notification => {
                     notification.read = readNotifications.includes(notification.id);
                 });
                 
-                return savedNotifications;
+                return filteredNotifications;
             } catch (error) {
                 console.error('Error cargando notificaciones guardadas:', error);
                 return [];
             }
         }
 
-        // Guardar notificaciones
         function saveNotifications(notifications) {
             try {
-                // Guardar todas las notificaciones
                 localStorage.setItem('mcPixelNotifications', JSON.stringify(notifications));
                 
-                // Guardar también las leídas por separado
                 const readNotifications = notifications
                     .filter(n => n.read)
                     .map(n => n.id);
@@ -362,7 +372,6 @@
             }
         }
 
-        // Cargar estado anterior de los addons
         function loadPreviousAddonsState() {
             try {
                 return JSON.parse(localStorage.getItem('previousAddonsState') || '{}');
@@ -372,7 +381,6 @@
             }
         }
 
-        // Guardar estado actual de los addons
         function saveCurrentAddonsState(addons) {
             try {
                 const currentState = {};
@@ -393,16 +401,13 @@
             }
         }
 
-        // Cargar notificaciones
         async function loadNotifications() {
             try {
                 console.log('=== INICIANDO CARGA DE NOTIFICACIONES ===');
                 
-                // 1. Cargar notificaciones guardadas
                 const savedNotifications = loadSavedNotifications();
                 console.log('Notificaciones guardadas encontradas:', savedNotifications.length);
                 
-                // 2. Obtener addons actuales de la base de datos
                 const { data: addons, error } = await window.supabase
                     .from('addons')
                     .select(`
@@ -418,42 +423,33 @@
                 if (error) throw error;
                 console.log('Addons encontrados en BD:', addons.length);
 
-                // 3. Cargar estado anterior
                 const previousAddonsState = loadPreviousAddonsState();
                 console.log('Estado anterior cargado:', Object.keys(previousAddonsState).length);
 
-                // 4. Detectar cambios y crear nuevas notificaciones
                 const newNotifications = detectChangesAndCreateNotifications(addons, previousAddonsState);
                 console.log('Nuevas notificaciones detectadas:', newNotifications.length);
 
-                // 5. Combinar notificaciones existentes con las nuevas
                 allNotifications = mergeNotifications(savedNotifications, newNotifications);
                 console.log('Total de notificaciones después de combinar:', allNotifications.length);
 
-                // 6. Guardar estado actual para la próxima verificación
                 saveCurrentAddonsState(addons);
 
-                // 7. Guardar todas las notificaciones
                 saveNotifications(allNotifications);
 
-                // 8. Renderizar
                 renderNotifications();
 
             } catch (error) {
                 console.error('Error cargando notificaciones:', error);
-                // Si hay error, usar las notificaciones guardadas
                 allNotifications = loadSavedNotifications();
                 console.log('Usando notificaciones guardadas por error:', allNotifications.length);
                 renderNotifications();
             }
         }
 
-        // Combinar notificaciones existentes con nuevas
         function mergeNotifications(existing, newOnes) {
             const merged = [...existing];
             
             newOnes.forEach(newNotif => {
-                // Verificar si ya existe una notificación similar
                 const exists = existing.some(existingNotif => 
                     existingNotif.id === newNotif.id
                 );
@@ -466,15 +462,12 @@
                 }
             });
             
-            // Ordenar por fecha más reciente primero
             return merged.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         }
 
-        // Detectar cambios y crear notificaciones
         function detectChangesAndCreateNotifications(currentAddons, previousAddonsState) {
             const notifications = [];
             
-            // Si es la primera vez, no crear notificaciones de cambios
             const isFirstTime = Object.keys(previousAddonsState).length === 0;
             if (isFirstTime) {
                 console.log('Primera ejecución, no se crearán notificaciones de cambios');
@@ -484,7 +477,6 @@
             for (const addon of currentAddons) {
                 const previousAddon = previousAddonsState[addon.id];
                 
-                // Si no hay estado anterior, es un addon nuevo
                 if (!previousAddon) {
                     console.log('Addon nuevo detectado:', addon.title);
                     notifications.push({
@@ -500,7 +492,6 @@
                     continue;
                 }
 
-                // Detectar cambios de versión
                 if (addon.version !== previousAddon.version) {
                     console.log('Cambio de versión detectado:', addon.title, previousAddon.version, '→', addon.version);
                     notifications.push({
@@ -515,7 +506,6 @@
                     });
                 }
 
-                // Detectar cambios de título
                 if (addon.title !== previousAddon.title) {
                     console.log('Cambio de título detectado:', previousAddon.title, '→', addon.title);
                     notifications.push({
@@ -530,7 +520,6 @@
                     });
                 }
 
-                // Detectar cambios de descripción
                 if (addon.description !== previousAddon.description) {
                     console.log('Cambio de descripción detectado:', addon.title);
                     notifications.push({
@@ -545,7 +534,6 @@
                     });
                 }
 
-                // Detectar cambios de imagen
                 if (addon.image !== previousAddon.image) {
                     console.log('Cambio de imagen detectado:', addon.title);
                     notifications.push({
@@ -560,7 +548,6 @@
                     });
                 }
 
-                // Detectar actualización general
                 if (addon.updated_at !== previousAddon.updated_at && 
                     addon.title === previousAddon.title &&
                     addon.description === previousAddon.description &&
@@ -584,14 +571,12 @@
             return notifications;
         }
 
-        // Renderizar notificaciones
         function renderNotifications() {
             const container = document.getElementById('notificationsContainer');
             if (!container) return;
 
             console.log('Renderizando notificaciones. Filtro:', currentFilter, 'Total:', allNotifications.length);
 
-            // Filtrar notificaciones según el filtro actual
             let filteredNotifications = allNotifications;
             
             if (currentFilter === 'unread') {
@@ -613,14 +598,12 @@
                 const notificationElement = document.createElement('div');
                 notificationElement.className = `notification-item ${notification.read ? '' : 'unread'}`;
                 
-                // Determinar el icono según el tipo
                 let icon = 'fas fa-bell';
                 if (notification.type === 'version') icon = 'fas fa-code-branch';
                 if (notification.type === 'update') icon = 'fas fa-sync-alt';
                 if (notification.type === 'new') icon = 'fas fa-plus-circle';
                 if (notification.type === 'content') icon = 'fas fa-edit';
                 
-                // Determinar la clase del tipo
                 let typeClass = notification.type;
                 
                 notificationElement.innerHTML = `
@@ -652,7 +635,6 @@
                     </div>
                 `;
 
-                // Marcar como leído al hacer clic
                 notificationElement.addEventListener('click', (e) => {
                     if (!e.target.closest('.notification-actions')) {
                         markAsRead(notification.id);
@@ -660,14 +642,12 @@
                     }
                 });
 
-                // Botón marcar como leído
                 const markReadBtn = notificationElement.querySelector('.mark-read');
                 markReadBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     markAsRead(notification.id);
                 });
 
-                // Botón ver addon
                 const viewAddonBtn = notificationElement.querySelector('.view-addon');
                 viewAddonBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -679,7 +659,6 @@
             });
         }
 
-        // Obtener etiqueta para el tipo de notificación
         function getTypeLabel(type) {
             const labels = {
                 'update': 'Actualización',
@@ -690,7 +669,6 @@
             return labels[type] || 'Notificación';
         }
 
-        // Formatear tiempo relativo
         function formatTimeAgo(timestamp) {
             const now = new Date();
             const date = new Date(timestamp);
@@ -707,42 +685,34 @@
             return date.toLocaleDateString('es-ES');
         }
 
-        // Marcar notificación como leído
         function markAsRead(notificationId) {
             const notification = allNotifications.find(n => n.id === notificationId);
             if (notification && !notification.read) {
                 notification.read = true;
                 console.log('Marcando como leída:', notificationId);
                 
-                // Guardar en localStorage
                 saveNotifications(allNotifications);
                 
                 renderNotifications();
             }
         }
 
-        // Configurar filtros
         function setupFilters() {
             const filterBtns = document.querySelectorAll('.filter-btn');
             
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
-                    // Remover clase active de todos los botones
                     filterBtns.forEach(b => b.classList.remove('active'));
                     
-                    // Agregar clase active al botón clickeado
                     btn.classList.add('active');
                     
-                    // Actualizar filtro actual
                     currentFilter = btn.dataset.filter;
                     
-                    // Re-renderizar notificaciones
                     renderNotifications();
                 });
             });
         }
 
-        // Mostrar estado vacío
         function showNoNotifications() {
             const container = document.getElementById('notificationsContainer');
             container.innerHTML = `
@@ -758,7 +728,6 @@
             `;
         }
 
-        // Obtener etiqueta para el filtro
         function getFilterLabel(filter) {
             const labels = {
                 'all': 'todas',
@@ -771,13 +740,11 @@
             return labels[filter] || '';
         }
 
-        // Función para forzar la actualización de notificaciones
         async function refreshNotifications() {
             console.log('=== ACTUALIZANDO NOTIFICACIONES ===');
             await loadNotifications();
         }
 
-        // Verificar actualizaciones cada 2 minutos
         setInterval(refreshNotifications, 2 * 60 * 1000);
     </script>
 </body>
