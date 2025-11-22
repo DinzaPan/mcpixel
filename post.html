@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPixel - Mis Addons</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="./img/logo.png" type="image/png">
     <link rel="stylesheet" href="css/main.css">
     <style>
         /* Estilos específicos para post.html */
@@ -355,6 +354,53 @@
             margin-bottom: 15px;
         }
 
+        /* Botón de editar perfil */
+        .profile-edit-btn {
+            background: rgba(100, 181, 246, 0.2);
+            color: var(--accent);
+            border: 1px solid rgba(100, 181, 246, 0.3);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .profile-edit-btn:hover {
+            background: rgba(100, 181, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            margin: 10px auto;
+            border: 3px solid var(--accent);
+            display: none;
+        }
+
+        .avatar-preview.active {
+            display: block;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .user-header {
@@ -418,6 +464,9 @@
                     <div class="user-info">
                         <h2 id="userName">Usuario</h2>
                         <div id="userStatus" class="version" style="display: inline-block;"></div>
+                        <button class="profile-edit-btn" id="editProfileBtn">
+                            <i class="fas fa-edit"></i> Editar Perfil
+                        </button>
                     </div>
                 </div>
                 
@@ -439,6 +488,7 @@
         </div>
     </main>
 
+    <!-- Modal para crear/editar addons -->
     <div class="modal" id="addonModal">
         <div class="modal-content">
             <h3 id="modalTitle">Crear Nuevo Addon</h3>
@@ -482,6 +532,33 @@
                     </button>
                     <button type="submit" class="btn btn-primary" id="submitBtn">
                         <i class="fas fa-paper-plane"></i> Publicar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para editar perfil -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <h3>Editar Perfil</h3>
+            
+            <form id="profileForm">
+                <div class="form-group">
+                    <label for="profileAvatar">URL de la Foto de Perfil</label>
+                    <input type="url" id="profileAvatar" placeholder="https://i.ibb.co/6Jyc8ZKv/profile10.jpg">
+                    <div class="error-message" id="avatarError">
+                        La URL debe terminar en formato de imagen válido (jpg, jpeg, gif, webp) - PNG no permitido
+                    </div>
+                    <div class="avatar-preview" id="avatarPreview"></div>
+                </div>
+                
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" id="cancelProfileBtn">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="saveProfileBtn">
+                        <i class="fas fa-save"></i> Guardar Cambios
                     </button>
                 </div>
             </form>
