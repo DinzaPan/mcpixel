@@ -37,6 +37,67 @@ function setupTabs() {
 function setupForms() {
     document.getElementById('loginForm').addEventListener('submit', handleLogin);
     document.getElementById('registerForm').addEventListener('submit', handleRegister);
+    
+    // Validar URL del avatar en tiempo real
+    document.getElementById('registerAvatar').addEventListener('input', validateAvatarURL);
+}
+
+// Validar URL del avatar
+function validateAvatarURL() {
+    const avatarInput = document.getElementById('registerAvatar');
+    const url = avatarInput.value.trim();
+    
+    if (!url) {
+        return false;
+    }
+    
+    return isValidImageURL(url);
+}
+
+// Función para validar URLs de imagen
+function isValidImageURL(url) {
+    try {
+        // Validar que sea una URL válida
+        const urlObj = new URL(url);
+        
+        // Validar que use HTTPS
+        if (urlObj.protocol !== 'https:') {
+            return false;
+        }
+        
+        // Validar extensiones de archivo permitidas
+        const allowedExtensions = ['jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg'];
+        const pathname = urlObj.pathname.toLowerCase();
+        const extension = pathname.split('.').pop();
+        
+        // Verificar que tenga una extensión válida y no sea PNG
+        if (!allowedExtensions.includes(extension) || extension === 'png') {
+            return false;
+        }
+        
+        // Validar dominios permitidos (imgbb.com y otros servicios comunes)
+        const allowedDomains = [
+            'i.ibb.co',
+            'ibb.co',
+            'imgbb.com',
+            'imageshack.com',
+            'flickr.com',
+            'imgur.com',
+            'postimg.cc',
+            'tinypic.com',
+            'imagevenue.com'
+        ];
+        
+        const domain = urlObj.hostname;
+        const isAllowedDomain = allowedDomains.some(allowed => 
+            domain === allowed || domain.endsWith('.' + allowed)
+        );
+        
+        return isAllowedDomain;
+        
+    } catch (error) {
+        return false;
+    }
 }
 
 // Manejar login
@@ -86,8 +147,8 @@ async function handleRegister(e) {
     const button = document.getElementById('registerBtn');
     
     // Validaciones
-    if (!username || !password) {
-        showError(errorElement, 'Completa todos los campos');
+    if (!username || !password || !avatar) {
+        showError(errorElement, 'Completa todos los campos obligatorios');
         return;
     }
     
@@ -100,12 +161,18 @@ async function handleRegister(e) {
         showError(errorElement, 'Contraseña debe tener al menos 6 caracteres');
         return;
     }
+    
+    // Validar URL del avatar
+    if (!isValidImageURL(avatar)) {
+        showError(errorElement, 'URL de avatar inválida. Debe ser una URL HTTPS válida de imgbb.com u otro servicio similar, con formato JPG, JPEG, GIF, WEBP, BMP o SVG (no PNG)');
+        return;
+    }
 
     button.disabled = true;
     button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando...';
 
     try {
-        const { data, error } = await register(username, password, avatar || null);
+        const { data, error } = await register(username, password, avatar);
         
         if (error) throw error;
 
@@ -132,7 +199,8 @@ function getAuthErrorMessage(error) {
         'El nombre de usuario ya está en uso': 'Este usuario ya está registrado',
         'Usuario y contraseña son requeridos': 'Completa todos los campos',
         'El usuario debe tener al menos 3 caracteres': 'El usuario debe tener al menos 3 caracteres',
-        'La contraseña debe tener al menos 6 caracteres': 'La contraseña debe tener al menos 6 caracteres'
+        'La contraseña debe tener al menos 6 caracteres': 'La contraseña debe tener al menos 6 caracteres',
+        'URL de avatar inválida': 'URL de avatar inválida'
     };
     
     return errorMessages[error.message] || error.message || 'Error desconocido';
@@ -141,7 +209,10 @@ function getAuthErrorMessage(error) {
 // Mostrar errores
 function showError(element, message, type = 'error') {
     element.textContent = message;
-    element.style.color = type === 'success' ? '#4ade80' : '#f87171';
+    element.className = 'error-message';
+    if (type === 'success') {
+        element.classList.add('success-message');
+    }
     element.style.display = 'block';
     
     if (type === 'error') {
