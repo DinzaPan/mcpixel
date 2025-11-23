@@ -124,18 +124,15 @@
         </h2>
         
         <div class="cards-grid" id="cards-container">
-            <!-- Los addons favoritos se cargarán dinámicamente -->
         </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Inicializar Supabase globalmente
         const SUPABASE_URL = 'https://dgmsyuzxsvjfkjdyecer.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnbXN5dXp4c3ZqZmtqZHllY2VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NjI5OTUsImV4cCI6MjA3OTEzODk5NX0._SQAuzRejAi-tghTh8hTk_dvaZooEMZBbHAQw4hyA3I';
         window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Gestor de favoritos
         const favoritesManager = {
             getFavorites: () => {
                 const favorites = localStorage.getItem('favorites');
@@ -150,14 +147,12 @@
 
         let allFavoriteAddons = [];
 
-        // Inicializar página de favoritos
         document.addEventListener('DOMContentLoaded', async function() {
             await loadFavoriteAddons();
             setupMenu();
             setupSearch();
         });
 
-        // Cargar addons favoritos
         async function loadFavoriteAddons() {
             try {
                 const favoriteIds = favoritesManager.getFavorites();
@@ -189,7 +184,6 @@
             }
         }
 
-        // Renderizar addons
         function renderAddons(addons) {
             const container = document.getElementById('cards-container');
             if (!container) return;
@@ -237,7 +231,6 @@
                 `;
 
                 card.addEventListener('click', () => {
-                    // Redirigir a view.html con el ID del addon
                     window.location.href = `view.html?id=${addon.id}`;
                 });
 
@@ -245,7 +238,6 @@
             });
         }
 
-        // Mostrar mensaje sin favoritos
         function showNoFavorites() {
             const container = document.getElementById('cards-container');
             container.innerHTML = `
@@ -264,7 +256,6 @@
             `;
         }
 
-        // Configurar búsqueda
         function setupSearch() {
             const searchInput = document.getElementById('searchInput');
             if (!searchInput) return;
@@ -287,7 +278,6 @@
             });
         }
 
-        // Configurar menú
         function setupMenu() {
             const menuToggle = document.getElementById('menuToggle');
             const floatingMenu = document.getElementById('floatingMenu');
