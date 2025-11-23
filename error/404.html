@@ -4,198 +4,204 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página no encontrada - MCPixel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="../img/logo.png" type="image/png">
     <link rel="stylesheet" href="../css/main.css">
     <style>
-        .error-container {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            font-family: "Poppins", sans-serif;
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 80vh;
             text-align: center;
             padding: 2rem;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(26, 115, 232, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(100, 181, 246, 0.1) 0%, transparent 20%);
+        }
+
+        .error-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 450px;
             width: 100%;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .error-image {
+            margin: 0 auto 1.5rem;
+            max-width: 150px;
+        }
+
+        .error-image img {
+            width: 100%;
+            height: auto;
+        }
+
+        .error-code {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            font-family: "Montserrat", sans-serif;
+        }
+
+        .error-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-family: "Montserrat", sans-serif;
         }
 
         .error-message {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 4rem 3rem;
-            text-align: center;
-            color: var(--dark-text);
-            background-color: var(--card-bg);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            margin: 2rem 0;
-            width: 90%;
-            max-width: 600px;
-            min-height: 500px;
-            border: 1px solid var(--border-color);
-        }
-        
-        .error-icon {
-            width: 160px;
-            height: 160px;
-            margin-bottom: 2.5rem;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        
-        .error-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-        
-        .error-text {
-            font-size: 2.2rem;
-            margin-bottom: 1.5rem;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            line-height: 1.2;
-        }
-        
-        .error-details {
+            font-size: 1rem;
             color: var(--text-secondary);
-            font-size: 1.2rem;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
             line-height: 1.6;
-            max-width: 450px;
+            font-family: "Poppins", sans-serif;
         }
 
-        .download-btn {
+        .home-button {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.8rem;
+            gap: 10px;
             background: var(--gradient);
             color: white;
-            padding: 1.2rem 2.5rem;
-            border-radius: 12px;
             text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 10px;
             font-weight: 600;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 20px rgba(26, 115, 232, 0.3);
             border: none;
             cursor: pointer;
-            font-family: inherit;
-            font-size: 1.1rem;
-            min-width: 200px;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+            font-family: "Poppins", sans-serif;
         }
 
-        .download-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(26, 115, 232, 0.4);
+        .home-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .home-button:hover::before {
+            left: 100%;
+        }
+
+        .home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(26, 115, 232, 0.3);
         }
 
         @media (max-width: 768px) {
-            .error-container {
+            body {
                 padding: 1rem;
-                min-height: 70vh;
             }
-
+            
+            .error-card {
+                padding: 2rem;
+                max-width: 400px;
+            }
+            
+            .error-image {
+                max-width: 120px;
+            }
+            
+            .error-code {
+                font-size: 3rem;
+            }
+            
+            .error-title {
+                font-size: 1.4rem;
+            }
+            
             .error-message {
-                padding: 3rem 2rem;
-                margin: 1rem 0;
-                width: 95%;
-                min-height: 400px;
-                max-width: none;
-            }
-            
-            .error-text {
-                font-size: 1.8rem;
-                margin-bottom: 1rem;
-            }
-            
-            .error-icon {
-                width: 140px;
-                height: 140px;
-                margin-bottom: 2rem;
-            }
-
-            .error-details {
-                font-size: 1.1rem;
-                margin-bottom: 2.5rem;
-                padding: 0 1rem;
-            }
-
-            .download-btn {
-                padding: 1rem 2rem;
-                font-size: 1rem;
-                min-width: 180px;
+                font-size: 0.95rem;
             }
         }
 
         @media (max-width: 480px) {
+            .error-card {
+                padding: 1.5rem;
+                max-width: 350px;
+            }
+            
+            .error-image {
+                max-width: 100px;
+            }
+            
+            .error-code {
+                font-size: 2.5rem;
+            }
+            
+            .error-title {
+                font-size: 1.2rem;
+            }
+            
             .error-message {
-                padding: 2.5rem 1.5rem;
-                min-height: 350px;
-            }
-
-            .error-text {
-                font-size: 1.6rem;
-            }
-
-            .error-icon {
-                width: 120px;
-                height: 120px;
-                margin-bottom: 1.5rem;
-            }
-
-            .error-details {
-                font-size: 1rem;
+                font-size: 0.9rem;
                 margin-bottom: 2rem;
-                padding: 0;
             }
-
-            .download-btn {
-                padding: 0.9rem 1.8rem;
-                min-width: 160px;
+            
+            .home-button {
+                padding: 10px 24px;
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
-    <header class="top-bar">
-        <div class="logo-container">
-            <img src="../img/logo.png" alt="MCPixel Logo" class="logo">
-            <h1 class="title">MCPixel</h1>
+    <div class="error-card">
+        <div class="error-image">
+            <img src="../img/error/error.gif" alt="Error 404">
         </div>
-    </header>
-
-    <div class="glow glow-1"></div>
-    <div class="glow glow-2"></div>
-
-    <main class="container">
-        <div class="error-container">
-            <div class="error-message">
-                <div class="error-icon">
-                    <img src="../img/searching.gif" alt="Buscando" onerror="this.style.display='none'">
-                </div>
-                <h3 class="error-text">Error 404 - Página no encontrada</h3>
-                <p class="error-details">La página que estás buscando no existe o ha sido movida. Verifica la URL e intenta nuevamente.</p>
-                <button class="download-btn" onclick="window.location.href='../index.html'">
-                    <i class="fas fa-home"></i>
-                    Volver al inicio
-                </button>
-            </div>
-        </div>
-    </main>
+        
+        <div class="error-code">404</div>
+        
+        <h1 class="error-title">Página No Encontrada</h1>
+        
+        <p class="error-message">
+            Lo sentimos, la página que estás buscando no existe o ha sido movida.
+            Puede que hayas seguido un enlace incorrecto o la página haya sido eliminada.
+        </p>
+        
+        <a href="../index.html" class="home-button">
+            <i class="fas fa-home"></i>
+            Volver al Inicio
+        </a>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Página 404 cargada');
+            const errorImage = document.querySelector('.error-image img');
+            if (errorImage) {
+                errorImage.onerror = function() {
+                    const errorImageContainer = document.querySelector('.error-image');
+                    errorImageContainer.innerHTML = '<i class="fas fa-exclamation-triangle" style="font-size: 80px; color: var(--accent);"></i>';
+                };
+            }
         });
     </script>
 </body>
