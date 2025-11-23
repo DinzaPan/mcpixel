@@ -1,4 +1,3 @@
-// Gestor de favoritos
 const favoritesManager = {
     getFavorites: () => {
         const favorites = localStorage.getItem('favorites');
@@ -25,7 +24,6 @@ const favoritesManager = {
     }
 };
 
-// Crear partículas de fondo
 function createParticles() {
     const particlesContainer = document.getElementById('particles');
     if (!particlesContainer) return;
@@ -58,7 +56,6 @@ function createParticles() {
     }
 }
 
-// Cargar detalles del addon desde Supabase
 async function loadAddonDetails() {
     const urlParams = new URLSearchParams(window.location.search);
     const addonId = urlParams.get('id');
@@ -91,7 +88,6 @@ async function loadAddonDetails() {
     }
 }
 
-// Renderizar detalles del addon
 function renderAddonDetails(addon) {
     const container = document.getElementById('addon-details');
     if (!container) return;
@@ -174,7 +170,6 @@ function renderAddonDetails(addon) {
     setupFavoriteButton();
 }
 
-// Configurar botón de favoritos
 function setupFavoriteButton() {
     const favoriteBtn = document.querySelector('.favorite-btn-detail');
     if (favoriteBtn) {
@@ -190,7 +185,6 @@ function setupFavoriteButton() {
     }
 }
 
-// Actualizar botón de favoritos
 function updateFavoriteButton(btn, isFavorite) {
     if (isFavorite) {
         btn.innerHTML = '<i class="fas fa-heart"></i>';
@@ -208,7 +202,6 @@ function updateFavoriteButton(btn, isFavorite) {
     }
 }
 
-// Mostrar notificación de favoritos
 function showFavoriteNotification(message) {
     const notification = document.createElement('div');
     notification.style.cssText = `
@@ -253,7 +246,6 @@ function showFavoriteNotification(message) {
     }, 3000);
 }
 
-// Mostrar error
 function showError(message) {
     const container = document.getElementById('addon-details');
     container.innerHTML = `
@@ -271,7 +263,6 @@ function showError(message) {
     `;
 }
 
-// Formatear fecha
 function formatDate(dateString) {
     if (!dateString) return 'Fecha desconocida';
     
@@ -283,7 +274,6 @@ function formatDate(dateString) {
     });
 }
 
-// Inicializar página
 document.addEventListener('DOMContentLoaded', function() {
     createParticles();
     loadAddonDetails();
