@@ -18,40 +18,32 @@
             padding: 2rem;
         }
 
-        .error-card {
+        .error-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 3rem;
+            text-align: center;
+            color: var(--dark-text);
             background-color: var(--card-bg);
-            border-radius: 16px;
-            padding: 3rem;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
-            max-width: 450px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            margin: 2rem 0;
+            max-width: 500px;
             width: 100%;
-            animation: fadeInUp 0.6s ease;
-            position: relative;
-            overflow: hidden;
+            border: 1px solid var(--border-color);
         }
-
-        .error-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--gradient);
-        }
-
+        
         .error-icon {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 1.5rem auto;
+            width: 140px;
+            height: 140px;
+            margin-bottom: 2rem;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            border: 3px solid var(--accent);
-            box-shadow: 0 0 20px rgba(100, 181, 246, 0.3);
         }
         
         .error-icon img {
@@ -60,83 +52,63 @@
             object-fit: cover;
             border-radius: 50%;
         }
-
-        .error-title {
+        
+        .error-text {
             font-size: 2rem;
-            font-weight: 700;
             margin-bottom: 1rem;
+            font-weight: 700;
             background: var(--gradient);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
-
-        .error-description {
+        
+        .error-details {
             color: var(--text-secondary);
             font-size: 1.1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
+            max-width: 400px;
             line-height: 1.6;
         }
 
-        .error-actions {
-            display: flex;
-            justify-content: center;
-        }
-
-        .btn {
+        .download-btn {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 0.5rem;
-            padding: 12px 30px;
-            border-radius: 8px;
+            background: var(--gradient);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
             text-decoration: none;
             font-weight: 600;
             transition: all 0.3s ease;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 20px rgba(26, 115, 232, 0.3);
             border: none;
             cursor: pointer;
             font-family: inherit;
-            font-size: 1rem;
+            font-size: 1.1rem;
         }
 
-        .btn-primary {
-            background: var(--gradient);
-            color: white;
-            box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(26, 115, 232, 0.4);
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(26, 115, 232, 0.4);
         }
 
         @media (max-width: 768px) {
-            .error-card {
-                padding: 2rem;
+            .error-message {
+                padding: 3rem 2rem;
                 margin: 1rem;
             }
-
-            .error-icon {
-                width: 100px;
-                height: 100px;
-            }
-
-            .error-title {
+            
+            .error-text {
                 font-size: 1.75rem;
             }
-
-            .error-description {
-                font-size: 1rem;
+            
+            .error-icon {
+                width: 120px;
+                height: 120px;
             }
         }
     </style>
@@ -154,21 +126,16 @@
 
     <main class="container">
         <div class="error-container">
-            <div class="error-card">
+            <div class="error-message">
                 <div class="error-icon">
                     <img src="../img/searching.gif" alt="Buscando" onerror="this.style.display='none'">
                 </div>
-                <h1 class="error-title">Error 404</h1>
-                <p class="error-description">
-                    La página que estás buscando no existe o ha sido movida. 
-                    Verifica la URL e intenta nuevamente.
-                </p>
-                <div class="error-actions">
-                    <a href="../index.html" class="btn btn-primary">
-                        <i class="fas fa-home"></i>
-                        Volver al Inicio
-                    </a>
-                </div>
+                <h3 class="error-text">Error 404 - Página no encontrada</h3>
+                <p class="error-details">La página que estás buscando no existe o ha sido movida. Verifica la URL e intenta nuevamente.</p>
+                <button class="download-btn" onclick="window.location.href='../index.html'">
+                    <i class="fas fa-home"></i>
+                    Volver al inicio
+                </button>
             </div>
         </div>
     </main>
