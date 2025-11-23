@@ -4,216 +4,252 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página no encontrada - MCPixel</title>
-    <link rel="icon" href="../img/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="./img/logo.png" type="image/png">
+    <link rel="stylesheet" href="css/main.css">
     <style>
-        :root {
-            --primary-color: #3B82F6;
-            --primary-hover: #2563EB;
-            --secondary-color: #F59E0B;
-            --accent-color: #10B981;
-            --dark-bg: #0F172A;
-            --dark-card: #1E293B;
-            --dark-text: #F8FAFC;
-            --dark-border: #334155;
-            --light-bg: #F1F5F9;
-            --light-card: #FFFFFF;
-            --light-text: #1E293B;
-            --light-border: #E2E8F0;
-            --error-color: #EF4444;
-            --success-color: #10B981;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            --rounded: 0.75rem;
-            --rounded-lg: 1rem;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--dark-text);
-            line-height: 1.6;
-            min-height: 100vh;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Barra de navegación */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            background-color: var(--dark-card);
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            background-color: rgba(30, 41, 59, 0.8);
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo {
-            height: 2.5rem;
-            width: 2.5rem;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .site-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin: 0;
-            background: linear-gradient(90deg, #3B82F6, #10B981);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-        }
-
-        .container {
-            padding: 0 2rem 2rem;
-            max-width: 70rem;
-            margin: 0 auto;
-            width: 100%;
-            box-sizing: border-box;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .error-message {
+        .error-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 3rem;
+            min-height: 70vh;
             text-align: center;
-            color: var(--dark-text);
-            background-color: var(--dark-card);
-            border-radius: var(--rounded);
-            box-shadow: var(--shadow);
-            margin: 2rem 0;
-        }
-        
-        .error-icon {
-            width: 8rem;
-            height: 8rem;
-            margin-bottom: 1rem;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        
-        .error-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-        
-        .error-text {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-        }
-        
-        .error-details {
-            color: #94a3b8;
-            font-size: 1rem;
-            margin-bottom: 1.5rem;
-            max-width: 30rem;
+            padding: 2rem;
         }
 
-        .download-btn {
+        .error-icon {
+            font-size: 6rem;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            animation: bounce 2s infinite;
+        }
+
+        .error-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .error-description {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 0.5rem;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--rounded);
+            padding: 12px 24px;
+            border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
-            transition: var(--transition);
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-            max-width: 100%;
+            transition: all 0.3s ease;
             border: none;
             cursor: pointer;
             font-family: inherit;
+            font-size: 1rem;
         }
 
-        .download-btn:hover {
-            background-color: var(--primary-hover);
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent);
             transform: translateY(-2px);
         }
 
-        .download-btn svg {
-            width: 1rem;
-            height: 1rem;
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 0 1rem 1rem;
-            }
-            
-            .navbar {
-                padding: 0.75rem 1rem;
-            }
-            
-            .error-text {
-                font-size: 1.25rem;
-            }
-            
             .error-icon {
-                width: 6rem;
-                height: 6rem;
+                font-size: 4rem;
+            }
+
+            .error-title {
+                font-size: 2rem;
+            }
+
+            .error-description {
+                font-size: 1rem;
+            }
+
+            .error-actions {
+                flex-direction: column;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Barra de navegación -->
-    <nav class="navbar">
+    <div class="particles" id="particles"></div>
+    
+    <header class="top-bar">
         <div class="logo-container">
-            <img src="../img/logo.png" alt="MCPixel Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMzQjgyRjYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiPk08L3RleHQ+PC9zdmc+'">
-            <h1 class="site-title">MCPixel</h1>
+            <img src="img/logo.png" alt="MCPixel Logo" class="logo">
+            <h1 class="title">MCPixel</h1>
         </div>
-    </nav>
-
-    <!-- Contenido principal -->
-    <div class="container">
-        <div class="error-message">
-            <div class="error-icon">
-                <img src="../img/searching.gif" alt="Buscando" onerror="this.style.display='none'">
-            </div>
-            <h3 class="error-text">Error 404 - Página no encontrada</h3>
-            <p class="error-details">La página que estás buscando no existe o ha sido movida. Verifica la URL e intenta nuevamente.</p>
-            <button class="download-btn" onclick="window.location.href='../index.html'">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Volver al inicio
+        
+        <div class="header-actions">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
             </button>
+            
+            <div class="floating-menu" id="floatingMenu">
+                <a href="index.html" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    Inicio
+                </a>
+                <a href="sc/favorites.html" class="menu-item">
+                    <i class="fas fa-heart"></i>
+                    Favoritos
+                </a>
+                <a href="sc/notifications.html" class="menu-item notifications" id="notificationsMenuItem">
+                    <i class="fas fa-bell"></i>
+                    Notificaciones
+                    <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+                </a>
+                <a href="sc/help.html" class="menu-item">
+                    <i class="fas fa-hands-helping"></i>
+                    Ayuda
+                </a>
+                <a href="post.html" class="menu-item">
+                    <i class="fas fa-edit"></i>
+                    Publicar
+                </a>
+            </div>
         </div>
-    </div>
+    </header>
+
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+
+    <main class="container">
+        <div class="error-container">
+            <div class="error-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h1 class="error-title">Error 404</h1>
+            <p class="error-description">
+                La página que estás buscando no existe o ha sido movida. 
+                Verifica la URL e intenta nuevamente.
+            </p>
+            <div class="error-actions">
+                <a href="index.html" class="btn btn-primary">
+                    <i class="fas fa-home"></i>
+                    Volver al Inicio
+                </a>
+                <button onclick="history.back()" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Página Anterior
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://dgmsyuzxsvjfkjdyecer.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnbXN5dXp4c3ZqZmtqZHllY2VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NjI5OTUsImV4cCI6MjA3OTEzODk5NX0._SQAuzRejAi-tghTh8hTk_dvaZooEMZBbHAQw4hyA3I';
+        window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setupMenu();
+            createParticles();
+        });
+
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            if (!particlesContainer) return;
+            
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const left = Math.random() * 100;
+                const size = Math.random() * 3 + 1;
+                const opacity = Math.random() * 0.3 + 0.1;
+                const animationDuration = Math.random() * 20 + 10;
+                
+                particle.style.left = `${left}%`;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.opacity = opacity;
+                particle.style.animationDuration = `${animationDuration}s`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        function setupMenu() {
+            const menuToggle = document.getElementById('menuToggle');
+            const floatingMenu = document.getElementById('floatingMenu');
+
+            if (!menuToggle || !floatingMenu) return;
+
+            menuToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                menuToggle.classList.toggle('active');
+                floatingMenu.classList.toggle('active');
+            });
+
+            document.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                floatingMenu.classList.remove('active');
+            });
+
+            floatingMenu.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
+    </script>
 </body>
 </html>
