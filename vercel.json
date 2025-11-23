@@ -1,0 +1,17 @@
+{
+  "routes": [
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/error/404\\.html",
+      "dest": "/error/404.html",
+      "status": 200
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/error/404.html",
+      "status": 404
+    }
+  ]
+}
