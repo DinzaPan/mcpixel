@@ -192,7 +192,6 @@ function deleteOldNotifications() {
         });
         
         if (filteredNotifications.length < savedNotifications.length) {
-            console.log(`Eliminadas ${savedNotifications.length - filteredNotifications.length} notificaciones antiguas`);
             saveNotifications(filteredNotifications);
         }
         
@@ -227,8 +226,6 @@ function saveNotifications(notifications) {
             .filter(n => n.read)
             .map(n => n.id);
         localStorage.setItem('readNotifications', JSON.stringify(readNotifications));
-        
-        console.log('Notificaciones guardadas:', notifications.length);
     } catch (error) {
         console.error('Error guardando notificaciones:', error);
     }
@@ -257,7 +254,6 @@ function saveCurrentAddonsState(addons) {
             };
         });
         localStorage.setItem('previousAddonsState', JSON.stringify(currentState));
-        console.log('Estado de addons guardado:', Object.keys(currentState).length);
     } catch (error) {
         console.error('Error guardando estado actual:', error);
     }
@@ -265,10 +261,7 @@ function saveCurrentAddonsState(addons) {
 
 async function loadNotifications() {
     try {
-        console.log('=== INICIANDO CARGA DE NOTIFICACIONES ===');
-        
         const savedNotifications = loadSavedNotifications();
-        console.log('Notificaciones guardadas encontradas:', savedNotifications.length);
         
         const { data: addons, error } = await window.supabase
             .from('addons')
@@ -283,16 +276,12 @@ async function loadNotifications() {
             .order('updated_at', { ascending: false });
 
         if (error) throw error;
-        console.log('Addons encontrados en BD:', addons.length);
 
         const previousAddonsState = loadPreviousAddonsState();
-        console.log('Estado anterior cargado:', Object.keys(previousAddonsState).length);
 
         const newNotifications = detectChangesAndCreateNotifications(addons, previousAddonsState);
-        console.log('Nuevas notificaciones detectadas:', newNotifications.length);
 
         allNotifications = mergeNotifications(savedNotifications, newNotifications);
-        console.log('Total de notificaciones después de combinar:', allNotifications.length);
 
         saveCurrentAddonsState(addons);
 
@@ -303,7 +292,6 @@ async function loadNotifications() {
     } catch (error) {
         console.error('Error cargando notificaciones:', error);
         allNotifications = loadSavedNotifications();
-        console.log('Usando notificaciones guardadas por error:', allNotifications.length);
         updateNotificationBadge();
     }
 }
@@ -317,10 +305,7 @@ function mergeNotifications(existing, newOnes) {
         );
         
         if (!exists) {
-            console.log('Agregando nueva notificación:', newNotif.title);
             merged.push(newNotif);
-        } else {
-            console.log('Notificación ya existe:', newNotif.title);
         }
     });
     
@@ -332,7 +317,6 @@ function detectChangesAndCreateNotifications(currentAddons, previousAddonsState)
     
     const isFirstTime = Object.keys(previousAddonsState).length === 0;
     if (isFirstTime) {
-        console.log('Primera ejecución, no se crearán notificaciones de cambios');
         return notifications;
     }
 
@@ -340,7 +324,6 @@ function detectChangesAndCreateNotifications(currentAddons, previousAddonsState)
         const previousAddon = previousAddonsState[addon.id];
         
         if (!previousAddon) {
-            console.log('Addon nuevo detectado:', addon.title);
             notifications.push({
                 id: `new-${addon.id}-${Date.now()}`,
                 type: 'new',
@@ -355,7 +338,6 @@ function detectChangesAndCreateNotifications(currentAddons, previousAddonsState)
         }
 
         if (addon.version !== previousAddon.version) {
-            console.log('Cambio de versión detectado:', addon.title, previousAddon.version, '→', addon.version);
             notifications.push({
                 id: `version-${addon.id}-${Date.now()}`,
                 type: 'version',
@@ -369,7 +351,6 @@ function detectChangesAndCreateNotifications(currentAddons, previousAddonsState)
         }
 
         if (addon.title !== previousAddon.title) {
-            console.log('Cambio de título detectado:', previousAddon.title, '→', addon.title);
             notifications.push({
                 id: `title-${addon.id}-${Date.now()}`,
                 type: 'content',
@@ -383,7 +364,6 @@ function detectChangesAndCreateNotifications(currentAddons, previousAddonsState)
         }
 
         if (addon.description !== previousAddon.description) {
-            console.log('Cambio de descripción detectado:', addon.title);
             notifications.push({
                 id: `desc-${addon.id}-${Date.now()}`,
                 type: 'content',
@@ -397,7 +377,6 @@ function detectChangesAndCreateNotifications(currentAddons, previousAddonsState)
         }
 
         if (addon.image !== previousAddon.image) {
-            console.log('Cambio de imagen detectado:', addon.title);
             notifications.push({
                 id: `image-${addon.id}-${Date.now()}`,
                 type: 'content',
@@ -416,7 +395,6 @@ function detectChangesAndCreateNotifications(currentAddons, previousAddonsState)
             addon.version === previousAddon.version &&
             addon.image === previousAddon.image) {
             
-            console.log('Actualización general detectada:', addon.title);
             notifications.push({
                 id: `update-${addon.id}-${Date.now()}`,
                 type: 'update',
@@ -448,7 +426,6 @@ function updateNotificationBadge() {
 }
 
 async function refreshNotifications() {
-    console.log('=== ACTUALIZANDO NOTIFICACIONES ===');
     await loadNotifications();
 }
 
