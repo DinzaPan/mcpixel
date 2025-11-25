@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mcpixel-v1.0.0';
+const CACHE_NAME = 'mcpixel-v1.1.0';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -61,4 +61,56 @@ self.addEventListener('fetch', function(event) {
         })
     );
   }
+});
+
+self.addEventListener('push', function(event) {
+  if (!event.data) return;
+
+  const data = event.data.json();
+  const options = {
+    body: data.body || 'Nueva notificación de MCPixel',
+    icon: '/icons/icon-192x192.png',
+    badge: '/icons/icon-72x72.png',
+    vibrate: [200, 100, 200],
+    data: {
+      url: data.url || '/'
+    },
+    actions: [
+      {
+        action: 'open',
+        title: 'Abrir'
+      },
+      {
+        action: 'close',
+        title: 'Cerrar'
+      }
+    ]
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'MCPixel', options)
+  );
+});
+
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+
+  if (event.action === 'open') {
+    event.waitUntil(
+      clients.matchAll({ type: 'window' }).then(function(clientList) {
+        for (const client of clientList) {
+          if (client.url === event.notification.data.url && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        if (clients.openWindow) {
+          return clients.openWindow(event.notification.data.url);
+        }
+      })
+    );
+  }
+});
+
+self.addEventListener('notificationclose', function(event) {
+  console.log('Notificación cerrada');
 });
