@@ -43,11 +43,6 @@ function updateURLWithAddonName(addon) {
     return newUrl;
 }
 
-function generateShareLink(addon) {
-    const slug = generateSlug(addon.title);
-    return `${window.location.origin}${window.location.pathname}?id=${addon.id}&name=${slug}`;
-}
-
 function getAbsoluteImageUrl(imageUrl) {
     if (!imageUrl) {
         return `${window.location.origin}/img/default-addon.jpg`;
@@ -70,25 +65,32 @@ function getAbsoluteImageUrl(imageUrl) {
 
 function updateMetaTags(addon) {
     const fullImageUrl = getAbsoluteImageUrl(addon.image);
-    const fullUrl = generateShareLink(addon);
+    const fullUrl = `${window.location.origin}${window.location.pathname}?id=${addon.id}&name=${generateSlug(addon.title)}`;
     
-    document.querySelector('meta[property="og:title"]').setAttribute('content', `${addon.title} - MCPixel`);
-    document.querySelector('meta[property="og:description"]').setAttribute('content', addon.description || 'Descubre este increíble addon para Minecraft en MCPixel');
-    document.querySelector('meta[property="og:image"]').setAttribute('content', fullImageUrl);
-    document.querySelector('meta[property="og:url"]').setAttribute('content', fullUrl);
+    const metaTags = {
+        'og:title': `MCPixel - ${addon.title}`,
+        'og:description': addon.description || 'Descubre este increíble addon para Minecraft en MCPixel',
+        'og:image': fullImageUrl,
+        'og:url': fullUrl,
+        'twitter:title': `MCPixel - ${addon.title}`,
+        'twitter:description': addon.description || 'Descubre este increíble addon para Minecraft en MCPixel',
+        'twitter:image': fullImageUrl,
+        'description': addon.description || 'Descubre este increíble addon para Minecraft en MCPixel'
+    };
     
-    document.querySelector('meta[name="twitter:title"]').setAttribute('content', `${addon.title} - MCPixel`);
-    document.querySelector('meta[name="twitter:description"]').setAttribute('content', addon.description || 'Descubre este increíble addon para Minecraft en MCPixel');
-    document.querySelector('meta[name="twitter:image"]').setAttribute('content', fullImageUrl);
+    Object.keys(metaTags).forEach(key => {
+        const selector = key.startsWith('og:') ? `meta[property="${key}"]` : `meta[name="${key}"]`;
+        const element = document.querySelector(selector);
+        if (element) {
+            element.setAttribute('content', metaTags[key]);
+        }
+    });
     
-    document.querySelector('meta[name="description"]').setAttribute('content', addon.description || 'Descubre este increíble addon para Minecraft en MCPixel');
+    document.title = `MCPixel - ${addon.title}`;
     
-    document.title = `${addon.title} - MCPixel`;
-    
-    console.log('Meta tags actualizados para Discord:', {
-        title: `${addon.title} - MCPixel`,
+    console.log('Meta tags actualizados para embed:', {
+        title: `MCPixel - ${addon.title}`,
         image: fullImageUrl,
-        url: fullUrl,
         description: addon.description || 'Descubre este increíble addon para Minecraft en MCPixel'
     });
 }
