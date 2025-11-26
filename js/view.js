@@ -48,11 +48,28 @@ function generateShareLink(addon) {
     return `${window.location.origin}${window.location.pathname}?id=${addon.id}&name=${slug}`;
 }
 
-function updateMetaTags(addon) {
-    const fullImageUrl = addon.image 
-        ? (addon.image.startsWith('http') ? addon.image : `${window.location.origin}${addon.image}`)
-        : `${window.location.origin}/img/default-addon.jpg`;
+function getAbsoluteImageUrl(imageUrl) {
+    if (!imageUrl) {
+        return `${window.location.origin}/img/default-addon.jpg`;
+    }
     
+    if (imageUrl.startsWith('http')) {
+        return imageUrl;
+    }
+    
+    if (imageUrl.startsWith('//')) {
+        return `https:${imageUrl}`;
+    }
+    
+    if (imageUrl.startsWith('/')) {
+        return `${window.location.origin}${imageUrl}`;
+    }
+    
+    return `${window.location.origin}/${imageUrl}`;
+}
+
+function updateMetaTags(addon) {
+    const fullImageUrl = getAbsoluteImageUrl(addon.image);
     const fullUrl = generateShareLink(addon);
     
     document.querySelector('meta[property="og:title"]').setAttribute('content', `${addon.title} - MCPixel`);
@@ -68,10 +85,11 @@ function updateMetaTags(addon) {
     
     document.title = `${addon.title} - MCPixel`;
     
-    console.log('Meta tags actualizados:', {
+    console.log('Meta tags actualizados para Discord:', {
         title: `${addon.title} - MCPixel`,
         image: fullImageUrl,
-        url: fullUrl
+        url: fullUrl,
+        description: addon.description || 'Descubre este increíble addon para Minecraft en MCPixel'
     });
 }
 
@@ -160,8 +178,10 @@ function renderAddonDetails(addon) {
     
     const isFav = favoritesManager.isFavorite(addon.id);
     
+    const displayImageUrl = addon.image || '../img/default-addon.jpg';
+    
     container.innerHTML = `
-        <div class="detail-cover" style="background-image: url('${addon.image || '../img/default-addon.jpg'}')"></div>
+        <div class="detail-cover" style="background-image: url('${displayImageUrl}')"></div>
         
         <div class="detail-header">
             <div class="detail-title-section">
