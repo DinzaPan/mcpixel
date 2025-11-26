@@ -24,6 +24,80 @@ const favoritesManager = {
     }
 };
 
+function generateSlug(text) {
+    return text
+        .toString()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)+/g, '');
+}
+
+function updateURLWithAddonName(addon) {
+    const slug = generateSlug(addon.title);
+    const newUrl = `${window.location.origin}${window.location.pathname}?id=${addon.id}&name=${slug}`;
+    
+    window.history.replaceState({}, '', newUrl);
+    
+    return newUrl;
+}
+
+function generateShareLink(addon) {
+    const slug = generateSlug(addon.title);
+    return `${window.location.origin}${window.location.pathname}?id=${addon.id}&name=${slug}`;
+}
+
+function updateMetaTags(addon) {
+    document.querySelector('meta[property="og:title"]')?.remove();
+    document.querySelector('meta[property="og:description"]')?.remove();
+    document.querySelector('meta[property="og:image"]')?.remove();
+    document.querySelector('meta[property="og:url"]')?.remove();
+    
+    const head = document.head;
+    
+    const ogTitle = document.createElement('meta');
+    ogTitle.setAttribute('property', 'og:title');
+    ogTitle.setAttribute('content', `${addon.title} - MCPixel`);
+    head.appendChild(ogTitle);
+    
+    const ogDescription = document.createElement('meta');
+    ogDescription.setAttribute('property', 'og:description');
+    ogDescription.setAttribute('content', addon.description || 'Descubre este increíble addon para Minecraft en MCPixel');
+    head.appendChild(ogDescription);
+    
+    const ogImage = document.createElement('meta');
+    ogImage.setAttribute('property', 'og:image');
+    ogImage.setAttribute('content', addon.image || '../img/default-addon.jpg');
+    head.appendChild(ogImage);
+    
+    const ogUrl = document.createElement('meta');
+    ogUrl.setAttribute('property', 'og:url');
+    ogUrl.setAttribute('content', generateShareLink(addon));
+    head.appendChild(ogUrl);
+    
+    document.querySelector('meta[name="twitter:title"]')?.remove();
+    document.querySelector('meta[name="twitter:description"]')?.remove();
+    document.querySelector('meta[name="twitter:image"]')?.remove();
+    
+    const twitterTitle = document.createElement('meta');
+    twitterTitle.setAttribute('name', 'twitter:title');
+    twitterTitle.setAttribute('content', `${addon.title} - MCPixel`);
+    head.appendChild(twitterTitle);
+    
+    const twitterDescription = document.createElement('meta');
+    twitterDescription.setAttribute('name', 'twitter:description');
+    twitterDescription.setAttribute('content', addon.description || 'Descubre este increíble addon para Minecraft en MCPixel');
+    head.appendChild(twitterDescription);
+    
+    const twitterImage = document.createElement('meta');
+    twitterImage.setAttribute('name', 'twitter:image');
+    twitterImage.setAttribute('content', addon.image || '../img/default-addon.jpg');
+    head.appendChild(twitterImage);
+    
+    document.title = `${addon.title} - MCPixel`;
+}
+
 function createParticles() {
     const particlesContainer = document.getElementById('particles');
     if (!particlesContainer) return;
@@ -81,6 +155,10 @@ async function loadAddonDetails() {
         if (error) throw error;
         if (!addon) throw new Error('Addon no encontrado');
 
+        updateURLWithAddonName(addon);
+        
+        updateMetaTags(addon);
+        
         renderAddonDetails(addon);
     } catch (error) {
         console.error('Error cargando addon:', error);
@@ -194,15 +272,15 @@ function updateFavoriteButton(btn, isFavorite) {
             btn.style.transform = 'scale(1)';
         }, 200);
         
-        showFavoriteNotification('Añadido a favoritos');
+        showNotification('Añadido a favoritos');
     } else {
         btn.innerHTML = '<i class="far fa-heart"></i>';
         btn.style.color = 'var(--text-secondary)';
-        showFavoriteNotification('Eliminado de favoritos');
+        showNotification('Eliminado de favoritos');
     }
 }
 
-function showFavoriteNotification(message) {
+function showNotification(message) {
     const notification = document.createElement('div');
     notification.style.cssText = `
         position: fixed;
@@ -224,7 +302,7 @@ function showFavoriteNotification(message) {
     `;
     
     notification.innerHTML = `
-        <i class="fas fa-heart" style="color: var(--error-color);"></i>
+        <i class="fas fa-check-circle" style="color: var(--success-color);"></i>
         <span>${message}</span>
     `;
     
