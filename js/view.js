@@ -49,53 +49,30 @@ function generateShareLink(addon) {
 }
 
 function updateMetaTags(addon) {
-    document.querySelector('meta[property="og:title"]')?.remove();
-    document.querySelector('meta[property="og:description"]')?.remove();
-    document.querySelector('meta[property="og:image"]')?.remove();
-    document.querySelector('meta[property="og:url"]')?.remove();
+    const fullImageUrl = addon.image 
+        ? (addon.image.startsWith('http') ? addon.image : `${window.location.origin}${addon.image}`)
+        : `${window.location.origin}/img/default-addon.jpg`;
     
-    const head = document.head;
+    const fullUrl = generateShareLink(addon);
     
-    const ogTitle = document.createElement('meta');
-    ogTitle.setAttribute('property', 'og:title');
-    ogTitle.setAttribute('content', `${addon.title} - MCPixel`);
-    head.appendChild(ogTitle);
+    document.querySelector('meta[property="og:title"]').setAttribute('content', `${addon.title} - MCPixel`);
+    document.querySelector('meta[property="og:description"]').setAttribute('content', addon.description || 'Descubre este increíble addon para Minecraft en MCPixel');
+    document.querySelector('meta[property="og:image"]').setAttribute('content', fullImageUrl);
+    document.querySelector('meta[property="og:url"]').setAttribute('content', fullUrl);
     
-    const ogDescription = document.createElement('meta');
-    ogDescription.setAttribute('property', 'og:description');
-    ogDescription.setAttribute('content', addon.description || 'Descubre este increíble addon para Minecraft en MCPixel');
-    head.appendChild(ogDescription);
+    document.querySelector('meta[name="twitter:title"]').setAttribute('content', `${addon.title} - MCPixel`);
+    document.querySelector('meta[name="twitter:description"]').setAttribute('content', addon.description || 'Descubre este increíble addon para Minecraft en MCPixel');
+    document.querySelector('meta[name="twitter:image"]').setAttribute('content', fullImageUrl);
     
-    const ogImage = document.createElement('meta');
-    ogImage.setAttribute('property', 'og:image');
-    ogImage.setAttribute('content', addon.image || '../img/default-addon.jpg');
-    head.appendChild(ogImage);
-    
-    const ogUrl = document.createElement('meta');
-    ogUrl.setAttribute('property', 'og:url');
-    ogUrl.setAttribute('content', generateShareLink(addon));
-    head.appendChild(ogUrl);
-    
-    document.querySelector('meta[name="twitter:title"]')?.remove();
-    document.querySelector('meta[name="twitter:description"]')?.remove();
-    document.querySelector('meta[name="twitter:image"]')?.remove();
-    
-    const twitterTitle = document.createElement('meta');
-    twitterTitle.setAttribute('name', 'twitter:title');
-    twitterTitle.setAttribute('content', `${addon.title} - MCPixel`);
-    head.appendChild(twitterTitle);
-    
-    const twitterDescription = document.createElement('meta');
-    twitterDescription.setAttribute('name', 'twitter:description');
-    twitterDescription.setAttribute('content', addon.description || 'Descubre este increíble addon para Minecraft en MCPixel');
-    head.appendChild(twitterDescription);
-    
-    const twitterImage = document.createElement('meta');
-    twitterImage.setAttribute('name', 'twitter:image');
-    twitterImage.setAttribute('content', addon.image || '../img/default-addon.jpg');
-    head.appendChild(twitterImage);
+    document.querySelector('meta[name="description"]').setAttribute('content', addon.description || 'Descubre este increíble addon para Minecraft en MCPixel');
     
     document.title = `${addon.title} - MCPixel`;
+    
+    console.log('Meta tags actualizados:', {
+        title: `${addon.title} - MCPixel`,
+        image: fullImageUrl,
+        url: fullUrl
+    });
 }
 
 function createParticles() {
