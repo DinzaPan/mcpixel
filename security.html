@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/main.css">
     <style>
-        /* Estilos específicos para la página de seguridad */
         .auth-container {
             max-width: 450px;
             margin: 40px auto;
@@ -230,7 +229,6 @@
             border: 1px solid rgba(248, 113, 113, 0.3);
         }
 
-        /* Partículas de fondo mejoradas */
         .particles {
             position: fixed;
             top: 0;
@@ -265,7 +263,6 @@
             }
         }
 
-        /* Efectos de brillo mejorados */
         .glow {
             position: fixed;
             border-radius: 50%;
@@ -300,7 +297,184 @@
             right: 5%;
         }
 
-        /* Responsive */
+        .avatar-input-container {
+            position: relative;
+        }
+
+        .avatar-picker-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(100, 181, 246, 0.2);
+            border: 1px solid var(--border-color);
+            color: var(--accent);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-picker-toggle:hover {
+            background: rgba(100, 181, 246, 0.3);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .avatar-picker-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .avatar-picker-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--border-color);
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .avatar-picker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .avatar-picker-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .avatar-picker-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .avatar-picker-close:hover {
+            color: var(--error-color);
+        }
+
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .avatar-option {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .avatar-option:hover {
+            transform: scale(1.1);
+            border-color: var(--accent);
+        }
+
+        .avatar-option.selected {
+            border-color: var(--verified-color);
+            box-shadow: 0 0 15px rgba(74, 222, 128, 0.5);
+        }
+
+        .avatar-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-name {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .avatar-picker-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent);
+        }
+
+        .loading {
+            pointer-events: none;
+            position: relative;
+            color: transparent;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
             .auth-container {
                 margin: 20px;
@@ -314,6 +488,16 @@
             .auth-tab {
                 padding: 15px;
                 font-size: 0.95rem;
+            }
+
+            .avatar-grid {
+                grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+                gap: 12px;
+            }
+
+            .avatar-option {
+                width: 70px;
+                height: 70px;
             }
         }
 
@@ -338,32 +522,16 @@
             .glow-1, .glow-2 {
                 display: none;
             }
-        }
 
-        /* Efecto de carga para botones */
-        .loading {
-            pointer-events: none;
-            position: relative;
-            color: transparent;
-        }
+            .avatar-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
 
-        .loading::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            top: 50%;
-            left: 50%;
-            margin: -10px 0 0 -10px;
-            border: 2px solid transparent;
-            border-top: 2px solid #ffffff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            .avatar-option {
+                width: 65px;
+                height: 65px;
+            }
         }
     </style>
 </head>
@@ -435,10 +603,12 @@
                         <i class="fas fa-image"></i>
                         Avatar URL <span style="color: #f87171;">*</span>
                     </label>
-                    <input type="url" id="registerAvatar" placeholder="https://i.ibb.co/6Jyc8ZKv/profile10.jpg" required>
-                    <small style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 5px; display: block;">
-                        Ejemplo: https://i.ibb.co/6Jyc8ZKv/profile10.jpg
-                    </small>
+                    <div class="avatar-input-container">
+                        <input type="url" id="registerAvatar" placeholder="Ingresa la URL de tu avatar" required>
+                        <button type="button" class="avatar-picker-toggle" id="avatarPickerToggle">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </button>
+                    </div>
                 </div>
                 
                 <button type="submit" class="btn-primary" id="registerBtn">
@@ -451,16 +621,50 @@
         </div>
     </main>
 
+    <div class="avatar-picker-modal" id="avatarPickerModal">
+        <div class="avatar-picker-content">
+            <div class="avatar-picker-header">
+                <h3 class="avatar-picker-title">Seleccionar Avatar</h3>
+                <button class="avatar-picker-close" id="avatarPickerClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="avatar-grid" id="avatarGrid">
+                <!-- Los avatares se cargarán dinámicamente -->
+            </div>
+            
+            <div class="avatar-picker-actions">
+                <button class="btn-secondary" id="avatarPickerCancel">Cancelar</button>
+                <button class="btn-primary" id="avatarPickerSelect">Seleccionar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Inicializar Supabase globalmente
         const SUPABASE_URL = 'https://dgmsyuzxsvjfkjdyecer.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnbXN5dXp4c3ZqZmtqZHllY2VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NjI5OTUsImV4cCI6MjA3OTEzODk5NX0._SQAuzRejAi-tghTh8hTk_dvaZooEMZBbHAQw4hyA3I';
         window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Crear partículas de fondo mejoradas
+        const defaultAvatars = [
+            { name: "Avatar 1", url: "https://i.postimg.cc/XqbwqgTb/profile1.jpg" },
+            { name: "Avatar 2", url: "https://i.postimg.cc/nhjC8DWH/profile2.jpg" },
+            { name: "Avatar 3", url: "https://i.postimg.cc/ZnsK2bFv/profile3.jpg" },
+            { name: "Avatar 4", url: "https://i.postimg.cc/g0ycdqqy/profile4.jpg" },
+            { name: "Avatar 5", url: "https://i.postimg.cc/PrLtNkQJ/profile5.jpg" },
+            { name: "Avatar 6", url: "https://i.postimg.cc/DybTnP7Y/profile6.jpg" },
+            { name: "Avatar 7", url: "https://i.postimg.cc/Y0GJ2tBg/profile7.jpg" },
+            { name: "Avatar 8", url: "https://i.postimg.cc/BvZZSPY3/profile8.jpg" },
+            { name: "Avatar 9", url: "https://i.postimg.cc/GmKr5hL1/profile9.jpg" },
+            { name: "Avatar 10", url: "https://i.postimg.cc/rFCLDFtm/profile10.jpg" }
+        ];
+
+        let selectedAvatar = null;
+
         document.addEventListener('DOMContentLoaded', function() {
             createParticles();
+            setupAvatarPicker();
         });
 
         function createParticles() {
@@ -488,6 +692,68 @@
                 particle.style.background = `hsl(210, 80%, ${60 + colorVariation}%)`;
                 
                 particlesContainer.appendChild(particle);
+            }
+        }
+
+        function setupAvatarPicker() {
+            const avatarPickerToggle = document.getElementById('avatarPickerToggle');
+            const avatarPickerModal = document.getElementById('avatarPickerModal');
+            const avatarPickerClose = document.getElementById('avatarPickerClose');
+            const avatarPickerCancel = document.getElementById('avatarPickerCancel');
+            const avatarPickerSelect = document.getElementById('avatarPickerSelect');
+            const avatarGrid = document.getElementById('avatarGrid');
+
+            loadDefaultAvatars();
+
+            avatarPickerToggle.addEventListener('click', openAvatarPicker);
+            avatarPickerClose.addEventListener('click', closeAvatarPicker);
+            avatarPickerCancel.addEventListener('click', closeAvatarPicker);
+            avatarPickerSelect.addEventListener('click', selectAvatar);
+
+            function loadDefaultAvatars() {
+                avatarGrid.innerHTML = '';
+                
+                defaultAvatars.forEach((avatar, index) => {
+                    const avatarOption = document.createElement('div');
+                    avatarOption.className = 'avatar-option';
+                    avatarOption.dataset.url = avatar.url;
+                    
+                    avatarOption.innerHTML = `
+                        <img src="${avatar.url}" alt="${avatar.name}" class="avatar-image">
+                        <div class="avatar-name">${avatar.name}</div>
+                    `;
+                    
+                    avatarOption.addEventListener('click', function() {
+                        document.querySelectorAll('.avatar-option').forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                        this.classList.add('selected');
+                        selectedAvatar = this.dataset.url;
+                    });
+                    
+                    avatarGrid.appendChild(avatarOption);
+                });
+            }
+
+            function openAvatarPicker() {
+                avatarPickerModal.style.display = 'flex';
+                selectedAvatar = null;
+                document.querySelectorAll('.avatar-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+            }
+
+            function closeAvatarPicker() {
+                avatarPickerModal.style.display = 'none';
+            }
+
+            function selectAvatar() {
+                if (selectedAvatar) {
+                    document.getElementById('registerAvatar').value = selectedAvatar;
+                    closeAvatarPicker();
+                } else {
+                    alert('Por favor selecciona un avatar');
+                }
             }
         }
     </script>
