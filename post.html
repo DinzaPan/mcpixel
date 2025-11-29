@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/main.css">
     <style>
-        /* Estilos específicos para post.html */
         .modal {
             display: none;
             position: fixed;
@@ -218,7 +217,6 @@
             transform: translateY(-2px);
         }
 
-        /* Estilos para el perfil de usuario */
         .user-profile {
             background: var(--card-bg);
             padding: 25px;
@@ -299,7 +297,6 @@
             font-size: 0.9rem;
         }
 
-        /* Botón flotante mejorado */
         .floating-action-btn {
             position: fixed;
             bottom: 30px;
@@ -338,7 +335,6 @@
             box-shadow: 0 8px 25px rgba(26, 115, 232, 0.6);
         }
 
-        /* Mejoras para las tarjetas de addons */
         .card-actions {
             position: absolute;
             top: 15px;
@@ -354,7 +350,6 @@
             margin-bottom: 15px;
         }
 
-        /* Botón de editar perfil */
         .profile-edit-btn {
             background: rgba(100, 181, 246, 0.2);
             color: var(--accent);
@@ -401,7 +396,17 @@
             display: block;
         }
 
-        /* Responsive */
+        .image-error {
+            color: var(--error-color);
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .image-error.show {
+            display: block;
+        }
+
         @media (max-width: 768px) {
             .user-header {
                 flex-direction: column;
@@ -459,7 +464,6 @@
             <div class="user-profile">
                 <div class="user-header">
                     <div class="user-avatar" id="userAvatar">
-                        <!-- La imagen se cargará dinámicamente -->
                     </div>
                     <div class="user-info">
                         <h2 id="userName">Usuario</h2>
@@ -483,20 +487,21 @@
                 Mis Addons
             </h2>
             <div class="cards-grid" id="myAddonsContainer">
-                <!-- Los addons se cargarán dinámicamente -->
             </div>
         </div>
     </main>
 
-    <!-- Modal para crear/editar addons -->
     <div class="modal" id="addonModal">
         <div class="modal-content">
             <h3 id="modalTitle">Crear Nuevo Addon</h3>
             
             <form id="addonForm">
                 <div class="form-group">
-                    <label for="addonImage">URL de la Portada</label>
-                    <input type="url" id="addonImage" placeholder="https://ejemplo.com/imagen.jpg">
+                    <label for="addonImage">URL de la Portada <span style="color: #f87171;">*</span></label>
+                    <input type="url" id="addonImage" placeholder="Ingresa la URL de la imagen" required>
+                    <div class="image-error" id="imageError">
+                        La URL debe ser de un servicio de imágenes válido y terminar en jpg, jpeg, gif, webp, bmp o svg (no PNG)
+                    </div>
                     <div class="image-preview" id="imagePreview"></div>
                 </div>
                 
@@ -523,7 +528,7 @@
                 
                 <div class="form-group">
                     <label for="addonDownloadUrl">URL de Descarga</label>
-                    <input type="url" id="addonDownloadUrl" placeholder="https://ejemplo.com/descarga" required>
+                    <input type="url" id="addonDownloadUrl" placeholder="Ingresa la URL de descarga" required>
                 </div>
                 
                 <div class="btn-group">
@@ -538,7 +543,6 @@
         </div>
     </div>
 
-    <!-- Modal para editar perfil -->
     <div class="modal" id="profileModal">
         <div class="modal-content">
             <h3>Editar Perfil</h3>
@@ -546,7 +550,7 @@
             <form id="profileForm">
                 <div class="form-group">
                     <label for="profileAvatar">URL de la Foto de Perfil</label>
-                    <input type="url" id="profileAvatar" placeholder="https://i.ibb.co/6Jyc8ZKv/profile10.jpg">
+                    <input type="url" id="profileAvatar" placeholder="Ingresa la URL de tu foto de perfil">
                     <div class="error-message" id="avatarError">
                         La URL debe terminar en formato de imagen válido (jpg, jpeg, gif, webp) - PNG no permitido
                     </div>
