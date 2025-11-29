@@ -36,11 +36,8 @@ function generateSlug(text) {
 
 function updateURLWithAddonName(addon) {
     const slug = generateSlug(addon.title);
-    
     const prettyUrl = `${window.location.origin}/sc/view.html?id=${addon.id}&name=${slug}`;
-    
     window.history.replaceState({}, '', prettyUrl);
-    
     return prettyUrl;
 }
 
@@ -66,20 +63,21 @@ function getAbsoluteImageUrl(imageUrl) {
 
 function updateMetaTags(addon) {
     const fullImageUrl = getAbsoluteImageUrl(addon.image);
-    const prettyUrl = `${window.location.origin}/sc/view.html?id=${addon.id}&name=${generateSlug(addon.title)}`;
-    const embedUrl = `${window.location.origin}/api/embed?id=${addon.id}`;
+    const currentUrl = `${window.location.origin}/sc/view.html?id=${addon.id}&name=${generateSlug(addon.title)}`;
     
     const truncatedDescription = addon.description 
         ? (addon.description.length > 150 
             ? addon.description.substring(0, 150) + '...' 
             : addon.description)
         : 'Descubre este increíble addon para Minecraft en MCPixel';
-    
+
+    document.title = `${addon.title} - MCPixel`;
+
     const metaTags = {
         'og:title': `${addon.title} - MCPixel`,
         'og:description': truncatedDescription,
         'og:image': fullImageUrl,
-        'og:url': embedUrl,
+        'og:url': currentUrl,
         'og:type': 'website',
         'og:site_name': 'MCPixel',
         'twitter:card': 'summary_large_image',
@@ -87,14 +85,11 @@ function updateMetaTags(addon) {
         'twitter:description': truncatedDescription,
         'twitter:image': fullImageUrl,
         'twitter:site': '@MCPixel',
-        'twitter:creator': '@MCPixel',
         'description': truncatedDescription
     };
-    
+
     Object.keys(metaTags).forEach(key => {
-        const selector = key.startsWith('og:') ? `meta[property="${key}"]` : 
-                         key.startsWith('twitter:') ? `meta[name="${key}"]` : 
-                         `meta[name="${key}"]`;
+        const selector = key.startsWith('og:') ? `meta[property="${key}"]` : `meta[name="${key}"]`;
         let element = document.querySelector(selector);
         
         if (!element) {
@@ -109,22 +104,12 @@ function updateMetaTags(addon) {
         
         element.setAttribute('content', metaTags[key]);
     });
-    
-    document.title = `${addon.title} - MCPixel`;
-    
-    forceDiscordCacheRefresh(fullImageUrl);
-}
 
-function forceDiscordCacheRefresh(imageUrl) {
-    if (imageUrl && !imageUrl.includes('?')) {
-        const timestamp = new Date().getTime();
-        const refreshedImageUrl = `${imageUrl}?t=${timestamp}`;
-        
-        const ogImage = document.querySelector('meta[property="og:image"]');
-        const twitterImage = document.querySelector('meta[name="twitter:image"]');
-        
-        if (ogImage) ogImage.setAttribute('content', refreshedImageUrl);
-        if (twitterImage) twitterImage.setAttribute('content', refreshedImageUrl);
+    const linkCanonical = document.querySelector('link[rel="canonical"]') || document.createElement('link');
+    linkCanonical.setAttribute('rel', 'canonical');
+    linkCanonical.setAttribute('href', currentUrl);
+    if (!document.querySelector('link[rel="canonical"]')) {
+        document.head.appendChild(linkCanonical);
     }
 }
 
@@ -186,9 +171,7 @@ async function loadAddonDetails() {
         if (!addon) throw new Error('Addon no encontrado');
 
         updateURLWithAddonName(addon);
-        
         updateMetaTags(addon);
-        
         renderAddonDetails(addon);
     } catch (error) {
         console.error('Error cargando addon:', error);
