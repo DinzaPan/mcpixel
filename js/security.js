@@ -1,18 +1,15 @@
-// Página de seguridad con verificación real
 document.addEventListener('DOMContentLoaded', function() {
     checkExistingSession();
     setupTabs();
     setupForms();
 });
 
-// Verificar si ya hay una sesión activa
 function checkExistingSession() {
     if (window.authSystem.isAuthenticated()) {
         window.location.href = 'post.html';
     }
 }
 
-// Configurar pestañas
 function setupTabs() {
     const tabs = document.querySelectorAll('.auth-tab');
     
@@ -33,16 +30,13 @@ function setupTabs() {
     });
 }
 
-// Configurar formularios
 function setupForms() {
     document.getElementById('loginForm').addEventListener('submit', handleLogin);
     document.getElementById('registerForm').addEventListener('submit', handleRegister);
     
-    // Validar URL del avatar en tiempo real
     document.getElementById('registerAvatar').addEventListener('input', validateAvatarURL);
 }
 
-// Validar URL del avatar
 function validateAvatarURL() {
     const avatarInput = document.getElementById('registerAvatar');
     const url = avatarInput.value.trim();
@@ -54,38 +48,35 @@ function validateAvatarURL() {
     return isValidImageURL(url);
 }
 
-// Función para validar URLs de imagen
 function isValidImageURL(url) {
     try {
-        // Validar que sea una URL válida
         const urlObj = new URL(url);
         
-        // Validar que use HTTPS
         if (urlObj.protocol !== 'https:') {
             return false;
         }
         
-        // Validar extensiones de archivo permitidas
         const allowedExtensions = ['jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg'];
         const pathname = urlObj.pathname.toLowerCase();
         const extension = pathname.split('.').pop();
         
-        // Verificar que tenga una extensión válida y no sea PNG
         if (!allowedExtensions.includes(extension) || extension === 'png') {
             return false;
         }
         
-        // Validar dominios permitidos (imgbb.com y otros servicios comunes)
         const allowedDomains = [
             'i.ibb.co',
             'ibb.co',
             'imgbb.com',
+            'postimg.cc',
+            'postimages.org',
             'imageshack.com',
             'flickr.com',
             'imgur.com',
-            'postimg.cc',
             'tinypic.com',
-            'imagevenue.com'
+            'imagevenue.com',
+            'i.postimg.cc',
+            'postimg.cc'
         ];
         
         const domain = urlObj.hostname;
@@ -100,7 +91,6 @@ function isValidImageURL(url) {
     }
 }
 
-// Manejar login
 async function handleLogin(e) {
     e.preventDefault();
     
@@ -122,7 +112,6 @@ async function handleLogin(e) {
         
         if (error) throw error;
 
-        // Redirigir inmediatamente después del login exitoso
         showError(errorElement, '¡Login exitoso! Redirigiendo...', 'success');
         setTimeout(() => {
             window.location.href = 'post.html';
@@ -136,7 +125,6 @@ async function handleLogin(e) {
     }
 }
 
-// Manejar registro
 async function handleRegister(e) {
     e.preventDefault();
     
@@ -146,7 +134,6 @@ async function handleRegister(e) {
     const errorElement = document.getElementById('registerError');
     const button = document.getElementById('registerBtn');
     
-    // Validaciones
     if (!username || !password || !avatar) {
         showError(errorElement, 'Completa todos los campos obligatorios');
         return;
@@ -162,7 +149,6 @@ async function handleRegister(e) {
         return;
     }
     
-    // Validar URL del avatar
     if (!isValidImageURL(avatar)) {
         showError(errorElement, 'URL de avatar inválida. Debe ser una URL HTTPS válida de imgbb.com u otro servicio similar, con formato JPG, JPEG, GIF, WEBP, BMP o SVG (no PNG)');
         return;
@@ -176,7 +162,6 @@ async function handleRegister(e) {
         
         if (error) throw error;
 
-        // Registro exitoso
         showError(errorElement, '¡Cuenta creada exitosamente! Redirigiendo...', 'success');
         
         setTimeout(() => {
@@ -191,7 +176,6 @@ async function handleRegister(e) {
     }
 }
 
-// Obtener mensajes de error amigables
 function getAuthErrorMessage(error) {
     const errorMessages = {
         'Usuario no encontrado': 'Usuario no encontrado',
@@ -206,7 +190,6 @@ function getAuthErrorMessage(error) {
     return errorMessages[error.message] || error.message || 'Error desconocido';
 }
 
-// Mostrar errores
 function showError(element, message, type = 'error') {
     element.textContent = message;
     element.className = 'error-message';
@@ -222,7 +205,6 @@ function showError(element, message, type = 'error') {
     }
 }
 
-// Limpiar errores
 function clearErrors() {
     document.querySelectorAll('.error-message').forEach(el => {
         el.style.display = 'none';
