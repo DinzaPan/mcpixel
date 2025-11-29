@@ -51,80 +51,8 @@ export default async function handler(req, res) {
     <meta name="twitter:description" content="${escapeHtml(description)}">
     <meta name="twitter:image" content="${escapeHtml(imageUrl)}">
     <meta name="twitter:site" content="@MCPixel">
-    
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .embed-preview {
-            max-width: 500px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .embed-image {
-            width: 100%;
-            height: 250px;
-            background-image: url('${escapeHtml(imageUrl)}');
-            background-size: cover;
-            background-position: center;
-        }
-        .embed-content {
-            padding: 20px;
-        }
-        .embed-title {
-            font-size: 1.4em;
-            font-weight: bold;
-            margin: 0 0 10px 0;
-            color: #64b5f6;
-        }
-        .embed-description {
-            font-size: 0.95em;
-            line-height: 1.4;
-            margin-bottom: 15px;
-            color: #b0b0b0;
-        }
-        .embed-meta {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.85em;
-            color: #888;
-        }
-        .verified-badge {
-            color: #4ade80;
-        }
-        .site-name {
-            color: #64b5f6;
-            font-weight: bold;
-        }
-    </style>
 </head>
 <body>
-    <div class="embed-preview">
-        <div class="embed-image"></div>
-        <div class="embed-content">
-            <div class="embed-title">${escapeHtml(addon.title)}</div>
-            <div class="embed-description">${escapeHtml(description)}</div>
-            <div class="embed-meta">
-                <span class="site-name">MCPixel</span>
-                <span>•</span>
-                <span>by ${escapeHtml(creatorName)}</span>
-                ${isVerified ? '<span class="verified-badge">✓</span>' : ''}
-                <span>•</span>
-                <span>v${addon.version || '1.0.0'}</span>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
     `;
@@ -163,9 +91,6 @@ function sendGenericEmbed(res) {
     <meta name="twitter:site" content="@MCPixel">
 </head>
 <body>
-    <script>
-        window.location.href = "${siteUrl}";
-    </script>
 </body>
 </html>
   `;
