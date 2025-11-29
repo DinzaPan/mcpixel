@@ -8,32 +8,6 @@
     <link rel="icon" href="../img/logo.png" type="image/png">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/view.css">
-    
-    <meta property="og:title" content="MCPixel - Descubre Addons para Minecraft">
-    <meta property="og:description" content="Explora la mejor colección de addons para Minecraft">
-    <meta property="og:image" content="../img/logo.png">
-    <meta property="og:url" content="">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="MCPixel">
-    
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="MCPixel - Descubre Addons para Minecraft">
-    <meta name="twitter:description" content="Explora la mejor colección de addons para Minecraft">
-    <meta name="twitter:image" content="../img/logo.png">
-    <meta name="description" content="Descubre los mejores addons para Minecraft en MCPixel">
-    
-    <meta name="twitter:site" content="@MCPixel">
-    <meta name="twitter:creator" content="@MCPixel">
-    <meta name="theme-color" content="#1a73e8">
-
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const addonId = urlParams.get('id');
-        
-        if (addonId && /Discord|Twitter|facebook|Facebot|Slack|Telegram|WhatsApp/i.test(navigator.userAgent)) {
-            window.location.href = `/api/embed?id=${addonId}`;
-        }
-    </script>
 </head>
 <body>
     <div class="particles" id="particles"></div>
