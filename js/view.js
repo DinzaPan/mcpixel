@@ -36,11 +36,12 @@ function generateSlug(text) {
 
 function updateURLWithAddonName(addon) {
     const slug = generateSlug(addon.title);
-    const newUrl = `${window.location.origin}${window.location.pathname}?id=${addon.id}&name=${slug}`;
     
-    window.history.replaceState({}, '', newUrl);
+    const prettyUrl = `${window.location.origin}/sc/view.html?id=${addon.id}&name=${slug}`;
     
-    return newUrl;
+    window.history.replaceState({}, '', prettyUrl);
+    
+    return prettyUrl;
 }
 
 function getAbsoluteImageUrl(imageUrl) {
@@ -65,34 +66,66 @@ function getAbsoluteImageUrl(imageUrl) {
 
 function updateMetaTags(addon) {
     const fullImageUrl = getAbsoluteImageUrl(addon.image);
-    const fullUrl = `${window.location.origin}${window.location.pathname}?id=${addon.id}&name=${generateSlug(addon.title)}`;
+    const prettyUrl = `${window.location.origin}/sc/view.html?id=${addon.id}&name=${generateSlug(addon.title)}`;
+    const embedUrl = `${window.location.origin}/api/embed?id=${addon.id}`;
+    
+    const truncatedDescription = addon.description 
+        ? (addon.description.length > 150 
+            ? addon.description.substring(0, 150) + '...' 
+            : addon.description)
+        : 'Descubre este increíble addon para Minecraft en MCPixel';
     
     const metaTags = {
-        'og:title': `MCPixel - ${addon.title}`,
-        'og:description': addon.description || 'Descubre este increíble addon para Minecraft en MCPixel',
+        'og:title': `${addon.title} - MCPixel`,
+        'og:description': truncatedDescription,
         'og:image': fullImageUrl,
-        'og:url': fullUrl,
-        'twitter:title': `MCPixel - ${addon.title}`,
-        'twitter:description': addon.description || 'Descubre este increíble addon para Minecraft en MCPixel',
+        'og:url': embedUrl,
+        'og:type': 'website',
+        'og:site_name': 'MCPixel',
+        'twitter:card': 'summary_large_image',
+        'twitter:title': `${addon.title} - MCPixel`,
+        'twitter:description': truncatedDescription,
         'twitter:image': fullImageUrl,
-        'description': addon.description || 'Descubre este increíble addon para Minecraft en MCPixel'
+        'twitter:site': '@MCPixel',
+        'twitter:creator': '@MCPixel',
+        'description': truncatedDescription
     };
     
     Object.keys(metaTags).forEach(key => {
-        const selector = key.startsWith('og:') ? `meta[property="${key}"]` : `meta[name="${key}"]`;
-        const element = document.querySelector(selector);
-        if (element) {
-            element.setAttribute('content', metaTags[key]);
+        const selector = key.startsWith('og:') ? `meta[property="${key}"]` : 
+                         key.startsWith('twitter:') ? `meta[name="${key}"]` : 
+                         `meta[name="${key}"]`;
+        let element = document.querySelector(selector);
+        
+        if (!element) {
+            element = document.createElement('meta');
+            if (key.startsWith('og:')) {
+                element.setAttribute('property', key);
+            } else {
+                element.setAttribute('name', key);
+            }
+            document.head.appendChild(element);
         }
+        
+        element.setAttribute('content', metaTags[key]);
     });
     
-    document.title = `MCPixel - ${addon.title}`;
+    document.title = `${addon.title} - MCPixel`;
     
-    console.log('Meta tags actualizados para embed:', {
-        title: `MCPixel - ${addon.title}`,
-        image: fullImageUrl,
-        description: addon.description || 'Descubre este increíble addon para Minecraft en MCPixel'
-    });
+    forceDiscordCacheRefresh(fullImageUrl);
+}
+
+function forceDiscordCacheRefresh(imageUrl) {
+    if (imageUrl && !imageUrl.includes('?')) {
+        const timestamp = new Date().getTime();
+        const refreshedImageUrl = `${imageUrl}?t=${timestamp}`;
+        
+        const ogImage = document.querySelector('meta[property="og:image"]');
+        const twitterImage = document.querySelector('meta[name="twitter:image"]');
+        
+        if (ogImage) ogImage.setAttribute('content', refreshedImageUrl);
+        if (twitterImage) twitterImage.setAttribute('content', refreshedImageUrl);
+    }
 }
 
 function createParticles() {
