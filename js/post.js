@@ -4,6 +4,75 @@ let currentProfile = null;
 let editingAddonId = null;
 let currentTags = [];
 
+function validateCoverImageURL(url) {
+    try {
+        const urlObj = new URL(url);
+        
+        if (urlObj.protocol !== 'https:') {
+            return false;
+        }
+        
+        const allowedExtensions = ['jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg'];
+        const pathname = urlObj.pathname.toLowerCase();
+        const extension = pathname.split('.').pop();
+        
+        if (!allowedExtensions.includes(extension) || extension === 'png') {
+            return false;
+        }
+        
+        const allowedDomains = [
+            'i.ibb.co',
+            'ibb.co',
+            'imgbb.com',
+            'postimg.cc',
+            'postimages.org',
+            'imageshack.com',
+            'flickr.com',
+            'imgur.com',
+            'tinypic.com',
+            'imagevenue.com'
+        ];
+        
+        const domain = urlObj.hostname;
+        const isAllowedDomain = allowedDomains.some(allowed => 
+            domain === allowed || domain.endsWith('.' + allowed)
+        );
+        
+        return isAllowedDomain;
+        
+    } catch (error) {
+        return false;
+    }
+}
+
+function setupImageValidation() {
+    const addonImage = document.getElementById('addonImage');
+    const imageError = document.getElementById('imageError');
+    
+    if (addonImage && imageError) {
+        addonImage.addEventListener('input', function() {
+            const url = this.value.trim();
+            const preview = document.getElementById('imagePreview');
+            
+            if (url) {
+                const isValid = validateCoverImageURL(url);
+                
+                if (isValid) {
+                    preview.style.backgroundImage = `url('${url}')`;
+                    preview.classList.add('active');
+                    imageError.classList.remove('show');
+                } else {
+                    preview.classList.remove('active');
+                    imageError.classList.add('show');
+                }
+            } else {
+                preview.classList.remove('active');
+                imageError.classList.remove('show');
+            }
+        });
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async function() {
     currentUser = await getCurrentUser();
     if (!currentUser) {
@@ -99,7 +168,6 @@ function renderUserAddons() {
             </div>
         ` : '';
 
-        // Crear etiquetas HTML si existen
         const tagsHTML = addon.tags && addon.tags.length > 0 ? 
             `<div class="tags-container">${addon.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>` : '';
 
@@ -149,7 +217,6 @@ function renderUserAddons() {
         container.appendChild(card);
     });
 
-    // Agregar event listeners para los botones de editar y eliminar
     container.querySelectorAll('.edit-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -218,17 +285,7 @@ function setupModal() {
         });
     }
 
-    if (addonImage) {
-        addonImage.addEventListener('input', function() {
-            const preview = document.getElementById('imagePreview');
-            if (this.value) {
-                preview.style.backgroundImage = `url('${this.value}')`;
-                preview.classList.add('active');
-            } else {
-                preview.classList.remove('active');
-            }
-        });
-    }
+    setupImageValidation();
 
     if (addonTags) {
         addonTags.addEventListener('keypress', function(e) {
@@ -273,7 +330,6 @@ function setupProfileModal() {
             const errorElement = document.getElementById('avatarError');
             
             if (this.value) {
-                // Validar formato de imagen (excluye PNG)
                 const isValidImageUrl = validateImageUrl(this.value);
                 
                 if (isValidImageUrl) {
@@ -297,7 +353,6 @@ function setupProfileModal() {
 }
 
 function validateImageUrl(url) {
-    // Expresión regular para validar URLs de imágenes (excluye PNG)
     const imagePattern = /\.(jpg|jpeg|gif|webp)(\?.*)?$/i;
     return imagePattern.test(url);
 }
@@ -307,10 +362,8 @@ function openProfileModal() {
     const profileAvatar = document.getElementById('profileAvatar');
     const preview = document.getElementById('avatarPreview');
     
-    // Llenar el formulario con los datos actuales
     profileAvatar.value = currentProfile.avatar_url || '';
     
-    // Mostrar preview si existe avatar
     if (currentProfile.avatar_url) {
         preview.style.backgroundImage = `url('${currentProfile.avatar_url}')`;
         preview.classList.add('active');
@@ -318,7 +371,6 @@ function openProfileModal() {
         preview.classList.remove('active');
     }
     
-    // Ocultar mensaje de error
     document.getElementById('avatarError').classList.remove('show');
     
     modal.style.display = 'flex';
@@ -335,7 +387,6 @@ async function handleProfileUpdate(e) {
     const profileAvatar = document.getElementById('profileAvatar').value.trim();
     const errorElement = document.getElementById('avatarError');
     
-    // Validar URL de imagen si se proporciona (excluye PNG)
     if (profileAvatar && !validateImageUrl(profileAvatar)) {
         errorElement.classList.add('show');
         return;
@@ -352,10 +403,8 @@ async function handleProfileUpdate(e) {
         
         if (error) throw error;
         
-        // Actualizar perfil local
         currentProfile.avatar_url = profileAvatar || null;
         
-        // Actualizar sesión
         const savedProfile = localStorage.getItem('mcpixel_profile');
         if (savedProfile) {
             const profileData = JSON.parse(savedProfile);
@@ -365,7 +414,7 @@ async function handleProfileUpdate(e) {
         
         alert('Perfil actualizado exitosamente');
         closeProfileModal();
-        await loadUserData(); // Recargar datos para mostrar cambios
+        await loadUserData();
         
     } catch (error) {
         console.error('Error al actualizar el perfil:', error);
@@ -377,6 +426,8 @@ function openModal(addon = null) {
     const modal = document.getElementById('addonModal');
     const modalTitle = document.getElementById('modalTitle');
     const submitBtn = document.getElementById('submitBtn');
+
+    document.getElementById('imageError').classList.remove('show');
 
     if (addon) {
         modalTitle.textContent = 'Editar Addon';
@@ -447,7 +498,7 @@ async function handleAddonSubmit(e) {
     e.preventDefault();
     
     const formData = {
-        image: document.getElementById('addonImage').value,
+        image: document.getElementById('addonImage').value.trim(),
         title: document.getElementById('addonTitle').value,
         description: document.getElementById('addonDescription').value,
         version: document.getElementById('addonVersion').value,
@@ -456,8 +507,14 @@ async function handleAddonSubmit(e) {
         creator: currentProfile.username
     };
     
-    if (!formData.title || !formData.description || !formData.version || !formData.download_url) {
+    if (!formData.title || !formData.description || !formData.version || !formData.download_url || !formData.image) {
         alert('Por favor, completa todos los campos obligatorios.');
+        return;
+    }
+    
+    if (!validateCoverImageURL(formData.image)) {
+        document.getElementById('imageError').classList.add('show');
+        alert('La URL de la portada no es válida. Debe ser una URL HTTPS de un servicio de imágenes permitido y terminar en jpg, jpeg, gif, webp, bmp o svg (no PNG).');
         return;
     }
     
