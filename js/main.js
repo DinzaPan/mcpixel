@@ -1,6 +1,23 @@
 let allAddons = [];
 let allNotifications = [];
 
+const downloadManager = {
+    downloadCounts: JSON.parse(localStorage.getItem('downloadCounts') || '{}'),
+    
+    getDownloadCount: function(addonId) {
+        return this.downloadCounts[addonId]?.count || 0;
+    },
+    
+    formatDownloadCount: function(count) {
+        if (count >= 1000000) {
+            return (count / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        } else if (count >= 1000) {
+            return (count / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+        }
+        return count.toString();
+    }
+};
+
 document.addEventListener('DOMContentLoaded', async function() {
   await checkAuth();
   await loadAddons();
@@ -94,12 +111,19 @@ function renderAddons(addons) {
     const isVerified = addon.profiles?.is_verified || false;
     const creatorName = addon.profiles?.username || addon.creator || 'Anónimo';
     const avatarUrl = addon.profiles?.avatar_url || 'img/default-avatar.png';
+    const downloadCount = downloadManager.getDownloadCount(addon.id);
+    const formattedDownloadCount = downloadManager.formatDownloadCount(downloadCount);
     
     const card = document.createElement('div');
     card.className = 'card';
     card.style.animationDelay = `${index * 0.1}s`;
     card.innerHTML = `
-      <div class="card-cover" style="background-image: url('${addon.image || 'img/default-addon.jpg'}')"></div>
+      <div class="card-cover" style="background-image: url('${addon.image || 'img/default-addon.jpg'}')">
+        <div class="download-badge">
+          <i class="fas fa-download"></i>
+          ${formattedDownloadCount}
+        </div>
+      </div>
       <div class="card-content">
           <h3 class="card-title">${addon.title}</h3>
           <p class="card-description">${addon.description || 'Sin descripción disponible.'}</p>
