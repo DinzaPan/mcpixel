@@ -493,6 +493,14 @@
                     continue;
                 }
 
+                // Comprobar si solo cambió el contador de descargas
+                const onlyDownloadsChanged = hasOnlyDownloadsChanged(addon, previousAddon);
+                
+                if (onlyDownloadsChanged) {
+                    console.log('Solo cambió el contador de descargas, ignorando:', addon.title);
+                    continue;
+                }
+
                 if (addon.version !== previousAddon.version) {
                     console.log('Cambio de versión detectado:', addon.title, previousAddon.version, '→', addon.version);
                     notifications.push({
@@ -549,11 +557,13 @@
                     });
                 }
 
+                // Solo crear notificación de actualización general si no es solo por descargas
                 if (addon.updated_at !== previousAddon.updated_at && 
                     addon.title === previousAddon.title &&
                     addon.description === previousAddon.description &&
                     addon.version === previousAddon.version &&
-                    addon.image === previousAddon.image) {
+                    addon.image === previousAddon.image &&
+                    !onlyDownloadsChanged) {
                     
                     console.log('Actualización general detectada:', addon.title);
                     notifications.push({
@@ -570,6 +580,20 @@
             }
 
             return notifications;
+        }
+
+        // Función auxiliar para detectar si solo cambió el contador de descargas
+        function hasOnlyDownloadsChanged(currentAddon, previousAddon) {
+            // Comparamos todos los campos relevantes excepto downloads
+            const relevantFields = ['title', 'description', 'version', 'image'];
+            
+            // Si todos los campos relevantes son iguales, pero updated_at cambió
+            // entonces probablemente solo cambió el contador de descargas
+            const relevantFieldsUnchanged = relevantFields.every(field => 
+                currentAddon[field] === previousAddon[field]
+            );
+            
+            return relevantFieldsUnchanged && currentAddon.updated_at !== previousAddon.updated_at;
         }
 
         function renderNotifications() {
