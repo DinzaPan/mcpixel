@@ -14,22 +14,21 @@ class AdminPanel {
     }
 
     async init() {
+        console.log('Iniciando panel de administración...');
         await this.checkAdminAccess();
-        if (this.currentUser && this.currentProfile.is_admin) {
-            await this.loadData();
-            this.setupEventListeners();
-            this.updateStats();
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('adminContent').style.display = 'block';
-        }
     }
 
     async checkAdminAccess() {
         try {
+            console.log('Verificando acceso de administrador...');
+            
             const savedUser = localStorage.getItem('mcpixel_user');
             const savedProfile = localStorage.getItem('mcpixel_profile');
             
+            console.log('Datos de localStorage:', { savedUser, savedProfile });
+            
             if (!savedUser || !savedProfile) {
+                console.log('No hay sesión activa');
                 this.showAccessDenied();
                 return;
             }
@@ -37,22 +36,33 @@ class AdminPanel {
             this.currentUser = JSON.parse(savedUser);
             this.currentProfile = JSON.parse(savedProfile);
 
-            if (!this.currentProfile.is_admin) {
-                this.showAccessDenied();
-                return;
-            }
+            console.log('Perfil cargado:', this.currentProfile);
+            console.log('is_admin:', this.currentProfile.is_admin);
+            console.log('Tipo de is_admin:', typeof this.currentProfile.is_admin);
 
-            document.getElementById('adminInfo').innerHTML = `
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <img src="${this.currentProfile.avatar_url || '../img/default-avatar.png'}" 
-                         alt="${this.currentProfile.username}" 
-                         style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent);">
-                    <div>
-                        <div style="font-weight: 600;">${this.currentProfile.username}</div>
-                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Administrador</div>
+            if (this.currentProfile.is_admin === true || this.currentProfile.is_admin === 'true') {
+                console.log('Usuario es administrador, cargando panel...');
+                await this.loadData();
+                this.setupEventListeners();
+                this.updateStats();
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                
+                document.getElementById('adminInfo').innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="${this.currentProfile.avatar_url || '../img/default-avatar.png'}" 
+                             alt="${this.currentProfile.username}" 
+                             style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent);">
+                        <div>
+                            <div style="font-weight: 600;">${this.currentProfile.username}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Administrador</div>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            } else {
+                console.log('Usuario NO es administrador');
+                this.showAccessDenied();
+            }
 
         } catch (error) {
             console.error('Error verificando acceso de administrador:', error);
@@ -100,7 +110,8 @@ class AdminPanel {
                     profiles:user_id (
                         username,
                         is_verified,
-                        avatar_url
+                        avatar_url,
+                        is_admin
                     )
                 `)
                 .order('created_at', { ascending: false });
@@ -123,7 +134,7 @@ class AdminPanel {
         if (searchTerm) {
             filteredUsers = this.users.filter(user => 
                 user.username.toLowerCase().includes(searchTerm) ||
-                user.email?.toLowerCase().includes(searchTerm) ||
+                (user.email && user.email.toLowerCase().includes(searchTerm)) ||
                 user.id.toLowerCase().includes(searchTerm)
             );
         }
@@ -155,6 +166,11 @@ class AdminPanel {
                         ${user.is_verified ? 'Verificado' : 'No verificado'}
                     </span>
                 </td>
+                <td>
+                    <span class="status-badge ${user.is_admin ? 'status-active' : 'status-pending'}">
+                        ${user.is_admin ? 'Admin' : 'Usuario'}
+                    </span>
+                </td>
                 <td>${new Date(user.created_at).toLocaleDateString()}</td>
                 <td>
                     ${!user.is_banned ? `
@@ -166,9 +182,16 @@ class AdminPanel {
                             <i class="fas fa-check-circle"></i>
                         </button>
                     `}
-                    <button class="action-btn btn-delete" onclick="adminPanel.deleteUser('${user.id}')" title="Eliminar usuario">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    ${user.id !== this.currentUser.id ? `
+                        <button class="action-btn btn-delete" onclick="adminPanel.deleteUser('${user.id}')" title="Eliminar usuario">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    ` : ''}
+                    ${!user.is_admin && user.id !== this.currentUser.id ? `
+                        <button class="action-btn" onclick="adminPanel.makeAdmin('${user.id}')" title="Hacer administrador" style="color: var(--accent);">
+                            <i class="fas fa-shield-alt"></i>
+                        </button>
+                    ` : ''}
                 </td>
             </tr>
         `).join('');
@@ -185,7 +208,7 @@ class AdminPanel {
             filteredAddons = this.addons.filter(addon => 
                 addon.title.toLowerCase().includes(searchTerm) ||
                 addon.description.toLowerCase().includes(searchTerm) ||
-                addon.profiles?.username.toLowerCase().includes(searchTerm)
+                (addon.profiles?.username && addon.profiles.username.toLowerCase().includes(searchTerm))
             );
         }
 
@@ -203,6 +226,7 @@ class AdminPanel {
                              alt="${addon.profiles?.username}" 
                              style="width: 24px; height: 24px; border-radius: 50%;">
                         ${addon.profiles?.username || 'Anónimo'}
+                        ${addon.profiles?.is_admin ? '<i class="fas fa-shield-alt" style="color: var(--accent);"></i>' : ''}
                     </div>
                 </td>
                 <td>${addon.downloads || 0}</td>
@@ -407,6 +431,25 @@ class AdminPanel {
         } catch (error) {
             console.error('Error desbaneando usuario:', error);
             this.showError('Error al desbanear el usuario');
+        }
+    }
+
+    async makeAdmin(userId) {
+        if (!confirm('¿Estás seguro de que deseas hacer administrador a este usuario?')) return;
+
+        try {
+            const { error } = await window.supabase
+                .from('profiles')
+                .update({ is_admin: true })
+                .eq('id', userId);
+
+            if (error) throw error;
+
+            this.showSuccess('Usuario ahora es administrador');
+            await this.loadUsers();
+        } catch (error) {
+            console.error('Error haciendo administrador:', error);
+            this.showError('Error al hacer administrador');
         }
     }
 
