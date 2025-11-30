@@ -24,6 +24,55 @@ const favoritesManager = {
     }
 };
 
+const downloadManager = {
+    lastDownloadTime: 0,
+    downloadCooldown: 3000,
+    downloadCounts: JSON.parse(localStorage.getItem('downloadCounts') || '{}'),
+    
+    canDownload: function(addonId) {
+        const now = Date.now();
+        const lastTime = this.lastDownloadTime;
+        
+        if (now - lastTime < this.downloadCooldown) {
+            return false;
+        }
+        
+        const addonLastDownload = this.downloadCounts[addonId]?.lastDownload || 0;
+        if (now - addonLastDownload < this.downloadCooldown) {
+            return false;
+        }
+        
+        return true;
+    },
+    
+    recordDownload: function(addonId) {
+        const now = Date.now();
+        this.lastDownloadTime = now;
+        
+        if (!this.downloadCounts[addonId]) {
+            this.downloadCounts[addonId] = { count: 0, lastDownload: 0 };
+        }
+        
+        this.downloadCounts[addonId].count++;
+        this.downloadCounts[addonId].lastDownload = now;
+        
+        localStorage.setItem('downloadCounts', JSON.stringify(this.downloadCounts));
+    },
+    
+    getDownloadCount: function(addonId) {
+        return this.downloadCounts[addonId]?.count || 0;
+    },
+    
+    formatDownloadCount: function(count) {
+        if (count >= 1000000) {
+            return (count / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        } else if (count >= 1000) {
+            return (count / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+        }
+        return count.toString();
+    }
+};
+
 function generateSlug(text) {
     return text
         .toString()
@@ -195,6 +244,8 @@ function renderAddonDetails(addon) {
     `).join('');
     
     const isFav = favoritesManager.isFavorite(addon.id);
+    const downloadCount = downloadManager.getDownloadCount(addon.id);
+    const formattedDownloadCount = downloadManager.formatDownloadCount(downloadCount);
     
     const displayImageUrl = addon.image || '../img/default-addon.jpg';
     
@@ -220,8 +271,8 @@ function renderAddonDetails(addon) {
                     ` : ''}
                 </div>
                 <div class="version-info">
-                    <i class="fas fa-code-branch"></i>
-                    v${addon.version || '1.0.0'}
+                    <i class="fas fa-download"></i>
+                    ${formattedDownloadCount} descargas
                 </div>
             </div>
             
@@ -242,7 +293,7 @@ function renderAddonDetails(addon) {
         
         ${addon.download_url ? `
             <div class="download-section">
-                <button class="download-btn" onclick="window.open('${addon.download_url}', '_blank')">
+                <button class="download-btn" data-id="${addon.id}" data-url="${addon.download_url}">
                     <i class="fas fa-download"></i>
                     Descargar Addon
                 </button>
@@ -261,6 +312,45 @@ function renderAddonDetails(addon) {
     `;
     
     setupFavoriteButton();
+    setupDownloadButton();
+}
+
+function setupDownloadButton() {
+    const downloadBtn = document.querySelector('.download-btn');
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const addonId = parseInt(this.dataset.id);
+            const downloadUrl = this.dataset.url;
+            
+            if (!downloadManager.canDownload(addonId)) {
+                return;
+            }
+            
+            try {
+                downloadManager.recordDownload(addonId);
+                
+                updateDownloadCount(addonId);
+                
+                window.open(downloadUrl, '_blank');
+                
+            } catch (error) {
+                console.error('Error en la descarga:', error);
+            }
+        });
+    }
+}
+
+function updateDownloadCount(addonId) {
+    const downloadCount = downloadManager.getDownloadCount(addonId);
+    const formattedDownloadCount = downloadManager.formatDownloadCount(downloadCount);
+    
+    const versionInfo = document.querySelector('.version-info');
+    if (versionInfo) {
+        versionInfo.innerHTML = `<i class="fas fa-download"></i> ${formattedDownloadCount} descargas`;
+    }
 }
 
 function setupFavoriteButton() {
@@ -287,16 +377,20 @@ function updateFavoriteButton(btn, isFavorite) {
             btn.style.transform = 'scale(1)';
         }, 200);
         
-        showNotification('Añadido a favoritos');
+        showNotification('Añadido a favoritos', 'success');
     } else {
         btn.innerHTML = '<i class="far fa-heart"></i>';
         btn.style.color = 'var(--text-secondary)';
-        showNotification('Eliminado de favoritos');
+        showNotification('Eliminado de favoritos', 'info');
     }
 }
 
-function showNotification(message) {
+function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
+    const bgColor = type === 'error' ? 'var(--error-color)' : 
+                   type === 'warning' ? '#f59e0b' : 
+                   type === 'success' ? 'var(--verified-color)' : 'var(--accent)';
+    
     notification.style.cssText = `
         position: fixed;
         top: 100px;
@@ -306,6 +400,7 @@ function showNotification(message) {
         padding: 15px 20px;
         border-radius: 10px;
         border: 1px solid var(--border-color);
+        border-left: 4px solid ${bgColor};
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         z-index: 1000;
         display: flex;
@@ -314,10 +409,15 @@ function showNotification(message) {
         transition: all 0.3s ease;
         transform: translateX(100%);
         opacity: 0;
+        max-width: 300px;
     `;
     
+    const icon = type === 'error' ? 'fa-exclamation-circle' :
+                type === 'warning' ? 'fa-exclamation-triangle' :
+                type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
+    
     notification.innerHTML = `
-        <i class="fas fa-check-circle" style="color: var(--success-color);"></i>
+        <i class="fas ${icon}" style="color: ${bgColor};"></i>
         <span>${message}</span>
     `;
     
