@@ -1,4 +1,3 @@
-// Sistema de autenticación propio con verificación real de contraseñas
 class AuthSystem {
     constructor() {
         this.currentUser = null;
@@ -10,7 +9,6 @@ class AuthSystem {
         this.loadSession();
     }
 
-    // Función para hashear contraseñas (simple pero funcional)
     async hashPassword(password) {
         const encoder = new TextEncoder();
         const data = encoder.encode(password);
@@ -20,13 +18,11 @@ class AuthSystem {
             .join('');
     }
 
-    // Verificar contraseña
     async verifyPassword(password, hash) {
         const hashedPassword = await this.hashPassword(password);
         return hashedPassword === hash;
     }
 
-    // Cargar sesión desde localStorage
     loadSession() {
         try {
             const savedUser = localStorage.getItem('mcpixel_user');
@@ -36,11 +32,14 @@ class AuthSystem {
                 this.currentUser = JSON.parse(savedUser);
                 this.currentProfile = JSON.parse(savedProfile);
                 
-                // Verificar que la sesión no haya expirado (24 horas)
+                if (this.currentProfile.is_admin === undefined) {
+                    this.currentProfile.is_admin = false;
+                }
+                
                 const sessionTime = localStorage.getItem('mcpixel_session_time');
                 if (sessionTime) {
                     const sessionAge = Date.now() - parseInt(sessionTime);
-                    if (sessionAge > 24 * 60 * 60 * 1000) { // 24 horas
+                    if (sessionAge > 24 * 60 * 60 * 1000) {
                         this.clearSession();
                     }
                 }
@@ -51,7 +50,6 @@ class AuthSystem {
         }
     }
 
-    // Guardar sesión en localStorage
     saveSession(user, profile) {
         try {
             localStorage.setItem('mcpixel_user', JSON.stringify(user));
@@ -64,7 +62,6 @@ class AuthSystem {
         }
     }
 
-    // Limpiar sesión
     clearSession() {
         localStorage.removeItem('mcpixel_user');
         localStorage.removeItem('mcpixel_profile');
@@ -73,14 +70,12 @@ class AuthSystem {
         this.currentProfile = null;
     }
 
-    // Login con verificación real de contraseña
     async login(username, password) {
         try {
             if (!username || !password) {
                 throw new Error('Usuario y contraseña son requeridos');
             }
 
-            // Buscar usuario por username
             const { data: profile, error } = await window.supabase
                 .from('profiles')
                 .select('*')
@@ -91,11 +86,14 @@ class AuthSystem {
                 throw new Error('Usuario no encontrado');
             }
 
-            // Verificar contraseña
             const isPasswordValid = await this.verifyPassword(password, profile.password_hash);
             
             if (!isPasswordValid) {
                 throw new Error('Contraseña incorrecta');
+            }
+
+            if (profile.is_banned) {
+                throw new Error('Usuario baneado. Contacta al administrador.');
             }
 
             const user = {
@@ -109,6 +107,7 @@ class AuthSystem {
                 username: profile.username,
                 avatar_url: profile.avatar_url,
                 is_verified: profile.is_verified,
+                is_admin: profile.is_admin || false,
                 created_at: profile.created_at
             };
 
@@ -121,7 +120,6 @@ class AuthSystem {
         }
     }
 
-    // Registro con hash de contraseña
     async register(username, password, avatar_url = null) {
         try {
             if (!username || !password) {
@@ -136,7 +134,6 @@ class AuthSystem {
                 throw new Error('La contraseña debe tener al menos 6 caracteres');
             }
 
-            // Verificar si el usuario ya existe
             const { data: existingUser } = await window.supabase
                 .from('profiles')
                 .select('username')
@@ -147,15 +144,14 @@ class AuthSystem {
                 throw new Error('El nombre de usuario ya está en uso');
             }
 
-            // Hashear contraseña
             const passwordHash = await this.hashPassword(password);
 
-            // Crear nuevo usuario
             const newUser = {
                 username: username,
                 password_hash: passwordHash,
                 avatar_url: avatar_url,
-                is_verified: false
+                is_verified: false,
+                is_admin: false
             };
 
             const { data: profile, error } = await window.supabase
@@ -180,6 +176,7 @@ class AuthSystem {
                 username: profile.username,
                 avatar_url: profile.avatar_url,
                 is_verified: profile.is_verified,
+                is_admin: profile.is_admin || false,
                 created_at: profile.created_at
             };
 
@@ -192,35 +189,29 @@ class AuthSystem {
         }
     }
 
-    // Logout
     async logout() {
         this.clearSession();
         return { error: null };
     }
 
-    // Verificar si está autenticado
     isAuthenticated() {
         return this.currentUser !== null && this.currentUser.loggedIn === true;
     }
 
-    // Obtener usuario actual
     getCurrentUser() {
         return this.currentUser;
     }
 
-    // Obtener perfil actual
     getCurrentProfile() {
         return this.currentProfile;
     }
 
-    // Cambiar contraseña (función adicional)
     async changePassword(currentPassword, newPassword) {
         try {
             if (!this.currentUser) {
                 throw new Error('No hay usuario autenticado');
             }
 
-            // Obtener perfil actual desde la base de datos
             const { data: profile, error } = await window.supabase
                 .from('profiles')
                 .select('*')
@@ -231,17 +222,14 @@ class AuthSystem {
                 throw new Error('Error al obtener el perfil');
             }
 
-            // Verificar contraseña actual
             const isCurrentPasswordValid = await this.verifyPassword(currentPassword, profile.password_hash);
             
             if (!isCurrentPasswordValid) {
                 throw new Error('Contraseña actual incorrecta');
             }
 
-            // Hashear nueva contraseña
             const newPasswordHash = await this.hashPassword(newPassword);
 
-            // Actualizar contraseña
             const { error: updateError } = await window.supabase
                 .from('profiles')
                 .update({ password_hash: newPasswordHash })
@@ -257,12 +245,47 @@ class AuthSystem {
             return { error };
         }
     }
+
+    isAdmin() {
+        return this.currentProfile && (this.currentProfile.is_admin === true || this.currentProfile.is_admin === 'true');
+    }
+
+    async updateProfile(updates) {
+        try {
+            if (!this.currentUser) {
+                throw new Error('No hay usuario autenticado');
+            }
+
+            const { error } = await window.supabase
+                .from('profiles')
+                .update(updates)
+                .eq('id', this.currentUser.id);
+
+            if (error) {
+                throw new Error('Error al actualizar el perfil');
+            }
+
+            if (updates.avatar_url) {
+                this.currentProfile.avatar_url = updates.avatar_url;
+            }
+
+            if (updates.username) {
+                this.currentProfile.username = updates.username;
+                this.currentUser.username = updates.username;
+            }
+
+            this.saveSession(this.currentUser, this.currentProfile);
+
+            return { error: null };
+
+        } catch (error) {
+            return { error };
+        }
+    }
 }
 
-// Instancia global del sistema de autenticación
 window.authSystem = new AuthSystem();
 
-// Funciones de autenticación para compatibilidad
 async function getCurrentUser() {
     return window.authSystem.getCurrentUser();
 }
@@ -283,11 +306,34 @@ async function logout() {
     return await window.authSystem.logout();
 }
 
-// Función para verificar autenticación en páginas protegidas
 async function requireAuth(redirectTo = 'security.html') {
     if (!window.authSystem.isAuthenticated()) {
         window.location.href = redirectTo;
         return null;
     }
     return window.authSystem.getCurrentUser();
+}
+
+async function requireAdmin(redirectTo = 'index.html') {
+    if (!window.authSystem.isAuthenticated() || !window.authSystem.isAdmin()) {
+        window.location.href = redirectTo;
+        return null;
+    }
+    return window.authSystem.getCurrentUser();
+}
+
+function isAuthenticated() {
+    return window.authSystem.isAuthenticated();
+}
+
+function isAdmin() {
+    return window.authSystem.isAdmin();
+}
+
+async function changePassword(currentPassword, newPassword) {
+    return await window.authSystem.changePassword(currentPassword, newPassword);
+}
+
+async function updateProfile(updates) {
+    return await window.authSystem.updateProfile(updates);
 }
