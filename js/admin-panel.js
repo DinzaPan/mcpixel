@@ -142,6 +142,12 @@ class AdminPanel {
         }
     }
 
+    formatId(id) {
+        if (!id) return 'N/A';
+        const idStr = id.toString();
+        return idStr.substring(0, 8) + '...';
+    }
+
     renderUsers() {
         const tableBody = document.getElementById('usersTableBody');
         const searchTerm = document.getElementById('searchUsers').value.toLowerCase();
@@ -151,7 +157,7 @@ class AdminPanel {
             filteredUsers = this.users.filter(user => 
                 user.username.toLowerCase().includes(searchTerm) ||
                 (user.email && user.email.toLowerCase().includes(searchTerm)) ||
-                user.id.toLowerCase().includes(searchTerm)
+                (user.id && user.id.toString().toLowerCase().includes(searchTerm))
             );
         }
 
@@ -172,7 +178,7 @@ class AdminPanel {
 
         tableBody.innerHTML = paginatedUsers.map(user => `
             <tr>
-                <td>${user.id.substring(0, 8)}...</td>
+                <td>${this.formatId(user.id)}</td>
                 <td>
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <img src="${user.avatar_url || '../img/default-avatar.png'}" 
@@ -242,7 +248,8 @@ class AdminPanel {
             filteredAddons = this.addons.filter(addon => 
                 (addon.title && addon.title.toLowerCase().includes(searchTerm)) ||
                 (addon.description && addon.description.toLowerCase().includes(searchTerm)) ||
-                (addon.creator && addon.creator.toLowerCase().includes(searchTerm))
+                (addon.creator && addon.creator.toLowerCase().includes(searchTerm)) ||
+                (addon.id && addon.id.toString().toLowerCase().includes(searchTerm))
             );
         }
 
@@ -263,7 +270,7 @@ class AdminPanel {
 
         tableBody.innerHTML = paginatedAddons.map(addon => `
             <tr>
-                <td>${addon.id.substring(0, 8)}...</td>
+                <td>${this.formatId(addon.id)}</td>
                 <td>${addon.title || 'Sin título'}</td>
                 <td>
                     <div style="display: flex; align-items: center; gap: 8px;">
@@ -283,21 +290,23 @@ class AdminPanel {
                 <td>${new Date(addon.created_at).toLocaleDateString()}</td>
                 <td>
                     <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-                        <button class="action-btn" onclick="window.open('../sc/view.html?id=${addon.id}', '_blank')" title="Ver addon">
-                            <i class="fas fa-eye"></i> Ver
-                        </button>
-                        ${!addon.is_blocked ? `
-                            <button class="action-btn btn-ban" onclick="adminPanel.blockAddon('${addon.id}')" title="Bloquear addon">
-                                <i class="fas fa-ban"></i> Bloquear
+                        ${addon.id ? `
+                            <button class="action-btn" onclick="window.open('../sc/view.html?id=${addon.id}', '_blank')" title="Ver addon">
+                                <i class="fas fa-eye"></i> Ver
                             </button>
-                        ` : `
-                            <button class="action-btn btn-unban" onclick="adminPanel.unblockAddon('${addon.id}')" title="Desbloquear addon">
-                                <i class="fas fa-check-circle"></i> Desbloquear
+                            ${!addon.is_blocked ? `
+                                <button class="action-btn btn-ban" onclick="adminPanel.blockAddon('${addon.id}')" title="Bloquear addon">
+                                    <i class="fas fa-ban"></i> Bloquear
+                                </button>
+                            ` : `
+                                <button class="action-btn btn-unban" onclick="adminPanel.unblockAddon('${addon.id}')" title="Desbloquear addon">
+                                    <i class="fas fa-check-circle"></i> Desbloquear
+                                </button>
+                            `}
+                            <button class="action-btn btn-delete" onclick="adminPanel.deleteAddonPrompt('${addon.id}')" title="Eliminar addon">
+                                <i class="fas fa-trash"></i> Eliminar
                             </button>
-                        `}
-                        <button class="action-btn btn-delete" onclick="adminPanel.deleteAddonPrompt('${addon.id}')" title="Eliminar addon">
-                            <i class="fas fa-trash"></i> Eliminar
-                        </button>
+                        ` : ''}
                     </div>
                 </td>
             </tr>
