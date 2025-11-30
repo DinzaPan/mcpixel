@@ -32,10 +32,6 @@ class AuthSystem {
                 this.currentUser = JSON.parse(savedUser);
                 this.currentProfile = JSON.parse(savedProfile);
                 
-                if (this.currentProfile.is_admin === undefined) {
-                    this.currentProfile.is_admin = false;
-                }
-                
                 const sessionTime = localStorage.getItem('mcpixel_session_time');
                 if (sessionTime) {
                     const sessionAge = Date.now() - parseInt(sessionTime);
@@ -107,7 +103,7 @@ class AuthSystem {
                 username: profile.username,
                 avatar_url: profile.avatar_url,
                 is_verified: profile.is_verified,
-                is_admin: profile.is_admin || false,
+                is_admin: profile.is_admin,
                 created_at: profile.created_at
             };
 
@@ -176,7 +172,7 @@ class AuthSystem {
                 username: profile.username,
                 avatar_url: profile.avatar_url,
                 is_verified: profile.is_verified,
-                is_admin: profile.is_admin || false,
+                is_admin: profile.is_admin,
                 created_at: profile.created_at
             };
 
@@ -247,7 +243,8 @@ class AuthSystem {
     }
 
     isAdmin() {
-        return this.currentProfile && (this.currentProfile.is_admin === true || this.currentProfile.is_admin === 'true');
+        if (!this.currentProfile) return false;
+        return this.currentProfile.is_admin === true || this.currentProfile.is_admin === 'true';
     }
 
     async updateProfile(updates) {
