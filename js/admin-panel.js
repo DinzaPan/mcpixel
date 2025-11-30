@@ -93,40 +93,9 @@ class AdminPanel {
         document.getElementById('loading').style.display = 'none';
         document.getElementById('accessDenied').style.display = 'block';
         
-        const debugInfo = document.getElementById('debugInfo');
-        const debugContent = document.getElementById('debugContent');
-        
-        if (debugInfo && debugContent) {
-            debugInfo.style.display = 'block';
-            let debugHTML = '<div style="font-family: monospace; font-size: 12px;">';
-            
-            if (window.authSystem) {
-                debugHTML += `<p><strong>Usuario autenticado:</strong> ${window.authSystem.isAuthenticated()}</p>`;
-                debugHTML += `<p><strong>Es admin:</strong> ${window.authSystem.isAdmin()}</p>`;
-                
-                const user = window.authSystem.getCurrentUser();
-                const profile = window.authSystem.getCurrentProfile();
-                
-                if (user) {
-                    debugHTML += `<p><strong>Usuario:</strong> ${JSON.stringify(user)}</p>`;
-                }
-                if (profile) {
-                    debugHTML += `<p><strong>Perfil:</strong> ${JSON.stringify(profile)}</p>`;
-                }
-            } else {
-                debugHTML += `<p><strong>authSystem:</strong> No disponible</p>`;
-            }
-            
-            debugHTML += `<p><strong>LocalStorage user:</strong> ${localStorage.getItem('mcpixel_user')}</p>`;
-            debugHTML += `<p><strong>LocalStorage profile:</strong> ${localStorage.getItem('mcpixel_profile')}</p>`;
-            debugHTML += '</div>';
-            
-            debugContent.innerHTML = debugHTML;
-        }
-        
         setTimeout(() => {
             window.location.href = '../index.html';
-        }, 5000);
+        }, 3000);
     }
 
     async loadData() {
@@ -141,12 +110,15 @@ class AdminPanel {
                 .select('*')
                 .order('created_at', { ascending: false });
 
-            if (error) throw error;
+            if (error) {
+                console.error('Error cargando usuarios:', error);
+                throw error;
+            }
 
             this.users = users || [];
             this.renderUsers();
         } catch (error) {
-            this.showError('Error al cargar los usuarios');
+            this.showError('Error al cargar los usuarios: ' + error.message);
         }
     }
 
@@ -157,12 +129,16 @@ class AdminPanel {
                 .select('*')
                 .order('created_at', { ascending: false });
 
-            if (error) throw error;
+            if (error) {
+                console.error('Error cargando addons:', error);
+                throw error;
+            }
 
+            console.log('Addons cargados:', addons);
             this.addons = addons || [];
             this.renderAddons();
         } catch (error) {
-            this.showError('Error al cargar los addons');
+            this.showError('Error al cargar los addons: ' + error.message);
         }
     }
 
@@ -182,6 +158,17 @@ class AdminPanel {
         const totalPages = Math.ceil(filteredUsers.length / this.itemsPerPage);
         const startIndex = (this.currentUsersPage - 1) * this.itemsPerPage;
         const paginatedUsers = filteredUsers.slice(startIndex, startIndex + this.itemsPerPage);
+
+        if (paginatedUsers.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 20px; color: var(--text-secondary);">
+                        No se encontraron usuarios
+                    </td>
+                </tr>
+            `;
+            return;
+        }
 
         tableBody.innerHTML = paginatedUsers.map(user => `
             <tr>
@@ -215,7 +202,7 @@ class AdminPanel {
                 <td>
                     <div style="display: flex; gap: 5px; flex-wrap: wrap;">
                         ${!user.is_banned ? `
-                            <button class="action-btn btn-ban" onclick="adminPanel.openBanModal('${user.id}')" title="Banear usuario">
+                            <button class="action-btn btn-ban" onclick="adminPanel.banUserPrompt('${user.id}')" title="Banear usuario">
                                 <i class="fas fa-ban"></i> Ban
                             </button>
                         ` : `
@@ -253,7 +240,7 @@ class AdminPanel {
         let filteredAddons = this.addons;
         if (searchTerm) {
             filteredAddons = this.addons.filter(addon => 
-                addon.title.toLowerCase().includes(searchTerm) ||
+                (addon.title && addon.title.toLowerCase().includes(searchTerm)) ||
                 (addon.description && addon.description.toLowerCase().includes(searchTerm)) ||
                 (addon.creator && addon.creator.toLowerCase().includes(searchTerm))
             );
@@ -262,6 +249,17 @@ class AdminPanel {
         const totalPages = Math.ceil(filteredAddons.length / this.itemsPerPage);
         const startIndex = (this.currentAddonsPage - 1) * this.itemsPerPage;
         const paginatedAddons = filteredAddons.slice(startIndex, startIndex + this.itemsPerPage);
+
+        if (paginatedAddons.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 20px; color: var(--text-secondary);">
+                        No se encontraron addons
+                    </td>
+                </tr>
+            `;
+            return;
+        }
 
         tableBody.innerHTML = paginatedAddons.map(addon => `
             <tr>
@@ -297,7 +295,7 @@ class AdminPanel {
                                 <i class="fas fa-check-circle"></i> Desbloquear
                             </button>
                         `}
-                        <button class="action-btn btn-delete" onclick="adminPanel.openDeleteAddonModal('${addon.id}')" title="Eliminar addon">
+                        <button class="action-btn btn-delete" onclick="adminPanel.deleteAddonPrompt('${addon.id}')" title="Eliminar addon">
                             <i class="fas fa-trash"></i> Eliminar
                         </button>
                     </div>
@@ -387,14 +385,6 @@ class AdminPanel {
             this.currentAddonsPage = 1;
             this.renderAddons();
         });
-
-        document.getElementById('closeBanModal').addEventListener('click', () => this.closeBanModal());
-        document.getElementById('cancelBan').addEventListener('click', () => this.closeBanModal());
-        document.getElementById('confirmBan').addEventListener('click', () => this.banUser());
-
-        document.getElementById('closeDeleteAddonModal').addEventListener('click', () => this.closeDeleteAddonModal());
-        document.getElementById('cancelDeleteAddon').addEventListener('click', () => this.closeDeleteAddonModal());
-        document.getElementById('confirmDeleteAddon').addEventListener('click', () => this.deleteAddon());
     }
 
     switchTab(tab) {
@@ -405,30 +395,26 @@ class AdminPanel {
         document.getElementById(`${tab}-tab`).classList.add('active');
     }
 
-    openBanModal(userId) {
+    banUserPrompt(userId) {
         this.selectedUserId = userId;
         const user = this.users.find(u => u.id === userId);
-        document.getElementById('banModalTitle').textContent = `Banear a ${user.username}`;
-        document.getElementById('banModal').classList.add('active');
-    }
-
-    closeBanModal() {
-        document.getElementById('banModal').classList.remove('active');
-        this.selectedUserId = null;
-        document.getElementById('banReason').value = '';
-        document.getElementById('banDuration').value = '1';
-    }
-
-    async banUser() {
-        if (!this.selectedUserId) return;
-
-        const reason = document.getElementById('banReason').value.trim();
-        const duration = document.getElementById('banDuration').value;
-
-        if (!reason) {
-            this.showError('Por favor, proporciona un motivo para el baneo');
+        
+        const reason = prompt(`¿Banear a ${user.username}? Ingresa el motivo:`);
+        if (reason === null) return;
+        
+        if (!reason.trim()) {
+            this.showError('Debes ingresar un motivo para el baneo');
             return;
         }
+
+        const duration = prompt('Duración del baneo:\n1 - 1 día\n7 - 1 semana\n30 - 1 mes\n365 - 1 año\npermanent - Permanente', '7');
+        if (duration === null) return;
+
+        this.banUser(reason, duration);
+    }
+
+    async banUser(reason, duration) {
+        if (!this.selectedUserId) return;
 
         try {
             const { error } = await window.supabase
@@ -443,11 +429,10 @@ class AdminPanel {
             if (error) throw error;
 
             this.showSuccess('Usuario baneado correctamente');
-            this.closeBanModal();
             await this.loadUsers();
             this.updateStats();
         } catch (error) {
-            this.showError('Error al banear el usuario');
+            this.showError('Error al banear el usuario: ' + error.message);
         }
     }
 
@@ -476,7 +461,7 @@ class AdminPanel {
             await this.loadUsers();
             this.updateStats();
         } catch (error) {
-            this.showError('Error al desbanear el usuario');
+            this.showError('Error al desbanear el usuario: ' + error.message);
         }
     }
 
@@ -494,7 +479,7 @@ class AdminPanel {
             this.showSuccess('Usuario ahora es administrador');
             await this.loadUsers();
         } catch (error) {
-            this.showError('Error al hacer administrador');
+            this.showError('Error al hacer administrador: ' + error.message);
         }
     }
 
@@ -512,7 +497,7 @@ class AdminPanel {
             this.showSuccess('Permisos de administrador removidos');
             await this.loadUsers();
         } catch (error) {
-            this.showError('Error al remover administrador');
+            this.showError('Error al remover administrador: ' + error.message);
         }
     }
 
@@ -525,7 +510,9 @@ class AdminPanel {
                 .delete()
                 .eq('user_id', userId);
 
-            if (addonsError) throw addonsError;
+            if (addonsError) {
+                console.error('Error eliminando addons:', addonsError);
+            }
 
             const { error } = await window.supabase
                 .from('profiles')
@@ -538,11 +525,13 @@ class AdminPanel {
             await this.loadData();
             this.updateStats();
         } catch (error) {
-            this.showError('Error al eliminar el usuario');
+            this.showError('Error al eliminar el usuario: ' + error.message);
         }
     }
 
     async blockAddon(addonId) {
+        if (!confirm('¿Estás seguro de que deseas bloquear este addon?')) return;
+
         try {
             const { error } = await window.supabase
                 .from('addons')
@@ -554,11 +543,13 @@ class AdminPanel {
             this.showSuccess('Addon bloqueado correctamente');
             await this.loadAddons();
         } catch (error) {
-            this.showError('Error al bloquear el addon');
+            this.showError('Error al bloquear el addon: ' + error.message);
         }
     }
 
     async unblockAddon(addonId) {
+        if (!confirm('¿Estás seguro de que deseas desbloquear este addon?')) return;
+
         try {
             const { error } = await window.supabase
                 .from('addons')
@@ -570,30 +561,27 @@ class AdminPanel {
             this.showSuccess('Addon desbloqueado correctamente');
             await this.loadAddons();
         } catch (error) {
-            this.showError('Error al desbloquear el addon');
+            this.showError('Error al desbloquear el addon: ' + error.message);
         }
     }
 
-    openDeleteAddonModal(addonId) {
+    deleteAddonPrompt(addonId) {
         this.selectedAddonId = addonId;
-        document.getElementById('deleteAddonModal').classList.add('active');
-    }
-
-    closeDeleteAddonModal() {
-        document.getElementById('deleteAddonModal').classList.remove('active');
-        this.selectedAddonId = null;
-        document.getElementById('deleteReason').value = '';
-    }
-
-    async deleteAddon() {
-        if (!this.selectedAddonId) return;
-
-        const reason = document.getElementById('deleteReason').value.trim();
-
-        if (!reason) {
-            this.showError('Por favor, proporciona un motivo para la eliminación');
+        const addon = this.addons.find(a => a.id === addonId);
+        
+        const reason = prompt(`¿Eliminar el addon "${addon.title}"? Ingresa el motivo:`);
+        if (reason === null) return;
+        
+        if (!reason.trim()) {
+            this.showError('Debes ingresar un motivo para la eliminación');
             return;
         }
+
+        this.deleteAddon(reason);
+    }
+
+    async deleteAddon(reason) {
+        if (!this.selectedAddonId) return;
 
         try {
             const { error } = await window.supabase
@@ -604,11 +592,10 @@ class AdminPanel {
             if (error) throw error;
 
             this.showSuccess('Addon eliminado correctamente');
-            this.closeDeleteAddonModal();
             await this.loadAddons();
             this.updateStats();
         } catch (error) {
-            this.showError('Error al eliminar el addon');
+            this.showError('Error al eliminar el addon: ' + error.message);
         }
     }
 
