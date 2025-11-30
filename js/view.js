@@ -27,7 +27,6 @@ const favoritesManager = {
 const downloadManager = {
     lastDownloadTime: 0,
     downloadCooldown: 3000,
-    downloadCounts: JSON.parse(localStorage.getItem('downloadCounts') || '{}'),
     
     canDownload: function(addonId) {
         const now = Date.now();
@@ -37,7 +36,7 @@ const downloadManager = {
             return false;
         }
         
-        const addonLastDownload = this.downloadCounts[addonId]?.lastDownload || 0;
+        const addonLastDownload = parseInt(localStorage.getItem(`lastDownload_${addonId}`)) || 0;
         if (now - addonLastDownload < this.downloadCooldown) {
             return false;
         }
@@ -45,22 +44,37 @@ const downloadManager = {
         return true;
     },
     
-    recordDownload: function(addonId) {
+    recordDownload: async function(addonId) {
         const now = Date.now();
         this.lastDownloadTime = now;
+        localStorage.setItem(`lastDownload_${addonId}`, now.toString());
         
-        if (!this.downloadCounts[addonId]) {
-            this.downloadCounts[addonId] = { count: 0, lastDownload: 0 };
+        try {
+            const { data: addon, error } = await window.supabase
+                .from('addons')
+                .select('downloads')
+                .eq('id', addonId)
+                .single();
+            
+            if (error) throw error;
+            
+            const newDownloadCount = (addon.downloads || 0) + 1;
+            
+            const { error: updateError } = await window.supabase
+                .from('addons')
+                .update({ 
+                    downloads: newDownloadCount,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', addonId);
+            
+            if (updateError) throw updateError;
+            
+            return newDownloadCount;
+        } catch (error) {
+            console.error('Error registrando descarga:', error);
+            throw error;
         }
-        
-        this.downloadCounts[addonId].count++;
-        this.downloadCounts[addonId].lastDownload = now;
-        
-        localStorage.setItem('downloadCounts', JSON.stringify(this.downloadCounts));
-    },
-    
-    getDownloadCount: function(addonId) {
-        return this.downloadCounts[addonId]?.count || 0;
     },
     
     formatDownloadCount: function(count) {
@@ -244,7 +258,7 @@ function renderAddonDetails(addon) {
     `).join('');
     
     const isFav = favoritesManager.isFavorite(addon.id);
-    const downloadCount = downloadManager.getDownloadCount(addon.id);
+    const downloadCount = addon.downloads || 0;
     const formattedDownloadCount = downloadManager.formatDownloadCount(downloadCount);
     
     const displayImageUrl = addon.image || '../img/default-addon.jpg';
@@ -330,9 +344,9 @@ function setupDownloadButton() {
             }
             
             try {
-                downloadManager.recordDownload(addonId);
+                const newDownloadCount = await downloadManager.recordDownload(addonId);
                 
-                updateDownloadCount(addonId);
+                updateDownloadCount(addonId, newDownloadCount);
                 
                 window.open(downloadUrl, '_blank');
                 
@@ -343,9 +357,8 @@ function setupDownloadButton() {
     }
 }
 
-function updateDownloadCount(addonId) {
-    const downloadCount = downloadManager.getDownloadCount(addonId);
-    const formattedDownloadCount = downloadManager.formatDownloadCount(downloadCount);
+function updateDownloadCount(addonId, newDownloadCount) {
+    const formattedDownloadCount = downloadManager.formatDownloadCount(newDownloadCount);
     
     const versionInfo = document.querySelector('.version-info');
     if (versionInfo) {
