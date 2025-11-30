@@ -429,6 +429,16 @@
             background: rgba(255, 255, 255, 0.1);
             border-color: var(--accent);
         }
+
+        .debug-info {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -453,6 +463,11 @@
             <h2 class="admin-title">Panel de Administración</h2>
             <div id="adminInfo" class="admin-info">
             </div>
+        </div>
+
+        <div id="debugInfo" class="debug-info" style="display: none;">
+            <h4>Información de Depuración:</h4>
+            <div id="debugContent"></div>
         </div>
 
         <div id="accessDenied" class="error-message" style="display: none;">
@@ -501,6 +516,7 @@
                                 <th>Email</th>
                                 <th>Estado</th>
                                 <th>Verificado</th>
+                                <th>Admin</th>
                                 <th>Fecha Registro</th>
                                 <th>Acciones</th>
                             </tr>
