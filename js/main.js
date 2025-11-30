@@ -294,7 +294,13 @@ async function loadNotifications() {
     const { data: addons, error } = await window.supabase
       .from('addons')
       .select(`
-          *,
+          id,
+          title,
+          description,
+          version,
+          image,
+          updated_at,
+          created_at,
           profiles:user_id (
               username,
               is_verified,
@@ -371,6 +377,13 @@ function detectChangesAndCreateNotifications(currentAddons, previousAddonsState)
       continue;
     }
 
+    const onlyTimestampChanged = hasOnlyTimestampChanged(addon, previousAddon);
+    
+    if (onlyTimestampChanged) {
+      console.log('Solo cambió el timestamp (probablemente por descargas), ignorando:', addon.title);
+      continue;
+    }
+
     if (addon.version !== previousAddon.version) {
       notifications.push({
         id: `version-${addon.id}-${Date.now()}`,
@@ -427,7 +440,8 @@ function detectChangesAndCreateNotifications(currentAddons, previousAddonsState)
       addon.title === previousAddon.title &&
       addon.description === previousAddon.description &&
       addon.version === previousAddon.version &&
-      addon.image === previousAddon.image) {
+      addon.image === previousAddon.image &&
+      !onlyTimestampChanged) {
       
       notifications.push({
         id: `update-${addon.id}-${Date.now()}`,
@@ -443,6 +457,15 @@ function detectChangesAndCreateNotifications(currentAddons, previousAddonsState)
   }
 
   return notifications;
+}
+
+function hasOnlyTimestampChanged(currentAddon, previousAddon) {
+  const relevantFields = ['title', 'description', 'version', 'image'];
+  const relevantFieldsUnchanged = relevantFields.every(field => 
+    currentAddon[field] === previousAddon[field]
+  );
+  
+  return relevantFieldsUnchanged && currentAddon.updated_at !== previousAddon.updated_at;
 }
 
 function updateNotificationBadge() {
