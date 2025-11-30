@@ -14,24 +14,17 @@ class AdminPanel {
     }
 
     async init() {
-        console.log('🔧 Iniciando panel de administración...');
         await this.checkAdminAccess();
     }
 
     async checkAdminAccess() {
         try {
-            console.log('🔍 Verificando acceso de administrador...');
-            
-            // Esperar a que authSystem esté disponible
             if (!window.authSystem) {
-                console.error('❌ authSystem no está disponible');
                 setTimeout(() => this.checkAdminAccess(), 100);
                 return;
             }
 
-            // Esperar a que el usuario esté cargado
             if (!window.authSystem.currentUser) {
-                console.log('⏳ Esperando carga de usuario...');
                 setTimeout(() => this.checkAdminAccess(), 100);
                 return;
             }
@@ -39,15 +32,9 @@ class AdminPanel {
             this.currentUser = window.authSystem.getCurrentUser();
             this.currentProfile = window.authSystem.getCurrentProfile();
 
-            console.log('📊 Perfil cargado:', this.currentProfile);
-            console.log('👑 is_admin:', this.currentProfile.is_admin);
-            console.log('🔢 Tipo de is_admin:', typeof this.currentProfile.is_admin);
-
-            // Verificar directamente desde la base de datos para estar seguros
             await this.verifyAdminFromDatabase();
 
         } catch (error) {
-            console.error('❌ Error verificando acceso:', error);
             this.showAccessDenied();
         }
     }
@@ -59,7 +46,6 @@ class AdminPanel {
                 return;
             }
 
-            // Obtener el perfil actualizado desde la base de datos
             const { data: currentProfile, error } = await window.supabase
                 .from('profiles')
                 .select('is_admin')
@@ -67,19 +53,13 @@ class AdminPanel {
                 .single();
 
             if (error) {
-                console.error('Error obteniendo perfil de BD:', error);
                 this.showAccessDenied();
                 return;
             }
 
-            console.log('🗄️ Perfil desde BD:', currentProfile);
-            console.log('👑 is_admin desde BD:', currentProfile.is_admin);
-
             const isAdmin = currentProfile.is_admin === true || currentProfile.is_admin === 'true';
 
             if (isAdmin) {
-                console.log('✅ Usuario ES administrador, cargando panel...');
-                // Actualizar el perfil local
                 this.currentProfile.is_admin = currentProfile.is_admin;
                 window.authSystem.currentProfile.is_admin = currentProfile.is_admin;
                 
@@ -101,12 +81,10 @@ class AdminPanel {
                     </div>
                 `;
             } else {
-                console.log('❌ Usuario NO es administrador');
                 this.showAccessDenied();
             }
 
         } catch (error) {
-            console.error('Error verificando admin desde BD:', error);
             this.showAccessDenied();
         }
     }
@@ -115,7 +93,6 @@ class AdminPanel {
         document.getElementById('loading').style.display = 'none';
         document.getElementById('accessDenied').style.display = 'block';
         
-        // Mostrar información de depuración detallada
         const debugInfo = document.getElementById('debugInfo');
         const debugContent = document.getElementById('debugContent');
         
@@ -125,7 +102,7 @@ class AdminPanel {
             
             if (window.authSystem) {
                 debugHTML += `<p><strong>Usuario autenticado:</strong> ${window.authSystem.isAuthenticated()}</p>`;
-                debugHTML += `<p><strong>Es admin (authSystem):</strong> ${window.authSystem.isAdmin()}</p>`;
+                debugHTML += `<p><strong>Es admin:</strong> ${window.authSystem.isAdmin()}</p>`;
                 
                 const user = window.authSystem.getCurrentUser();
                 const profile = window.authSystem.getCurrentProfile();
@@ -169,7 +146,6 @@ class AdminPanel {
             this.users = users || [];
             this.renderUsers();
         } catch (error) {
-            console.error('Error cargando usuarios:', error);
             this.showError('Error al cargar los usuarios');
         }
     }
@@ -178,15 +154,7 @@ class AdminPanel {
         try {
             const { data: addons, error } = await window.supabase
                 .from('addons')
-                .select(`
-                    *,
-                    profiles:user_id (
-                        username,
-                        is_verified,
-                        avatar_url,
-                        is_admin
-                    )
-                `)
+                .select('*')
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
@@ -194,7 +162,6 @@ class AdminPanel {
             this.addons = addons || [];
             this.renderAddons();
         } catch (error) {
-            console.error('Error cargando addons:', error);
             this.showError('Error al cargar los addons');
         }
     }
@@ -246,30 +213,32 @@ class AdminPanel {
                 </td>
                 <td>${new Date(user.created_at).toLocaleDateString()}</td>
                 <td>
-                    ${!user.is_banned ? `
-                        <button class="action-btn btn-ban" onclick="adminPanel.openBanModal('${user.id}')" title="Banear usuario">
-                            <i class="fas fa-ban"></i>
-                        </button>
-                    ` : `
-                        <button class="action-btn btn-unban" onclick="adminPanel.unbanUser('${user.id}')" title="Desbanear usuario">
-                            <i class="fas fa-check-circle"></i>
-                        </button>
-                    `}
-                    ${user.id !== this.currentUser.id ? `
-                        <button class="action-btn btn-delete" onclick="adminPanel.deleteUser('${user.id}')" title="Eliminar usuario">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    ` : ''}
-                    ${!user.is_admin && user.id !== this.currentUser.id ? `
-                        <button class="action-btn" onclick="adminPanel.makeAdmin('${user.id}')" title="Hacer administrador" style="color: var(--accent);">
-                            <i class="fas fa-shield-alt"></i>
-                        </button>
-                    ` : ''}
-                    ${user.is_admin && user.id !== this.currentUser.id ? `
-                        <button class="action-btn" onclick="adminPanel.removeAdmin('${user.id}')" title="Quitar administrador" style="color: var(--text-secondary);">
-                            <i class="fas fa-user"></i>
-                        </button>
-                    ` : ''}
+                    <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                        ${!user.is_banned ? `
+                            <button class="action-btn btn-ban" onclick="adminPanel.openBanModal('${user.id}')" title="Banear usuario">
+                                <i class="fas fa-ban"></i> Ban
+                            </button>
+                        ` : `
+                            <button class="action-btn btn-unban" onclick="adminPanel.unbanUser('${user.id}')" title="Desbanear usuario">
+                                <i class="fas fa-check-circle"></i> Desban
+                            </button>
+                        `}
+                        ${user.id !== this.currentUser.id ? `
+                            <button class="action-btn btn-delete" onclick="adminPanel.deleteUser('${user.id}')" title="Eliminar usuario">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        ` : ''}
+                        ${!user.is_admin && user.id !== this.currentUser.id ? `
+                            <button class="action-btn" onclick="adminPanel.makeAdmin('${user.id}')" title="Hacer administrador" style="color: var(--accent);">
+                                <i class="fas fa-shield-alt"></i> Hacer Admin
+                            </button>
+                        ` : ''}
+                        ${user.is_admin && user.id !== this.currentUser.id ? `
+                            <button class="action-btn" onclick="adminPanel.removeAdmin('${user.id}')" title="Quitar administrador" style="color: var(--text-secondary);">
+                                <i class="fas fa-user"></i> Quitar Admin
+                            </button>
+                        ` : ''}
+                    </div>
                 </td>
             </tr>
         `).join('');
@@ -285,8 +254,8 @@ class AdminPanel {
         if (searchTerm) {
             filteredAddons = this.addons.filter(addon => 
                 addon.title.toLowerCase().includes(searchTerm) ||
-                addon.description.toLowerCase().includes(searchTerm) ||
-                (addon.profiles?.username && addon.profiles.username.toLowerCase().includes(searchTerm))
+                (addon.description && addon.description.toLowerCase().includes(searchTerm)) ||
+                (addon.creator && addon.creator.toLowerCase().includes(searchTerm))
             );
         }
 
@@ -297,14 +266,13 @@ class AdminPanel {
         tableBody.innerHTML = paginatedAddons.map(addon => `
             <tr>
                 <td>${addon.id.substring(0, 8)}...</td>
-                <td>${addon.title}</td>
+                <td>${addon.title || 'Sin título'}</td>
                 <td>
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <img src="${addon.profiles?.avatar_url || '../img/default-avatar.png'}" 
-                             alt="${addon.profiles?.username}" 
+                        <img src="${addon.creator_avatar || '../img/default-avatar.png'}" 
+                             alt="${addon.creator || 'Anónimo'}" 
                              style="width: 24px; height: 24px; border-radius: 50%;">
-                        ${addon.profiles?.username || 'Anónimo'}
-                        ${addon.profiles?.is_admin ? '<i class="fas fa-shield-alt" style="color: var(--accent);"></i>' : ''}
+                        ${addon.creator || 'Anónimo'}
                     </div>
                 </td>
                 <td>${addon.downloads || 0}</td>
@@ -316,21 +284,23 @@ class AdminPanel {
                 </td>
                 <td>${new Date(addon.created_at).toLocaleDateString()}</td>
                 <td>
-                    <button class="action-btn" onclick="window.open('../sc/view.html?id=${addon.id}', '_blank')" title="Ver addon">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    ${!addon.is_blocked ? `
-                        <button class="action-btn btn-ban" onclick="adminPanel.blockAddon('${addon.id}')" title="Bloquear addon">
-                            <i class="fas fa-ban"></i>
+                    <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                        <button class="action-btn" onclick="window.open('../sc/view.html?id=${addon.id}', '_blank')" title="Ver addon">
+                            <i class="fas fa-eye"></i> Ver
                         </button>
-                    ` : `
-                        <button class="action-btn btn-unban" onclick="adminPanel.unblockAddon('${addon.id}')" title="Desbloquear addon">
-                            <i class="fas fa-check-circle"></i>
+                        ${!addon.is_blocked ? `
+                            <button class="action-btn btn-ban" onclick="adminPanel.blockAddon('${addon.id}')" title="Bloquear addon">
+                                <i class="fas fa-ban"></i> Bloquear
+                            </button>
+                        ` : `
+                            <button class="action-btn btn-unban" onclick="adminPanel.unblockAddon('${addon.id}')" title="Desbloquear addon">
+                                <i class="fas fa-check-circle"></i> Desbloquear
+                            </button>
+                        `}
+                        <button class="action-btn btn-delete" onclick="adminPanel.openDeleteAddonModal('${addon.id}')" title="Eliminar addon">
+                            <i class="fas fa-trash"></i> Eliminar
                         </button>
-                    `}
-                    <button class="action-btn btn-delete" onclick="adminPanel.openDeleteAddonModal('${addon.id}')" title="Eliminar addon">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    </div>
                 </td>
             </tr>
         `).join('');
@@ -477,7 +447,6 @@ class AdminPanel {
             await this.loadUsers();
             this.updateStats();
         } catch (error) {
-            console.error('Error baneando usuario:', error);
             this.showError('Error al banear el usuario');
         }
     }
@@ -507,7 +476,6 @@ class AdminPanel {
             await this.loadUsers();
             this.updateStats();
         } catch (error) {
-            console.error('Error desbaneando usuario:', error);
             this.showError('Error al desbanear el usuario');
         }
     }
@@ -526,7 +494,6 @@ class AdminPanel {
             this.showSuccess('Usuario ahora es administrador');
             await this.loadUsers();
         } catch (error) {
-            console.error('Error haciendo administrador:', error);
             this.showError('Error al hacer administrador');
         }
     }
@@ -545,7 +512,6 @@ class AdminPanel {
             this.showSuccess('Permisos de administrador removidos');
             await this.loadUsers();
         } catch (error) {
-            console.error('Error removiendo administrador:', error);
             this.showError('Error al remover administrador');
         }
     }
@@ -572,7 +538,6 @@ class AdminPanel {
             await this.loadData();
             this.updateStats();
         } catch (error) {
-            console.error('Error eliminando usuario:', error);
             this.showError('Error al eliminar el usuario');
         }
     }
@@ -589,7 +554,6 @@ class AdminPanel {
             this.showSuccess('Addon bloqueado correctamente');
             await this.loadAddons();
         } catch (error) {
-            console.error('Error bloqueando addon:', error);
             this.showError('Error al bloquear el addon');
         }
     }
@@ -606,7 +570,6 @@ class AdminPanel {
             this.showSuccess('Addon desbloqueado correctamente');
             await this.loadAddons();
         } catch (error) {
-            console.error('Error desbloqueando addon:', error);
             this.showError('Error al desbloquear el addon');
         }
     }
@@ -645,7 +608,6 @@ class AdminPanel {
             await this.loadAddons();
             this.updateStats();
         } catch (error) {
-            console.error('Error eliminando addon:', error);
             this.showError('Error al eliminar el addon');
         }
     }
