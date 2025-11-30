@@ -14,38 +14,75 @@ class AdminPanel {
     }
 
     async init() {
-        console.log('Iniciando panel de administración...');
+        console.log('🔧 Iniciando panel de administración...');
         await this.checkAdminAccess();
     }
 
     async checkAdminAccess() {
         try {
-            console.log('Verificando acceso de administrador...');
+            console.log('🔍 Verificando acceso de administrador...');
             
-            // Verificar si authSystem está disponible
+            // Esperar a que authSystem esté disponible
             if (!window.authSystem) {
-                console.error('authSystem no está disponible');
-                this.showAccessDenied();
+                console.error('❌ authSystem no está disponible');
+                setTimeout(() => this.checkAdminAccess(), 100);
                 return;
             }
 
-            // Usar las funciones del authSystem
-            if (!window.authSystem.isAuthenticated()) {
-                console.log('Usuario no autenticado');
-                this.showAccessDenied();
+            // Esperar a que el usuario esté cargado
+            if (!window.authSystem.currentUser) {
+                console.log('⏳ Esperando carga de usuario...');
+                setTimeout(() => this.checkAdminAccess(), 100);
                 return;
             }
 
             this.currentUser = window.authSystem.getCurrentUser();
             this.currentProfile = window.authSystem.getCurrentProfile();
 
-            console.log('Perfil cargado desde authSystem:', this.currentProfile);
-            console.log('is_admin:', this.currentProfile.is_admin);
-            console.log('Tipo de is_admin:', typeof this.currentProfile.is_admin);
+            console.log('📊 Perfil cargado:', this.currentProfile);
+            console.log('👑 is_admin:', this.currentProfile.is_admin);
+            console.log('🔢 Tipo de is_admin:', typeof this.currentProfile.is_admin);
 
-            // Usar la función isAdmin del authSystem
-            if (window.authSystem.isAdmin()) {
-                console.log('Usuario es administrador, cargando panel...');
+            // Verificar directamente desde la base de datos para estar seguros
+            await this.verifyAdminFromDatabase();
+
+        } catch (error) {
+            console.error('❌ Error verificando acceso:', error);
+            this.showAccessDenied();
+        }
+    }
+
+    async verifyAdminFromDatabase() {
+        try {
+            if (!this.currentUser) {
+                this.showAccessDenied();
+                return;
+            }
+
+            // Obtener el perfil actualizado desde la base de datos
+            const { data: currentProfile, error } = await window.supabase
+                .from('profiles')
+                .select('is_admin')
+                .eq('id', this.currentUser.id)
+                .single();
+
+            if (error) {
+                console.error('Error obteniendo perfil de BD:', error);
+                this.showAccessDenied();
+                return;
+            }
+
+            console.log('🗄️ Perfil desde BD:', currentProfile);
+            console.log('👑 is_admin desde BD:', currentProfile.is_admin);
+
+            const isAdmin = currentProfile.is_admin === true || currentProfile.is_admin === 'true';
+
+            if (isAdmin) {
+                console.log('✅ Usuario ES administrador, cargando panel...');
+                // Actualizar el perfil local
+                this.currentProfile.is_admin = currentProfile.is_admin;
+                window.authSystem.currentProfile.is_admin = currentProfile.is_admin;
+                
                 await this.loadData();
                 this.setupEventListeners();
                 this.updateStats();
@@ -64,14 +101,12 @@ class AdminPanel {
                     </div>
                 `;
             } else {
-                console.log('Usuario NO es administrador');
-                console.log('is_admin value:', this.currentProfile.is_admin);
-                console.log('is_admin type:', typeof this.currentProfile.is_admin);
+                console.log('❌ Usuario NO es administrador');
                 this.showAccessDenied();
             }
 
         } catch (error) {
-            console.error('Error verificando acceso de administrador:', error);
+            console.error('Error verificando admin desde BD:', error);
             this.showAccessDenied();
         }
     }
@@ -80,17 +115,17 @@ class AdminPanel {
         document.getElementById('loading').style.display = 'none';
         document.getElementById('accessDenied').style.display = 'block';
         
-        // Mostrar información de depuración
+        // Mostrar información de depuración detallada
         const debugInfo = document.getElementById('debugInfo');
         const debugContent = document.getElementById('debugContent');
         
         if (debugInfo && debugContent) {
             debugInfo.style.display = 'block';
-            let debugHTML = '';
+            let debugHTML = '<div style="font-family: monospace; font-size: 12px;">';
             
             if (window.authSystem) {
                 debugHTML += `<p><strong>Usuario autenticado:</strong> ${window.authSystem.isAuthenticated()}</p>`;
-                debugHTML += `<p><strong>Es admin:</strong> ${window.authSystem.isAdmin()}</p>`;
+                debugHTML += `<p><strong>Es admin (authSystem):</strong> ${window.authSystem.isAdmin()}</p>`;
                 
                 const user = window.authSystem.getCurrentUser();
                 const profile = window.authSystem.getCurrentProfile();
@@ -104,6 +139,10 @@ class AdminPanel {
             } else {
                 debugHTML += `<p><strong>authSystem:</strong> No disponible</p>`;
             }
+            
+            debugHTML += `<p><strong>LocalStorage user:</strong> ${localStorage.getItem('mcpixel_user')}</p>`;
+            debugHTML += `<p><strong>LocalStorage profile:</strong> ${localStorage.getItem('mcpixel_profile')}</p>`;
+            debugHTML += '</div>';
             
             debugContent.innerHTML = debugHTML;
         }
