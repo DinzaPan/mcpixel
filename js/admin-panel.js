@@ -126,7 +126,13 @@ class AdminPanel {
         try {
             const { data: addons, error } = await window.supabase
                 .from('addons')
-                .select('*')
+                .select(`
+                    *,
+                    profiles:user_id (
+                        username,
+                        avatar_url
+                    )
+                `)
                 .order('created_at', { ascending: false });
 
             if (error) {
@@ -146,6 +152,26 @@ class AdminPanel {
         if (!id) return 'N/A';
         const idStr = id.toString();
         return idStr.substring(0, 8) + '...';
+    }
+
+    getAvatarUrl(addon) {
+        if (addon.profiles && addon.profiles.avatar_url) {
+            return addon.profiles.avatar_url;
+        }
+        if (addon.creator_avatar) {
+            return addon.creator_avatar;
+        }
+        return '../img/default-avatar.png';
+    }
+
+    getCreatorName(addon) {
+        if (addon.profiles && addon.profiles.username) {
+            return addon.profiles.username;
+        }
+        if (addon.creator) {
+            return addon.creator;
+        }
+        return 'Anónimo';
     }
 
     renderUsers() {
@@ -248,7 +274,7 @@ class AdminPanel {
             filteredAddons = this.addons.filter(addon => 
                 (addon.title && addon.title.toLowerCase().includes(searchTerm)) ||
                 (addon.description && addon.description.toLowerCase().includes(searchTerm)) ||
-                (addon.creator && addon.creator.toLowerCase().includes(searchTerm)) ||
+                (this.getCreatorName(addon).toLowerCase().includes(searchTerm)) ||
                 (addon.id && addon.id.toString().toLowerCase().includes(searchTerm))
             );
         }
@@ -274,10 +300,10 @@ class AdminPanel {
                 <td>${addon.title || 'Sin título'}</td>
                 <td>
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <img src="${addon.creator_avatar || '../img/default-avatar.png'}" 
-                             alt="${addon.creator || 'Anónimo'}" 
+                        <img src="${this.getAvatarUrl(addon)}" 
+                             alt="${this.getCreatorName(addon)}" 
                              style="width: 24px; height: 24px; border-radius: 50%;">
-                        ${addon.creator || 'Anónimo'}
+                        ${this.getCreatorName(addon)}
                     </div>
                 </td>
                 <td>${addon.downloads || 0}</td>
