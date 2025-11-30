@@ -22,25 +22,29 @@ class AdminPanel {
         try {
             console.log('Verificando acceso de administrador...');
             
-            const savedUser = localStorage.getItem('mcpixel_user');
-            const savedProfile = localStorage.getItem('mcpixel_profile');
-            
-            console.log('Datos de localStorage:', { savedUser, savedProfile });
-            
-            if (!savedUser || !savedProfile) {
-                console.log('No hay sesión activa');
+            // Verificar si authSystem está disponible
+            if (!window.authSystem) {
+                console.error('authSystem no está disponible');
                 this.showAccessDenied();
                 return;
             }
 
-            this.currentUser = JSON.parse(savedUser);
-            this.currentProfile = JSON.parse(savedProfile);
+            // Usar las funciones del authSystem
+            if (!window.authSystem.isAuthenticated()) {
+                console.log('Usuario no autenticado');
+                this.showAccessDenied();
+                return;
+            }
 
-            console.log('Perfil cargado:', this.currentProfile);
+            this.currentUser = window.authSystem.getCurrentUser();
+            this.currentProfile = window.authSystem.getCurrentProfile();
+
+            console.log('Perfil cargado desde authSystem:', this.currentProfile);
             console.log('is_admin:', this.currentProfile.is_admin);
             console.log('Tipo de is_admin:', typeof this.currentProfile.is_admin);
 
-            if (this.currentProfile.is_admin === true || this.currentProfile.is_admin === 'true') {
+            // Usar la función isAdmin del authSystem
+            if (window.authSystem.isAdmin()) {
                 console.log('Usuario es administrador, cargando panel...');
                 await this.loadData();
                 this.setupEventListeners();
@@ -61,6 +65,8 @@ class AdminPanel {
                 `;
             } else {
                 console.log('Usuario NO es administrador');
+                console.log('is_admin value:', this.currentProfile.is_admin);
+                console.log('is_admin type:', typeof this.currentProfile.is_admin);
                 this.showAccessDenied();
             }
 
@@ -74,9 +80,37 @@ class AdminPanel {
         document.getElementById('loading').style.display = 'none';
         document.getElementById('accessDenied').style.display = 'block';
         
+        // Mostrar información de depuración
+        const debugInfo = document.getElementById('debugInfo');
+        const debugContent = document.getElementById('debugContent');
+        
+        if (debugInfo && debugContent) {
+            debugInfo.style.display = 'block';
+            let debugHTML = '';
+            
+            if (window.authSystem) {
+                debugHTML += `<p><strong>Usuario autenticado:</strong> ${window.authSystem.isAuthenticated()}</p>`;
+                debugHTML += `<p><strong>Es admin:</strong> ${window.authSystem.isAdmin()}</p>`;
+                
+                const user = window.authSystem.getCurrentUser();
+                const profile = window.authSystem.getCurrentProfile();
+                
+                if (user) {
+                    debugHTML += `<p><strong>Usuario:</strong> ${JSON.stringify(user)}</p>`;
+                }
+                if (profile) {
+                    debugHTML += `<p><strong>Perfil:</strong> ${JSON.stringify(profile)}</p>`;
+                }
+            } else {
+                debugHTML += `<p><strong>authSystem:</strong> No disponible</p>`;
+            }
+            
+            debugContent.innerHTML = debugHTML;
+        }
+        
         setTimeout(() => {
             window.location.href = '../index.html';
-        }, 3000);
+        }, 5000);
     }
 
     async loadData() {
@@ -190,6 +224,11 @@ class AdminPanel {
                     ${!user.is_admin && user.id !== this.currentUser.id ? `
                         <button class="action-btn" onclick="adminPanel.makeAdmin('${user.id}')" title="Hacer administrador" style="color: var(--accent);">
                             <i class="fas fa-shield-alt"></i>
+                        </button>
+                    ` : ''}
+                    ${user.is_admin && user.id !== this.currentUser.id ? `
+                        <button class="action-btn" onclick="adminPanel.removeAdmin('${user.id}')" title="Quitar administrador" style="color: var(--text-secondary);">
+                            <i class="fas fa-user"></i>
                         </button>
                     ` : ''}
                 </td>
@@ -450,6 +489,25 @@ class AdminPanel {
         } catch (error) {
             console.error('Error haciendo administrador:', error);
             this.showError('Error al hacer administrador');
+        }
+    }
+
+    async removeAdmin(userId) {
+        if (!confirm('¿Estás seguro de que deseas quitar los permisos de administrador a este usuario?')) return;
+
+        try {
+            const { error } = await window.supabase
+                .from('profiles')
+                .update({ is_admin: false })
+                .eq('id', userId);
+
+            if (error) throw error;
+
+            this.showSuccess('Permisos de administrador removidos');
+            await this.loadUsers();
+        } catch (error) {
+            console.error('Error removiendo administrador:', error);
+            this.showError('Error al remover administrador');
         }
     }
 
