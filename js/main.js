@@ -2,12 +2,6 @@ let allAddons = [];
 let allNotifications = [];
 
 const downloadManager = {
-    downloadCounts: JSON.parse(localStorage.getItem('downloadCounts') || '{}'),
-    
-    getDownloadCount: function(addonId) {
-        return this.downloadCounts[addonId]?.count || 0;
-    },
-    
     formatDownloadCount: function(count) {
         if (count >= 1000000) {
             return (count / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
@@ -111,7 +105,7 @@ function renderAddons(addons) {
     const isVerified = addon.profiles?.is_verified || false;
     const creatorName = addon.profiles?.username || addon.creator || 'Anónimo';
     const avatarUrl = addon.profiles?.avatar_url || 'img/default-avatar.png';
-    const downloadCount = downloadManager.getDownloadCount(addon.id);
+    const downloadCount = addon.downloads || 0;
     const formattedDownloadCount = downloadManager.formatDownloadCount(downloadCount);
     
     const card = document.createElement('div');
