@@ -17,8 +17,34 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/video-modal.css">
 </head>
 <body>
+    <div class="video-modal-overlay" id="videoModal">
+        <div class="video-modal-content">
+            <button class="video-modal-close" id="closeVideoModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 class="video-modal-title">¡Especial de Diciembre!</h2>
+            <div class="video-container">
+                <video id="diciembreVideo" class="video-modal-player" controls>
+                    <source src="./video/diciembre.mp4" type="video/mp4">
+                    Tu navegador no soporta el elemento de video.
+                </video>
+            </div>
+            <div class="video-modal-controls">
+                <button class="video-modal-btn" id="replayVideo">
+                    <i class="fas fa-redo"></i>
+                    Repetir Video
+                </button>
+                <button class="video-modal-btn video-modal-btn-secondary" id="continueWithoutVideo">
+                    <i class="fas fa-play-circle"></i>
+                    Continuar sin ver
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="particles" id="particles"></div>
     
     <header class="top-bar">
@@ -107,6 +133,7 @@
         window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
     <script src="js/main.js"></script>
+    <script src="js/video-modal.js"></script>
     <script src="js/pwa.js"></script>
 </body>
 </html>
