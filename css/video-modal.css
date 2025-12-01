@@ -1,0 +1,198 @@
+.video-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(10, 15, 20, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.video-modal-content {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 800px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color);
+    animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.video-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+    font-size: 1.1rem;
+}
+
+.video-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--accent);
+}
+
+.video-modal-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 25px;
+    background: linear-gradient(135deg, #1a73e8, #64b5f6, #ff6b6b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800;
+    text-shadow: 0 0 20px rgba(26, 115, 232, 0.3);
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 25px;
+    background: #000;
+}
+
+.video-modal-player {
+    width: 100%;
+    height: auto;
+    max-height: 450px;
+    display: block;
+    border-radius: 8px;
+}
+
+.video-modal-controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.video-modal-btn {
+    background: var(--gradient);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+.video-modal-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(26, 115, 232, 0.3);
+}
+
+.video-modal-btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.video-modal-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    border-color: var(--accent);
+}
+
+@media (max-width: 768px) {
+    .video-modal-content {
+        padding: 20px;
+        width: 95%;
+    }
+    
+    .video-modal-title {
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+    }
+    
+    .video-modal-player {
+        max-height: 300px;
+    }
+    
+    .video-modal-btn {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+    
+    .video-modal-controls {
+        gap: 10px;
+    }
+    
+    .video-modal-close {
+        top: 10px;
+        right: 10px;
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .video-modal-content {
+        padding: 15px;
+    }
+    
+    .video-modal-title {
+        font-size: 1.4rem;
+    }
+    
+    .video-modal-player {
+        max-height: 250px;
+    }
+    
+    .video-modal-controls {
+        flex-direction: column;
+    }
+    
+    .video-modal-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .video-modal-close {
+        top: 8px;
+        right: 8px;
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+}
