@@ -1,5 +1,6 @@
 let allAddons = [];
 let allNotifications = [];
+let videoModalInitialized = false;
 
 const downloadManager = {
     formatDownloadCount: function(count) {
@@ -13,6 +14,8 @@ const downloadManager = {
 };
 
 document.addEventListener('DOMContentLoaded', async function() {
+  videoModalInitialized = true;
+  
   await checkAuth();
   await loadAddons();
   await loadNotifications();
