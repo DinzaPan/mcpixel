@@ -136,36 +136,43 @@ function updateMetaTags(addon) {
 
     document.title = `${addon.title} - MCPixel`;
 
-    const metaTags = {
-        'og:title': `${addon.title} - MCPixel`,
-        'og:description': truncatedDescription,
-        'og:image': fullImageUrl,
-        'og:url': currentUrl,
-        'og:type': 'website',
-        'og:site_name': 'MCPixel',
-        'twitter:card': 'summary_large_image',
-        'twitter:title': `${addon.title} - MCPixel`,
-        'twitter:description': truncatedDescription,
-        'twitter:image': fullImageUrl,
-        'twitter:site': '@MCPixel',
-        'description': truncatedDescription
-    };
+    const metaTags = [
+        { property: 'og:title', content: `${addon.title} - MCPixel` },
+        { property: 'og:description', content: truncatedDescription },
+        { property: 'og:image', content: fullImageUrl },
+        { property: 'og:url', content: currentUrl },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:site_name', content: 'MCPixel' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: `${addon.title} - MCPixel` },
+        { name: 'twitter:description', content: truncatedDescription },
+        { name: 'twitter:image', content: fullImageUrl },
+        { name: 'twitter:site', content: '@MCPixel' },
+        { name: 'description', content: truncatedDescription }
+    ];
 
-    Object.keys(metaTags).forEach(key => {
-        const selector = key.startsWith('og:') ? `meta[property="${key}"]` : `meta[name="${key}"]`;
-        let element = document.querySelector(selector);
+    metaTags.forEach(tag => {
+        let element;
         
-        if (!element) {
-            element = document.createElement('meta');
-            if (key.startsWith('og:')) {
-                element.setAttribute('property', key);
-            } else {
-                element.setAttribute('name', key);
+        if (tag.property) {
+            element = document.querySelector(`meta[property="${tag.property}"]`);
+            if (!element) {
+                element = document.createElement('meta');
+                element.setAttribute('property', tag.property);
+                document.head.appendChild(element);
             }
-            document.head.appendChild(element);
+        } else if (tag.name) {
+            element = document.querySelector(`meta[name="${tag.name}"]`);
+            if (!element) {
+                element = document.createElement('meta');
+                element.setAttribute('name', tag.name);
+                document.head.appendChild(element);
+            }
         }
         
-        element.setAttribute('content', metaTags[key]);
+        if (element) {
+            element.setAttribute('content', tag.content);
+        }
     });
 
     const linkCanonical = document.querySelector('link[rel="canonical"]') || document.createElement('link');
