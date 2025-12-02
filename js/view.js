@@ -124,65 +124,6 @@ function getAbsoluteImageUrl(imageUrl) {
     return `${window.location.origin}/${imageUrl}`;
 }
 
-function updateMetaTags(addon) {
-    const fullImageUrl = getAbsoluteImageUrl(addon.image);
-    const currentUrl = `${window.location.origin}/sc/view.html?id=${addon.id}&name=${generateSlug(addon.title)}`;
-    
-    const truncatedDescription = addon.description 
-        ? (addon.description.length > 150 
-            ? addon.description.substring(0, 150) + '...' 
-            : addon.description)
-        : 'Descubre este increíble addon para Minecraft en MCPixel';
-
-    document.title = `${addon.title} - MCPixel`;
-
-    const metaTags = [
-        { property: 'og:title', content: `${addon.title} - MCPixel` },
-        { property: 'og:description', content: truncatedDescription },
-        { property: 'og:image', content: fullImageUrl },
-        { property: 'og:url', content: currentUrl },
-        { property: 'og:type', content: 'website' },
-        { property: 'og:site_name', content: 'MCPixel' },
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:title', content: `${addon.title} - MCPixel` },
-        { name: 'twitter:description', content: truncatedDescription },
-        { name: 'twitter:image', content: fullImageUrl },
-        { name: 'twitter:site', content: '@MCPixel' },
-        { name: 'description', content: truncatedDescription }
-    ];
-
-    metaTags.forEach(tag => {
-        let element;
-        
-        if (tag.property) {
-            element = document.querySelector(`meta[property="${tag.property}"]`);
-            if (!element) {
-                element = document.createElement('meta');
-                element.setAttribute('property', tag.property);
-                document.head.appendChild(element);
-            }
-        } else if (tag.name) {
-            element = document.querySelector(`meta[name="${tag.name}"]`);
-            if (!element) {
-                element = document.createElement('meta');
-                element.setAttribute('name', tag.name);
-                document.head.appendChild(element);
-            }
-        }
-        
-        if (element) {
-            element.setAttribute('content', tag.content);
-        }
-    });
-
-    const linkCanonical = document.querySelector('link[rel="canonical"]') || document.createElement('link');
-    linkCanonical.setAttribute('rel', 'canonical');
-    linkCanonical.setAttribute('href', currentUrl);
-    if (!document.querySelector('link[rel="canonical"]')) {
-        document.head.appendChild(linkCanonical);
-    }
-}
-
 function createParticles() {
     const particlesContainer = document.getElementById('particles');
     if (!particlesContainer) return;
@@ -241,7 +182,6 @@ async function loadAddonDetails() {
         if (!addon) throw new Error('Addon no encontrado');
 
         updateURLWithAddonName(addon);
-        updateMetaTags(addon);
         renderAddonDetails(addon);
     } catch (error) {
         console.error('Error cargando addon:', error);
