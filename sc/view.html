@@ -3,71 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Metadatos por defecto que se actualizarán con JS -->
-    <title id="dynamic-title">MCPixel - Cargando addon...</title>
-    <meta property="og:title" id="og-title" content="MCPixel - Addons para Minecraft">
-    <meta property="og:description" id="og-description" content="Descubre y descarga los mejores addons para Minecraft Bedrock">
-    <meta property="og:image" id="og-image" content="https://mcpixel.vercel.app/img/portada/mcpixel.jpg">
-    <meta property="og:url" id="og-url" content="https://mcpixel.vercel.app">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="MCPixel">
-    
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" id="twitter-title" content="MCPixel - Addons para Minecraft">
-    <meta name="twitter:description" id="twitter-description" content="Descubre y descarga los mejores addons para Minecraft Bedrock">
-    <meta name="twitter:image" id="twitter-image" content="https://mcpixel.vercel.app/img/portada/mcpixel.jpg">
-    
-    <link rel="icon" type="image/png" href="../img/logo.png">
-    <link rel="shortcut icon" href="../img/logo.png">
-    
+    <title>MCPixel - Descubre Addons para Minecraft</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="../img/logo.png" type="image/png">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/view.css">
-    
-    <script>
-        // Script inmediato para capturar datos del addon desde la URL
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const addonId = urlParams.get('id');
-            
-            if (addonId) {
-                // Intentar cargar datos del addon inmediatamente
-                fetch(`https://dgmsyuzxsvjfkjdyecer.supabase.co/rest/v1/addons?id=eq.${addonId}&select=title,description,image`, {
-                    headers: {
-                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnbXN5dXp4c3ZqZmtqZHllY2VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NjI5OTUsImV4cCI6MjA3OTEzODk5NX0._SQAuzRejAi-tghTh8hTk_dvaZooEMZBbHAQw4hyA3I'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data[0]) {
-                        const addon = data[0];
-                        const truncatedDescription = addon.description 
-                            ? (addon.description.length > 150 
-                                ? addon.description.substring(0, 150) + '...' 
-                                : addon.description)
-                            : 'Descubre este increíble addon para Minecraft en MCPixel';
-                        
-                        // Actualizar metadatos inmediatamente
-                        document.title = `${addon.title} - MCPixel`;
-                        document.getElementById('og-title').content = `${addon.title} - MCPixel`;
-                        document.getElementById('og-description').content = truncatedDescription;
-                        document.getElementById('twitter-title').content = `${addon.title} - MCPixel`;
-                        document.getElementById('twitter-description').content = truncatedDescription;
-                        
-                        if (addon.image) {
-                            const fullImageUrl = addon.image.startsWith('http') 
-                                ? addon.image 
-                                : `https://mcpixel.vercel.app/${addon.image}`;
-                            document.getElementById('og-image').content = fullImageUrl;
-                            document.getElementById('twitter-image').content = fullImageUrl;
-                        }
-                    }
-                })
-                .catch(console.error);
-            }
-        });
-    </script>
 </head>
 <body>
     <div class="particles" id="particles"></div>
