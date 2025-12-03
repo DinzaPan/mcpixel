@@ -156,6 +156,20 @@ function createParticles() {
     }
 }
 
+function formatDescription(description) {
+    if (!description) return 'No hay descripción disponible.';
+    
+    let formatted = description
+        .replace(/\n\s*\n/g, '</p><p>')
+        .replace(/\n/g, '<br>');
+    
+    if (!formatted.startsWith('<p>')) {
+        formatted = `<p>${formatted}</p>`;
+    }
+    
+    return formatted;
+}
+
 async function loadAddonDetails() {
     const urlParams = new URLSearchParams(window.location.search);
     const addonId = urlParams.get('id');
@@ -208,7 +222,8 @@ function renderAddonDetails(addon) {
     const downloadCount = addon.downloads || 0;
     const formattedDownloadCount = downloadManager.formatDownloadCount(downloadCount);
     
-    const displayImageUrl = addon.image || '../img/default-addon.jpg';
+    const displayImageUrl = getAbsoluteImageUrl(addon.image || '../img/default-addon.jpg');
+    const formattedDescription = formatDescription(addon.description);
     
     container.innerHTML = `
         <div class="detail-cover" style="background-image: url('${displayImageUrl}')"></div>
@@ -249,7 +264,7 @@ function renderAddonDetails(addon) {
                 <i class="fas fa-file-alt"></i>
                 Descripción
             </h3>
-            <p class="full-description">${addon.description || 'No hay descripción disponible.'}</p>
+            <div class="full-description">${formattedDescription}</div>
         </div>
         
         ${addon.download_url ? `
