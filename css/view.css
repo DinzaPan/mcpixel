@@ -184,6 +184,53 @@
     line-height: 1.7;
     font-size: 1.1rem;
     margin-bottom: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.full-description p {
+    margin-bottom: 1.2em;
+}
+
+.full-description br {
+    display: block;
+    content: "";
+    margin-bottom: 0.8em;
+}
+
+.full-description ul,
+.full-description ol {
+    margin-left: 1.5em;
+    margin-bottom: 1.2em;
+}
+
+.full-description li {
+    margin-bottom: 0.5em;
+}
+
+.full-description strong {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.full-description em {
+    font-style: italic;
+}
+
+.full-description hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 2em 0;
+    opacity: 0.3;
+}
+
+.full-description pre,
+.full-description code {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
 }
 
 .download-section {
