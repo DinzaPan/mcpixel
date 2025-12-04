@@ -1,18 +1,23 @@
 {
-  "cleanUrls": true,
-  "routes": [
+  "rewrites": [
     {
-      "handle": "filesystem"
+      "source": "/",
+      "destination": "/index.html"
     },
     {
-      "src": "/error/404\\.html",
-      "dest": "/error/404.html",
-      "status": 200
+      "source": "/sc/:path",
+      "destination": "/sc/:path.html"
     },
     {
-      "src": "/(.*)",
-      "dest": "/error/404.html",
-      "status": 404
+      "source": "/:path",
+      "destination": "/:path.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
     }
   ]
 }
