@@ -15,5 +15,39 @@
       "dest": "/error/404.html",
       "status": 404
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/sc/:path+",
+      "destination": "/sc/:path.html"
+    },
+    {
+      "source": "/:path+",
+      "destination": "/:path.html",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept",
+          "value": "text/html"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/sc/:path.html",
+      "destination": "/sc/:path",
+      "permanent": true
+    },
+    {
+      "source": "/:page.html",
+      "destination": "/:page",
+      "permanent": true
+    }
   ]
 }
