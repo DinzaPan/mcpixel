@@ -21,10 +21,24 @@
     },
     {
       "source": "/sc/:path",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept",
+          "value": "text/html"
+        }
+      ],
       "destination": "/sc/:path.html"
     },
     {
       "source": "/:path",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept",
+          "value": "text/html"
+        }
+      ],
       "destination": "/:path.html"
     }
   ],
