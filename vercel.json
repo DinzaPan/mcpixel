@@ -1,4 +1,19 @@
 {
+  "routes": [
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/error/404\\.html",
+      "dest": "/error/404.html",
+      "status": 200
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/error/404.html",
+      "status": 404
+    }
+  ],
   "rewrites": [
     {
       "source": "/",
@@ -17,6 +32,16 @@
     {
       "source": "/index.html",
       "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/sc/:path.html",
+      "destination": "/sc/:path",
+      "permanent": true
+    },
+    {
+      "source": "/:path.html",
+      "destination": "/:path",
       "permanent": true
     }
   ]
